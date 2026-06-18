@@ -9,36 +9,44 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 const cardsData = [
   {
-    id: "ROX",
-    title: "FOUNDER ROX",
+    id: "MOTION",
+    title: "FLUID TIMELINES",
     borderColor: "#0c9367", // green
     btnBg: "bg-wtf-green text-white hover:bg-[#0a8059]",
     rotateStart: 6,
     leftPos: "left-[7.5%] md:left-[10vw]",
+    tag: "[MOTION-01]",
+    footerText: "TWEENLABS ENGINE",
   },
   {
-    id: "RITESH",
-    title: "DEV RITESH",
+    id: "NEO",
+    title: "NEO BRUTALISM",
     borderColor: "#c53b3a", // red
     btnBg: "bg-wtf-red text-white hover:bg-[#aa3231]",
     rotateStart: -4,
     leftPos: "left-[7.5%] md:left-[30vw]",
+    tag: "[STYLE-02]",
+    footerText: "TWEENLABS DESIGN",
   },
   {
-    id: "BHANU",
-    title: "DEV BHANU",
+    id: "SCROLL",
+    title: "SCROLL TRIGGERS",
     borderColor: "#3b82f6", // blue
     btnBg: "bg-wtf-blue text-white hover:bg-[#2563eb]",
     rotateStart: 5,
     leftPos: "left-[7.5%] md:left-[50vw]",
+    tag: "[SCROLL-03]",
+    footerText: "TWEENLABS TRIGGERS",
   },
   {
-    id: "10 MILLION",
-    title: "10 MILLION FUND",
+    id: "PHYSICS",
+    title: "PHYSICS COLLIDERS",
     borderColor: "#f1b333", // yellow
     btnBg: "bg-wtf-yellow text-black hover:bg-[#d99f26]",
     rotateStart: -6,
     leftPos: "left-[7.5%] md:left-[70vw]",
+    tag: "[PHYSICS-04]",
+    footerText: "TWEENLABS COLLIDER",
   },
 ];
 
@@ -48,11 +56,14 @@ export default function AnimationFourPage() {
 
   useGSAP(
     () => {
+      const scroller = containerRef.current?.closest("#main-scroller") || undefined;
+
       // Master timeline linked to vertical scroll pinning
       // Pinned section height is 4500px to ensure smooth scroll scrubbing
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: scrollSectionRef.current,
+          scroller: scroller,
           pin: true,
           scrub: 0.6,
           start: "top top",
@@ -189,10 +200,9 @@ export default function AnimationFourPage() {
         </button>
       </div>
 
-      {/* Pinned main content section */}
       <div
         ref={scrollSectionRef}
-        className="h-screen w-full flex items-center justify-center relative overflow-hidden"
+        className="h-[calc(100vh-64px)] w-full flex items-center justify-center relative overflow-hidden"
       >
         {/* Absolute Cards container */}
         <div className="absolute inset-0 w-full h-full flex items-center justify-center pointer-events-none z-20">
@@ -229,9 +239,9 @@ export default function AnimationFourPage() {
 
                   {/* Card Bottom Right details */}
                   <div className="flex justify-between items-center w-full font-mono text-[9px] text-zinc-400">
-                    <span>[DEV-0{idx + 1}]</span>
+                    <span>{card.tag}</span>
                     <span className="font-bold text-zinc-650 tracking-wider">
-                      ALLTHINGS DEV
+                      {card.footerText}
                     </span>
                   </div>
                 </div>

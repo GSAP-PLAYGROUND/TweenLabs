@@ -49,10 +49,13 @@ export default function ScrollOrbitGallery() {
       // Hide card images initially
       gsap.set(".card-image", { opacity: 0, scale: 0.9 });
 
+      const scroller = containerRef.current?.closest("#main-scroller") || undefined;
+
       // 2. Master timeline linked to vertical scroll pinning
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: scrollSectionRef.current,
+          scroller: scroller,
           pin: true,
           scrub: 0.6,
           start: "top top",
@@ -292,7 +295,7 @@ export default function ScrollOrbitGallery() {
       {/* Main Pinned Work Area */}
       <div
         ref={scrollSectionRef}
-        className="h-screen w-full flex items-center justify-center relative overflow-hidden"
+        className="h-[calc(100vh-64px)] w-full flex items-center justify-center relative overflow-hidden"
       >
         {/* Timeline Track Line (Full Screen width) */}
         <div className="timeline-track absolute left-[5vw] right-[5vw] h-[2px] bg-[#2a2a2a]/15 opacity-0 origin-left z-10" />

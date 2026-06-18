@@ -67,6 +67,8 @@ export default function ScrollCardsPage() {
       const cardEls = gsap.utils.toArray<HTMLElement>(".scroll-card-item");
       if (cardEls.length === 0) return;
 
+      const scroller = containerRef.current?.closest("#main-scroller") || undefined;
+
       cardEls.forEach((card, index) => {
         // Calculate dynamic pin durations so all cards remain pinned until the last card finishes
         const cardHeight = window.innerHeight * 0.65;
@@ -77,7 +79,8 @@ export default function ScrollCardsPage() {
         // Pin each card container in place
         ScrollTrigger.create({
           trigger: card,
-          start: "top 8%",
+          scroller: scroller,
+          start: "top top",
           end: `+=${pinDuration}`,
           pin: true,
           pinSpacing: false,

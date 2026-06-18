@@ -37,10 +37,13 @@ export default function AnimationFivePage() {
         { y: "15vh" },
       );
 
+      const scroller = containerRef.current?.closest("#main-scroller") || undefined;
+
       // Master timeline linked to vertical scroll pinning
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: scrollSectionRef.current,
+          scroller: scroller,
           pin: true,
           scrub: 0.3,
           start: "top top",
@@ -281,7 +284,7 @@ export default function AnimationFivePage() {
       {/* Main Pinned Scroll Section Container — perspective + preserve-3d enables rotateX fall-back */}
       <div
         ref={scrollSectionRef}
-        className="scroll-viewport h-screen w-full relative overflow-hidden"
+        className="scroll-viewport h-[calc(100vh-64px)] w-full relative overflow-hidden"
         style={{ perspective: "1400px", perspectiveOrigin: "50% 40%" }}
       >
         {/* PANEL 0: GREEN SECTION (Pulsars) */}

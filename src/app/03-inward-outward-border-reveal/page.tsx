@@ -3,7 +3,7 @@
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -14,6 +14,7 @@ export default function AnimationThreePage() {
 
   useGSAP(
     () => {
+      const scroller = containerRef.current?.closest("#main-scroller") || undefined;
       const chars = gsap.utils.toArray<HTMLElement>(".reveal-char");
 
       // 1. Create the main horizontal translation tween
@@ -25,6 +26,7 @@ export default function AnimationThreePage() {
         ease: "none",
         scrollTrigger: {
           trigger: scrollSectionRef.current,
+          scroller: scroller,
           pin: true,
           scrub: 1,
           start: "top top",
@@ -43,6 +45,7 @@ export default function AnimationThreePage() {
           scrollTrigger: {
             trigger: char,
             containerAnimation: horizontalTween, // Link to the horizontal scroll timeline
+            scroller: scroller,
             start: "left right", // Starts exactly when left edge of character enters right side of viewport (keyword syntax)
             end: "right left", // Ends exactly when right edge of character leaves left side of viewport (keyword syntax)
             scrub: true,
@@ -177,7 +180,7 @@ export default function AnimationThreePage() {
       {/* Main assembly wrapper */}
       <div
         ref={scrollSectionRef}
-        className="h-screen w-full flex items-center relative overflow-hidden"
+        className="h-[calc(100vh-64px)] w-full flex items-center relative overflow-hidden"
       >
         {/* Horizontal text scroll track */}
         <div

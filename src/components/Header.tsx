@@ -20,7 +20,7 @@ export default function Header() {
   const codeAnim = codeSlug ? animations.find((anim) => anim.route.slice(1) === codeSlug) : null;
 
   return (
-    <header className={`${currentAnim ? "relative" : "fixed top-0 left-0"} w-full z-50 bg-[#fafaf9] border-b-3 border-[#2a2a2a]`}>
+    <header className="fixed top-0 left-0 w-full z-50 bg-[#fafaf9] border-b-3 border-[#2a2a2a]">
       <div className="max-w-7xl mx-auto px-4 md:px-8 h-16 flex items-center justify-between">
         <Link 
           href="/" 

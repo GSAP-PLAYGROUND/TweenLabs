@@ -18,10 +18,16 @@ export default function PageWrapper({ children }: { children: React.ReactNode })
   return (
     <>
       <Header />
-      <main className={`flex-1 flex flex-col w-full relative ${isDemoPage ? "pt-0 demo-page-container" : "pt-24"}`}>
+      <main
+        id="main-scroller"
+        className={`flex-grow w-full relative overflow-y-auto overflow-x-hidden mt-16 ${
+          isDemoPage ? "demo-page-container" : ""
+        }`}
+        style={{ height: "calc(100vh - 64px)" }}
+      >
         {children}
+        {!isDemoPage && <Footer />}
       </main>
-      {!isDemoPage && <Footer />}
     </>
   );
 }

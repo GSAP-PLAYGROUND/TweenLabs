@@ -145,11 +145,14 @@ export default function ScreenSkillFitPage() {
         gsap.set(`.sc-right-${i}`, { x: 100, opacity: 0 });
       });
 
+      const scroller = containerRef.current?.closest("#main-scroller") || undefined;
+
       // ── Master Timeline — scrubbed by scroll ─────────────────────────────
       // Triggers when pinRef reaches top of viewport (after scrolling past intro)
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: pinRef.current,
+          scroller: scroller,
           pin: true,
           anticipatePin: 1,
           scrub: 0.5,
@@ -293,7 +296,7 @@ export default function ScreenSkillFitPage() {
       `}</style>
 
       {/* ══ SECTION 2: Pinned animation screen ══════════════════════════════ */}
-      <div ref={pinRef} className="h-screen w-full relative">
+      <div ref={pinRef} className="h-[calc(100vh-64px)] w-full relative">
         {/* Noise texture */}
         <div
           className="absolute inset-0 pointer-events-none z-0"

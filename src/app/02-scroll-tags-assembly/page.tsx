@@ -74,10 +74,13 @@ export default function AnimationTwoPage() {
     () => {
       const tags = gsap.utils.toArray<HTMLElement>(".assembler-tag");
 
+      const scroller = containerRef.current?.closest("#main-scroller") || undefined;
+
       // Pin the scroll section and animate the tags entering the DOM
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: scrollSectionRef.current,
+          scroller: scroller,
           start: "top top",
           end: "+=2000",
           pin: true,
@@ -153,7 +156,7 @@ export default function AnimationTwoPage() {
       {/* Assembly ScrollTrigger Section */}
       <section
         ref={scrollSectionRef}
-        className="h-screen w-full flex items-center justify-center relative overflow-hidden bg-white border-y-3 border-[#2a2a2a]"
+        className="h-[calc(100vh-64px)] w-full flex items-center justify-center relative overflow-hidden bg-white border-y-3 border-[#2a2a2a]"
       >
         <div className="absolute inset-0 dot-grid opacity-5 pointer-events-none" />
 

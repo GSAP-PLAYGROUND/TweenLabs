@@ -57,11 +57,13 @@ export default function ShowUpCardsPage() {
 
   useGSAP(
     () => {
+      const scroller = containerRef.current?.closest("#main-scroller") || undefined;
       const smoothStep = (p: number) => p * p * (3 - 2 * p);
 
       // Pin the showup card section during viewport scroll
       ScrollTrigger.create({
         trigger: containerRef.current,
+        scroller: scroller,
         start: "top top",
         end: "bottom bottom",
         pin: ".showup-cards-sec",
@@ -71,6 +73,7 @@ export default function ShowUpCardsPage() {
       // Fall, Scale and Flip Service Cards
       ScrollTrigger.create({
         trigger: containerRef.current,
+        scroller: scroller,
         start: "top top",
         end: "bottom bottom",
         scrub: 1,
@@ -250,7 +253,7 @@ export default function ShowUpCardsPage() {
       </div>
 
       {/* Interactive Cards Overlay (Pins on scroll) */}
-      <section className="showup-cards-sec relative w-full h-screen flex flex-col justify-center items-center bg-[#f8f5ee] border-b-3 border-[#2a2a2a] overflow-hidden">
+      <section className="showup-cards-sec relative w-full h-[calc(100vh-64px)] flex flex-col justify-center items-center bg-[#f8f5ee] border-b-3 border-[#2a2a2a] overflow-hidden">
         <div className="absolute inset-0 dot-grid opacity-15" />
 
         {/* Simple Header Inside Container */}
