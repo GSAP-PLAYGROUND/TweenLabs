@@ -113,11 +113,11 @@ const animations = [
   },
   {
     id: "13",
-    name: "Bento Grid Expansion",
+    name: "Bento Grid Tilt",
     route: "/13-bento-grid-flip",
     bgColor: "bg-wtf-green",
     textColor: "text-white",
-    description: "Expandable bento box card layout where GSAP Flip automatically interpolates grid layout shifts.",
+    description: "Neo-Brutalist bento box card grid with 3D perspective mouse tilt, spring physics recovery, and vector crosshairs.",
     tiltClass: "tilt-right-lg",
   },
   {
