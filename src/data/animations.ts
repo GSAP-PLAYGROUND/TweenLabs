@@ -21,7 +21,7 @@ export const animations: AnimationItem[] = [
   },
   {
     id: "02",
-    name: "Scroll Tags Assembly",
+    name: "Scroll Tags",
     route: "/02-scroll-tags-assembly",
     bgColor: "bg-wtf-green",
     textColor: "text-white",
@@ -31,7 +31,7 @@ export const animations: AnimationItem[] = [
   },
   {
     id: "03",
-    name: "Inward-Outward Sentence",
+    name: "Border Reveal",
     route: "/03-inward-outward-border-reveal",
     bgColor: "bg-wtf-red",
     textColor: "text-white",
@@ -41,7 +41,7 @@ export const animations: AnimationItem[] = [
   },
   {
     id: "04",
-    name: "HorizontaL Cards Showcase",
+    name: "Horizontal Cards",
     route: "/04-horizontal-cards-showcase",
     bgColor: "bg-wtf-blue",
     textColor: "text-white",
@@ -51,7 +51,7 @@ export const animations: AnimationItem[] = [
   },
   {
     id: "05",
-    name: "PAGE CHANGE ANIMATION",
+    name: "Page Transition",
     route: "/05-page-change-animation",
     bgColor: "bg-wtf-yellow",
     textColor: "text-black",
@@ -61,7 +61,7 @@ export const animations: AnimationItem[] = [
   },
   {
     id: "06",
-    name: "Kinetic Typography",
+    name: "Kinetic Text",
     route: "/06-kinetic-typography",
     bgColor: "bg-wtf-purple",
     textColor: "text-white",
@@ -71,7 +71,7 @@ export const animations: AnimationItem[] = [
   },
   {
     id: "07",
-    name: "Scroll Orbit Gallery",
+    name: "Orbit Gallery",
     route: "/07-scroll-orbit-gallery",
     bgColor: "bg-wtf-blue",
     textColor: "text-white",
@@ -81,7 +81,7 @@ export const animations: AnimationItem[] = [
   },
   {
     id: "08",
-    name: "Blueprint Scatter Gallery",
+    name: "Blueprint",
     route: "/08-blueprint-scatter",
     bgColor: "bg-wtf-purple",
     textColor: "text-white",
@@ -91,7 +91,7 @@ export const animations: AnimationItem[] = [
   },
   {
     id: "09",
-    name: "Circular Scatter Gallery",
+    name: "Circular Scatter",
     route: "/09-circular-scatter",
     bgColor: "bg-wtf-orange",
     textColor: "text-white",
@@ -101,7 +101,7 @@ export const animations: AnimationItem[] = [
   },
   {
     id: "10",
-    name: "Screen for Skills",
+    name: "Skill Fit",
     route: "/10-screen-skill-fit",
     bgColor: "bg-wtf-green",
     textColor: "text-white",
@@ -111,7 +111,7 @@ export const animations: AnimationItem[] = [
   },
   {
     id: "11",
-    name: "Interactive Magnetic Dock",
+    name: "Magnetic Dock",
     route: "/11-magnetic-dock",
     bgColor: "bg-wtf-orange",
     textColor: "text-white",
@@ -121,7 +121,7 @@ export const animations: AnimationItem[] = [
   },
   {
     id: "12",
-    name: "Fluid Cursor Reticle",
+    name: "Fluid Cursor",
     route: "/12-fluid-cursor",
     bgColor: "bg-wtf-purple",
     textColor: "text-white",
@@ -131,7 +131,7 @@ export const animations: AnimationItem[] = [
   },
   {
     id: "13",
-    name: "Bento Grid Tilt",
+    name: "Bento Grid",
     route: "/13-bento-grid-flip",
     bgColor: "bg-wtf-green",
     textColor: "text-white",
@@ -141,7 +141,7 @@ export const animations: AnimationItem[] = [
   },
   {
     id: "14",
-    name: "3D Coverflow Carousel",
+    name: "3D Carousel",
     route: "/14-3d-carousel",
     bgColor: "bg-wtf-yellow",
     textColor: "text-black",
@@ -151,7 +151,7 @@ export const animations: AnimationItem[] = [
   },
   {
     id: "15",
-    name: "Morphing Accordion",
+    name: "Accordion",
     route: "/15-morphing-accordion",
     bgColor: "bg-wtf-blue",
     textColor: "text-white",
@@ -161,7 +161,7 @@ export const animations: AnimationItem[] = [
   },
   {
     id: "16",
-    name: "Stacking Scroll Cards",
+    name: "Scroll Cards",
     route: "/16-scroll-cards-01",
     bgColor: "bg-wtf-orange",
     textColor: "text-white",
@@ -171,7 +171,7 @@ export const animations: AnimationItem[] = [
   },
   {
     id: "16b",
-    name: "Classic Parallax Stack",
+    name: "Parallax Cards",
     route: "/16b-scroll-cards-classic",
     bgColor: "bg-wtf-orange",
     textColor: "text-white",
@@ -181,7 +181,7 @@ export const animations: AnimationItem[] = [
   },
   {
     id: "17",
-    name: "Showup Flip Cards",
+    name: "Flip Cards",
     route: "/17-showup-cards",
     bgColor: "bg-wtf-green",
     textColor: "text-white",
@@ -191,7 +191,7 @@ export const animations: AnimationItem[] = [
   },
   {
     id: "18",
-    name: "SVG String Network",
+    name: "String Line",
     route: "/18-string-line",
     bgColor: "bg-wtf-yellow",
     textColor: "text-black",

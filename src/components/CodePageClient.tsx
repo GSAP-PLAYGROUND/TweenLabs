@@ -13,9 +13,54 @@ interface CodePageClientProps {
   setupGuide: string | null;
 }
 
+const componentNamesMap: Record<string, string> = {
+  "01-gravity-drop": "GravityDrop",
+  "gravity-drop": "GravityDrop",
+  "02-scroll-tags-assembly": "ScrollTags",
+  "scroll-tags-assembly": "ScrollTags",
+  "03-inward-outward-border-reveal": "BorderReveal",
+  "inward-outward-border-reveal": "BorderReveal",
+  "04-horizontal-cards-showcase": "HorizontalCards",
+  "horizontal-cards-showcase": "HorizontalCards",
+  "05-page-change-animation": "PageTransition",
+  "page-change-animation": "PageTransition",
+  "06-kinetic-typography": "KineticText",
+  "kinetic-typography": "KineticText",
+  "07-scroll-orbit-gallery": "OrbitGallery",
+  "scroll-orbit-gallery": "OrbitGallery",
+  "08-blueprint-scatter": "Blueprint",
+  "blueprint-scatter": "Blueprint",
+  "09-circular-scatter": "CircularScatter",
+  "circular-scatter": "CircularScatter",
+  "10-screen-skill-fit": "SkillFit",
+  "screen-skill-fit": "SkillFit",
+  "11-magnetic-dock": "MagneticDock",
+  "magnetic-dock": "MagneticDock",
+  "12-fluid-cursor": "FluidCursor",
+  "fluid-cursor": "FluidCursor",
+  "13-bento-grid-flip": "BentoGrid",
+  "bento-grid-flip": "BentoGrid",
+  "14-3d-carousel": "Carousel3D",
+  "3d-carousel": "Carousel3D",
+  "15-morphing-accordion": "Accordion",
+  "morphing-accordion": "Accordion",
+  "16-scroll-cards-01": "ScrollCards",
+  "scroll-cards-01": "ScrollCards",
+  "16b-scroll-cards-classic": "ParallaxCards",
+  "scroll-cards-classic": "ParallaxCards",
+  "17-showup-cards": "FlipCards",
+  "showup-cards": "FlipCards",
+  "18-string-line": "StringLine",
+  "string-line": "StringLine"
+};
+
 // Helper to convert slug to clean PascalCase component name
 const getClassName = (slug: string) => {
-  const clean = slug.replace(/^\d+[a-z]?[-_]/, "");
+  const cleanSlug = slug.toLowerCase().trim();
+  if (componentNamesMap[cleanSlug]) {
+    return componentNamesMap[cleanSlug];
+  }
+  const clean = cleanSlug.replace(/^\d+[a-z]?[-_]/, "");
   return clean
     .split("-")
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
@@ -327,6 +372,7 @@ export default function CodePageClient({
   const [activeTabId, setActiveTabId] = useState(tabs[0].id);
   const [copied, setCopied] = useState(false);
   const [pkgManager, setPkgManager] = useState<"npm" | "pnpm" | "yarn" | "bun">("npm");
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const activeTab = tabs.find((t) => t.id === activeTabId) || tabs[0];
   const highlighted = highlightCode(activeTab.code);
@@ -462,7 +508,10 @@ export default function CodePageClient({
               return (
                 <button
                   key={tab.id}
-                  onClick={() => setActiveTabId(tab.id)}
+                  onClick={() => {
+                    setActiveTabId(tab.id);
+                    setIsExpanded(false);
+                  }}
                   className={`font-mono text-xs font-bold px-6 py-3.5 border-r border-[#2a2a2a] relative transition-all cursor-pointer whitespace-nowrap flex items-center gap-2 ${
                     isActive
                       ? "bg-[#121212] text-white border-t-2 border-t-wtf-orange font-black"
@@ -477,7 +526,7 @@ export default function CodePageClient({
           </div>
 
           {/* Code Body */}
-          <div className="relative flex-1 font-mono text-[13px] bg-[#121212] py-5 px-4 flex items-start">
+          <div className={`relative font-mono text-[13px] bg-[#121212] py-5 px-4 flex items-start transition-all duration-300 ${isExpanded ? "" : "max-h-[380px] overflow-hidden"}`}>
             {/* Line Numbers */}
             <pre className="select-none text-right pr-4 border-r border-zinc-800 text-zinc-650 min-w-[3.5rem] whitespace-pre scrollbar-none">
               {activeTab.code.split("\n").map((_, i) => i + 1).join("\n")}
@@ -487,7 +536,31 @@ export default function CodePageClient({
             <pre className="pl-5 flex-1 overflow-x-auto text-[#abb2bf] scrollbar-none whitespace-pre select-text selection:bg-wtf-orange selection:text-white">
               <code dangerouslySetInnerHTML={{ __html: highlighted }} />
             </pre>
+
+            {/* Gradient Mask & View Whole Code Button */}
+            {!isExpanded && (
+              <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#121212] via-[#121212]/95 to-transparent flex items-end justify-center pb-6">
+                <button
+                  onClick={() => setIsExpanded(true)}
+                  className="brutalist-btn bg-wtf-yellow hover:bg-[#e5a420] text-[#2a2a2a] border-2 border-black font-mono font-bold text-xs py-2.5 px-6 rounded-lg uppercase tracking-wider cursor-pointer shadow-[3px_3px_0px_#000] flex items-center gap-2 transition-all duration-75 active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1.5px_1.5px_0px_#000]"
+                >
+                  <span>👁️ View Whole Code</span>
+                </button>
+              </div>
+            )}
           </div>
+
+          {/* Collapse Button (shown only when expanded) */}
+          {isExpanded && (
+            <div className="bg-[#121212] py-3.5 flex justify-center border-t border-zinc-900">
+              <button
+                onClick={() => setIsExpanded(false)}
+                className="brutalist-btn bg-white hover:bg-zinc-100 text-[#2a2a2a] border-2 border-black font-mono font-bold text-xs py-2 px-5 rounded-lg uppercase tracking-wider cursor-pointer shadow-[2.5px_2.5px_0px_#000] flex items-center gap-2 transition-all duration-75 active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1.5px_1.5px_0px_#000]"
+              >
+                <span>Collapse Code</span>
+              </button>
+            </div>
+          )}
 
           {/* Bottom VS Code Status Bar */}
           <div className="bg-[#007acc] text-white px-4 py-1 flex items-center justify-between text-[11px] font-mono select-none border-t border-[#2a2a2a]">
