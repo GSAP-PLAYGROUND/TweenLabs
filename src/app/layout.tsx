@@ -171,7 +171,7 @@ export default function RootLayout({
         {/* Fine Grain noise overlay across the entire site */}
         <div className="noise-overlay fixed inset-0 pointer-events-none z-[99] opacity-70" />
         <Header />
-        <main className="flex-1 pt-16 flex flex-col w-full relative z-10">{children}</main>
+        <main className="flex-1 pt-24 flex flex-col w-full relative z-10">{children}</main>
         <Footer />
       </body>
     </html>

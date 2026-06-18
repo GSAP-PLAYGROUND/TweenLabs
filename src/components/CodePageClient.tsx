@@ -443,7 +443,7 @@ export default function CodePageClient({
           </div>
 
           {/* Code Body */}
-          <div className="relative flex-1 max-h-[600px] min-h-[300px] overflow-y-auto font-mono text-[13px] bg-[#121212] py-5 px-4 flex">
+          <div className="relative flex-1 max-h-[600px] min-h-[300px] overflow-y-auto overscroll-contain font-mono text-[13px] bg-[#121212] py-5 px-4 flex">
             {/* Line Numbers */}
             <div className="select-none text-right pr-4 border-r border-zinc-800 text-zinc-650 min-w-[3.5rem] space-y-1">
               {activeTab.code.split("\n").map((_, i) => (
