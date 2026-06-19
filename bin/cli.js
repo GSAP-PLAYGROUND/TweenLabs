@@ -95,15 +95,21 @@ async function main() {
     process.exit(0);
   }
 
+  let version = "0.1.4";
+  try {
+    const pkg = require("../package.json");
+    version = pkg.version;
+  } catch (_e) {}
+
   if (args.includes("--version") || args.includes("-v")) {
-    try {
-      const pkg = require("../package.json");
-      console.log(pkg.version);
-    } catch (_err) {
-      console.log("0.1.1");
-    }
+    console.log(version);
     process.exit(0);
   }
+
+  // Print CLI Header Banner
+  console.log(
+    `\n${colors.bold}${colors.cyan}▲  tweenlabs${colors.reset}  ${colors.gray}v${version}${colors.reset}\n`,
+  );
 
   // Parse flags
   const isYes = args.includes("-y") || args.includes("--yes");
@@ -140,28 +146,31 @@ async function main() {
   }
 
   if (cleanArgs[0] === "list") {
-    console.log(
-      `\n${colors.cyan}🔍 Fetching available components list...${colors.reset}`,
-    );
+    console.log(`${colors.cyan}🔍 Fetching registry...${colors.reset}`);
     const domain =
       process.env.TWEENLABS_REGISTRY_URL || "https://tweenlabs.xyz";
     const url = `${domain}/api/registry/list`;
     try {
       const data = await fetchJson(url);
       console.log(
-        `\n${colors.bold}${colors.green}Available TweenLabs Components:${colors.reset}\n`,
+        `\n${colors.bold}${colors.green}Available Components:${colors.reset}\n`,
       );
-      for (const comp of data.components) {
+      const rows = data.components.map((comp) => ({
+        slug: comp.cleanSlug || comp.slug,
+        desc: comp.description || "",
+      }));
+      const maxSlugLen = Math.max(...rows.map((r) => r.slug.length), 10);
+      for (const row of rows) {
+        const paddedSlug = row.slug.padEnd(maxSlugLen + 4, " ");
         console.log(
-          `  ${colors.bold}${colors.cyan}* ${comp.name}${colors.reset}`,
+          `  ${colors.cyan}${paddedSlug}${colors.reset}${colors.gray}${row.desc}${colors.reset}`,
         );
-        console.log(`    Slug:       ${comp.slug} (or ${comp.cleanSlug})`);
-        console.log(`    Desc:       ${comp.description}\n`);
       }
+      console.log("");
       process.exit(0);
     } catch (err) {
       console.error(
-        `\n${colors.red}❌ Failed to fetch components list.${colors.reset}`,
+        `${colors.red}❌ Failed to fetch components list.${colors.reset}`,
       );
       console.error(`${colors.gray}Details: ${err.message}${colors.reset}`);
       process.exit(1);
@@ -178,9 +187,7 @@ async function main() {
 
   let componentSlug = cleanArgs[1];
   if (!componentSlug) {
-    console.log(
-      `\n${colors.cyan}🔍 Fetching available components list...${colors.reset}`,
-    );
+    console.log(`${colors.cyan}🔍 Fetching registry...${colors.reset}`);
     const domain =
       process.env.TWEENLABS_REGISTRY_URL || "https://tweenlabs.xyz";
     const listUrl = `${domain}/api/registry/list`;
@@ -189,57 +196,57 @@ async function main() {
       listData = await fetchJson(listUrl);
     } catch (err) {
       console.error(
-        `\n${colors.red}❌ Failed to fetch components list.${colors.reset}`,
+        `${colors.red}❌ Failed to fetch components list.${colors.reset}`,
       );
       console.error(`${colors.gray}Details: ${err.message}${colors.reset}`);
       process.exit(1);
     }
 
     console.log(
-      `\n${colors.bold}${colors.green}Select a component to install:${colors.reset}\n`,
+      `${colors.bold}${colors.green}Select a component to install:${colors.reset}\n`,
     );
     const components = listData.components;
+    const maxIndexLen = String(components.length + 1).length;
+    const maxSlugLen = Math.max(
+      ...components.map((c) => (c.cleanSlug || c.slug).length),
+      10,
+    );
+
+    // Print "All Components" option first
+    const allIndexStr = "[1]".padStart(maxIndexLen + 2, " ");
+    const allSlugStr = ".".padEnd(maxSlugLen + 4, " ");
+    console.log(
+      `  ${colors.bold}${colors.cyan}${allIndexStr}${colors.reset}  ${colors.cyan}${allSlugStr}${colors.reset}${colors.gray}All Components${colors.reset}`,
+    );
+
     for (let i = 0; i < components.length; i++) {
+      const indexStr = `[${i + 2}]`.padStart(maxIndexLen + 2, " ");
+      const slugStr = (components[i].cleanSlug || components[i].slug).padEnd(
+        maxSlugLen + 4,
+        " ",
+      );
       console.log(
-        `  ${colors.bold}[${i + 1}]${colors.reset} ${components[i].name} ${colors.gray}(${components[i].cleanSlug || components[i].slug})${colors.reset}`,
+        `  ${colors.bold}${colors.cyan}${indexStr}${colors.reset}  ${colors.cyan}${slugStr}${colors.reset}${colors.gray}${components[i].name}${colors.reset}`,
       );
     }
     console.log("");
 
     const choiceStr = await askQuestion(
-      `👉 Enter the number of the component to add (1-${components.length}): `,
+      `👉 Enter the number of the component to add (1-${components.length + 1}): `,
     );
     const choice = parseInt(choiceStr, 10);
-    if (Number.isNaN(choice) || choice < 1 || choice > components.length) {
-      console.log(`${colors.red}Invalid choice. Exiting.${colors.reset}`);
+    if (Number.isNaN(choice) || choice < 1 || choice > components.length + 1) {
+      console.log(`${colors.red}❌ Invalid choice. Exiting.${colors.reset}`);
       process.exit(1);
     }
-    componentSlug =
-      components[choice - 1].cleanSlug || components[choice - 1].slug;
+
+    if (choice === 1) {
+      componentSlug = ".";
+    } else {
+      componentSlug =
+        components[choice - 2].cleanSlug || components[choice - 2].slug;
+    }
   }
-
-  console.log(
-    `\n${colors.cyan}🔍 Fetching ${colors.bold}${componentSlug}${colors.reset}${colors.cyan} registry data...${colors.reset}`,
-  );
-
-  // Determine registry domain (allow local testing via env variable)
-  const domain = process.env.TWEENLABS_REGISTRY_URL || "https://tweenlabs.xyz";
-  const url = `${domain}/api/registry/${componentSlug}`;
-
-  let componentData;
-  try {
-    componentData = await fetchJson(url);
-  } catch (err) {
-    console.error(
-      `\n${colors.red}❌ Failed to fetch component. Make sure the slug is correct and the server is running.${colors.reset}`,
-    );
-    console.error(`${colors.gray}Details: ${err.message}${colors.reset}`);
-    process.exit(1);
-  }
-
-  console.log(
-    `${colors.green}✓ Component found: ${colors.bold}${componentData.className}${colors.reset}`,
-  );
 
   // Resolve target directory
   let targetDir = "";
@@ -287,26 +294,78 @@ async function main() {
     `📁 Target directory: ${colors.bold}${path.relative(process.cwd(), targetDir)}${colors.reset}`,
   );
 
-  // Check if any files already exist
-  let hasExistingFiles = false;
-  for (const file of componentData.files) {
-    const filePath = path.join(targetDir, file.name);
-    if (fs.existsSync(filePath)) {
-      hasExistingFiles = true;
-      break;
+  const domain = process.env.TWEENLABS_REGISTRY_URL || "https://tweenlabs.xyz";
+  let slugsToInstall = [];
+  if (componentSlug === "." || componentSlug === "all") {
+    console.log(
+      `${colors.cyan}🔍 Fetching all components list...${colors.reset}`,
+    );
+    const listUrl = `${domain}/api/registry/list`;
+    try {
+      const listData = await fetchJson(listUrl);
+      slugsToInstall = listData.components.map((c) => c.cleanSlug || c.slug);
+    } catch (err) {
+      console.error(
+        `${colors.red}❌ Failed to fetch components list.${colors.reset}`,
+      );
+      console.error(`${colors.gray}Details: ${err.message}${colors.reset}`);
+      process.exit(1);
+    }
+  } else {
+    slugsToInstall = [componentSlug];
+  }
+
+  // Gather files and check conflicts
+  const filesToWrite = [];
+  const conflicts = [];
+  const allRequiredDeps = new Set();
+
+  for (const slug of slugsToInstall) {
+    console.log(
+      `${colors.cyan}🔍 Fetching ${colors.bold}${slug}${colors.reset}${colors.cyan} registry data...${colors.reset}`,
+    );
+    const url = `${domain}/api/registry/${slug}`;
+    try {
+      const componentData = await fetchJson(url);
+      for (const file of componentData.files) {
+        const filePath = path.join(targetDir, file.name);
+        if (fs.existsSync(filePath)) {
+          conflicts.push(path.relative(process.cwd(), filePath));
+        }
+        filesToWrite.push({ path: filePath, content: file.content });
+      }
+      const dependencies = componentData.dependencies || [];
+      for (const dep of dependencies) {
+        allRequiredDeps.add(dep);
+      }
+    } catch (_err) {
+      console.error(
+        `${colors.red}❌ Failed to fetch component ${slug}. Skipping.${colors.reset}`,
+      );
     }
   }
 
-  if (hasExistingFiles && !isOverwrite && !isYes) {
+  if (filesToWrite.length === 0) {
+    console.log(`${colors.red}❌ No files to install. Exiting.${colors.reset}`);
+    process.exit(1);
+  }
+
+  if (conflicts.length > 0 && !isOverwrite && !isYes) {
+    console.log(
+      `\n${colors.yellow}⚠️ The following files already exist:${colors.reset}`,
+    );
+    for (const conflict of conflicts) {
+      console.log(`  → ${conflict}`);
+    }
     const overwriteConfirm = await askQuestion(
-      `⚠️ Component files already exist in ${colors.bold}${path.relative(process.cwd(), targetDir)}${colors.reset}. Overwrite? (y/n) ${colors.gray}[y]${colors.reset}: `,
+      `\nOverwrite these files? (y/n) ${colors.gray}[y]${colors.reset}: `,
     );
     if (
       overwriteConfirm &&
       overwriteConfirm.toLowerCase() !== "y" &&
       overwriteConfirm.toLowerCase() !== "yes"
     ) {
-      console.log(`${colors.yellow}Installation cancelled.${colors.reset}`);
+      console.log(`${colors.yellow}⚠ Installation cancelled.${colors.reset}`);
       process.exit(0);
     }
   }
@@ -317,19 +376,17 @@ async function main() {
   }
 
   // Write component files
-  console.log(`\n${colors.cyan}💾 Writing component files...${colors.reset}`);
-  for (const file of componentData.files) {
-    const filePath = path.join(targetDir, file.name);
-    fs.writeFileSync(filePath, file.content, "utf-8");
+  console.log(`\n${colors.bold}💾 Writing component files...${colors.reset}`);
+  for (const file of filesToWrite) {
+    fs.writeFileSync(file.path, file.content, "utf-8");
     console.log(
-      `${colors.green}  → Created: ${colors.bold}${path.relative(process.cwd(), filePath)}${colors.reset}`,
+      `  ${colors.green}✔${colors.reset} Created ${colors.bold}${path.relative(process.cwd(), file.path)}${colors.reset}`,
     );
   }
 
   // Check and install dependencies
-  const dependencies = componentData.dependencies || [];
+  const dependencies = Array.from(allRequiredDeps);
   if (dependencies.length > 0) {
-    // Read package.json to see if dependencies are already installed
     let pkgJson = {};
     try {
       pkgJson = JSON.parse(
@@ -345,8 +402,12 @@ async function main() {
     if (missingDeps.length > 0) {
       const pm = detectPackageManager();
       console.log(
-        `\n${colors.cyan}📦 Installing missing dependencies: ${colors.bold}${missingDeps.join(", ")}${colors.reset} using ${pm}...`,
+        `\n${colors.bold}📦 Installing missing dependencies using ${pm}...${colors.reset}`,
       );
+      for (const dep of missingDeps) {
+        console.log(`  → ${dep}`);
+      }
+      console.log("");
 
       let installCmd = "";
       if (pm === "pnpm") installCmd = `pnpm add ${missingDeps.join(" ")}`;
@@ -357,26 +418,24 @@ async function main() {
       try {
         execSync(installCmd, { stdio: "inherit" });
         console.log(
-          `${colors.green}✓ Dependencies installed successfully!${colors.reset}`,
+          `\n${colors.green}✔ Dependencies installed successfully!${colors.reset}`,
         );
       } catch (_err) {
         console.error(
-          `${colors.red}❌ Failed to install dependencies. Please run "${installCmd}" manually.${colors.reset}`,
+          `\n${colors.red}❌ Failed to install dependencies. Please run "${installCmd}" manually.${colors.reset}`,
         );
       }
     } else {
       console.log(
-        `\n${colors.green}✓ All dependencies (${dependencies.join(", ")}) already installed.${colors.reset}`,
+        `\n${colors.green}✔ All dependencies (${dependencies.join(", ")}) already installed.${colors.reset}`,
       );
     }
   }
 
   console.log(
-    `\n${colors.green}${colors.bold}🎉 Installation complete!${colors.reset}`,
+    `\n${colors.bold}${colors.green}🎉 Done! All requested components installed successfully.${colors.reset}`,
   );
-  console.log(
-    `You can now import and use the ${colors.bold}${componentData.className}${colors.reset} component in your project.\n`,
-  );
+  console.log(`You can now import and use them in your project.\n`);
 }
 
 main().catch((err) => {
