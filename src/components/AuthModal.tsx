@@ -103,11 +103,6 @@ export default function AuthModal() {
             <span>Sign In with GitHub</span>
           </button>
         </div>
-
-        <div className="flex justify-between items-center border-t-3 border-[#2a2a2a] pt-6 mt-2 text-[10px] font-mono font-bold text-zinc-500 uppercase">
-          <span>No Password Required</span>
-          <span>Secure via Better Auth</span>
-        </div>
       </div>
     </div>
   );

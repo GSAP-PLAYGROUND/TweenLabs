@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
 import { useAuthModal } from "@/provider/AuthModalProvider";
+import { useSession } from "@/provider/SessionProvider";
 
 interface CodePageClientProps {
   slug: string;
@@ -544,7 +545,7 @@ export default function CodePageClient({
   coreGsapCode,
   customization,
 }: CodePageClientProps) {
-  const { data: session, isPending } = authClient.useSession();
+  const { session, isPending } = useSession();
   const { openModal, closeModal } = useAuthModal();
   const isAuthenticated = !!session;
 

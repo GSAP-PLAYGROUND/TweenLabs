@@ -3,7 +3,8 @@ import { Fraunces, Geist, Space_Mono } from "next/font/google";
 import "./globals.css";
 import PageWrapper from "@/components/PageWrapper";
 import { ConvexClientProvider } from "@/provider/ConvexClientProvider";
-
+import { getToken, fetchAuthQuery } from "@/lib/auth-server";
+import { api } from "../../convex/_generated/api";
 
 const geist = Geist({
   variable: "--font-geist",
@@ -28,7 +29,7 @@ const spaceMono = Space_Mono({
 export const metadata: Metadata = {
   title: "TweenLabs | Best GSAP UI Components & React Animation Templates",
   description:
-    "Discover TweenLabs: the best GSAP components library for web animations. Copy-paste free, production-ready GSAP UI components, ScrollTrigger widgets, 3D physics widgets, and layout transitions.",
+    "TweenLabs is an open-source library of premium, copy-paste React, Next.js, and GSAP animation components. Build high-fidelity web experiences with ScrollTrigger, 3D tilt, and interactive typography templates.",
   keywords: [
     "best GSAP components",
     "GSAP components",
@@ -58,7 +59,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "TweenLabs | Best GSAP UI Components & React Animation Templates",
     description:
-      "Discover TweenLabs: the best GSAP components library for web animations. Copy-paste free, production-ready GSAP UI components, ScrollTrigger widgets, 3D physics widgets, and layout transitions.",
+      "TweenLabs is an open-source library of premium, copy-paste React, Next.js, and GSAP animation components. Build high-fidelity web experiences with ScrollTrigger, 3D tilt, and interactive typography templates.",
     url: "https://tweenlabs.xyz",
     siteName: "TweenLabs",
     locale: "en_US",
@@ -76,7 +77,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "TweenLabs | Best GSAP UI Components & React Animation Templates",
     description:
-      "Discover TweenLabs: the best GSAP components library for web animations. Copy-paste free, production-ready GSAP UI components, ScrollTrigger widgets, 3D physics widgets, and layout transitions.",
+      "TweenLabs is an open-source library of premium, copy-paste React, Next.js, and GSAP animation components. Build high-fidelity web experiences with ScrollTrigger, 3D tilt, and interactive typography templates.",
     images: ["https://tweenlabs.xyz/Untitled%20design.png"],
   },
   verification: {
@@ -84,11 +85,31 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Fetch session server-side to prevent loading flicker in the client
+  const token = await getToken().catch(() => undefined);
+  const user = token ? await fetchAuthQuery(api.auth.getCurrentUser).catch(() => null) : null;
+
+  const initialSession = user
+    ? {
+        user: {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+          image: user.pictureUrl || user.image,
+        },
+        session: {
+          id: "",
+          userId: user._id,
+          expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
+        },
+      }
+    : null;
+
   const websiteSchema = {
     "@context": "https://schema.org",
     "@graph": [
@@ -99,7 +120,7 @@ export default function RootLayout({
         url: "https://tweenlabs.xyz",
         logo: "https://tweenlabs.xyz/logo.svg",
         sameAs: ["https://github.com/GSAP-PLAYGROUND/TweenLabs"],
-        description: "A premium open-source collection of GSAP components and templates for high-fidelity web experiences."
+        description: "TweenLabs is an open-source code resource library of premium GSAP (GreenSock) UI components and animation templates for frontend React and Next.js developers. TweenLabs is a web development resource and is completely unrelated to the AI video platform Twelve Labs."
       },
       {
         "@type": "WebSite",
@@ -107,7 +128,7 @@ export default function RootLayout({
         url: "https://tweenlabs.xyz",
         name: "TweenLabs",
         description:
-          "The best curated library of premium, high-fidelity GSAP components and animations.",
+          "TweenLabs is a premium web design animations repository featuring copy-paste React 19, Next.js 16, and GSAP ScrollTrigger UI components.",
         publisher: {
           "@id": "https://tweenlabs.xyz/#organization",
         },
@@ -197,7 +218,7 @@ export default function RootLayout({
         />
         {/* Fine Grain noise overlay across the entire site */}
         <div className="noise-overlay fixed inset-0 pointer-events-none z-[99] opacity-70" />
-        <ConvexClientProvider>
+        <ConvexClientProvider initialToken={user ? token : null} initialSession={initialSession}>
           <PageWrapper>{children}</PageWrapper>
         </ConvexClientProvider>
       </body>

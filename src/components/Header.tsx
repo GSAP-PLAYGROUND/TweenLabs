@@ -7,10 +7,11 @@ import { useState } from "react";
 import { animations } from "@/data/animations";
 import { authClient } from "@/lib/auth-client";
 import { useAuthModal } from "@/provider/AuthModalProvider";
+import { useSession } from "@/provider/SessionProvider";
 
 export default function Header() {
   const pathname = usePathname();
-  const { data: session, isPending } = authClient.useSession();
+  const { session, isPending } = useSession();
   const { openModal } = useAuthModal();
   const [avatarError, setAvatarError] = useState(false);
   const [lastUserId, setLastUserId] = useState<string | undefined>(undefined);

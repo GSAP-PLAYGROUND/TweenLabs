@@ -5,15 +5,18 @@ import { ConvexReactClient } from "convex/react";
 import { authClient } from "@/lib/auth-client";
 
 import { AuthModalProvider } from "./AuthModalProvider";
+import { SessionProvider } from "./SessionProvider";
 
 const convex = new ConvexReactClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
 export function ConvexClientProvider({
   children,
   initialToken,
+  initialSession,
 }: {
   children: React.ReactNode;
   initialToken?: string | null;
+  initialSession?: any;
 }) {
   return (
     <ConvexBetterAuthProvider
@@ -22,9 +25,12 @@ export function ConvexClientProvider({
       authClient={authClient as any}
       initialToken={initialToken}
     >
-      <AuthModalProvider>
-        {children}
-      </AuthModalProvider>
+      <SessionProvider initialSession={initialSession}>
+        <AuthModalProvider>
+          {children}
+        </AuthModalProvider>
+      </SessionProvider>
     </ConvexBetterAuthProvider>
   );
 }
+

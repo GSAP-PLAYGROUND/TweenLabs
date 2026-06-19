@@ -3,6 +3,7 @@ import path from "path";
 import { notFound } from "next/navigation";
 import { animations } from "@/data/animations";
 import CodePageClient from "@/components/CodePageClient";
+import { isAuthenticated } from "@/lib/auth-server";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -99,34 +100,41 @@ export default async function CodePage({ params }: PageProps) {
     notFound();
   }
 
+  const authenticated = await isAuthenticated();
+
   const appDir = path.join(process.cwd(), "src", "app");
   const pagePath = path.join(appDir, slug, "page.tsx");
   const howToUsePath = path.join(appDir, slug, "HOW_TO_USE.md");
 
   let pageCode = "";
-  try {
-    pageCode = fs.readFileSync(pagePath, "utf-8");
-  } catch (err) {
-    console.error(`Error reading page file at ${pagePath}:`, err);
-    notFound();
-  }
-
   let standaloneCode: string | null = null;
   let coreGsapCode: string | null = null;
   let setupGuide: string | null = null;
   let customization: string | null = null;
 
-  if (fs.existsSync(howToUsePath)) {
+  if (authenticated) {
     try {
-      const howToUseMd = fs.readFileSync(howToUsePath, "utf-8");
-      const parsed = parseHowToUse(howToUseMd);
-      standaloneCode = parsed.standalone;
-      coreGsapCode = parsed.coreGsap;
-      setupGuide = parsed.setupGuide;
-      customization = parsed.customization;
+      pageCode = fs.readFileSync(pagePath, "utf-8");
     } catch (err) {
-      console.error(`Error reading/parsing HOW_TO_USE.md at ${howToUsePath}:`, err);
+      console.error(`Error reading page file at ${pagePath}:`, err);
+      notFound();
     }
+
+    if (fs.existsSync(howToUsePath)) {
+      try {
+        const howToUseMd = fs.readFileSync(howToUsePath, "utf-8");
+        const parsed = parseHowToUse(howToUseMd);
+        standaloneCode = parsed.standalone;
+        coreGsapCode = parsed.coreGsap;
+        setupGuide = parsed.setupGuide;
+        customization = parsed.customization;
+      } catch (err) {
+        console.error(`Error reading/parsing HOW_TO_USE.md at ${howToUsePath}:`, err);
+      }
+    }
+  } else {
+    pageCode = `// Please sign in to view the code.
+// Go back to the homepage or click Sign In at the top to login with Google or GitHub.`;
   }
 
   const softwareSchema = {
@@ -143,7 +151,7 @@ export default async function CodePage({ params }: PageProps) {
     "codeRepository": "https://github.com/GSAP-PLAYGROUND/TweenLabs",
     "runtimePlatform": "Next.js 16, React 19, GSAP 3.15, Tailwind CSS 4",
     "codeSampleType": "snippet",
-    "text": standaloneCode || pageCode,
+    "text": authenticated ? (standaloneCode || pageCode) : "Please sign in to view the source code.",
     "author": {
       "@type": "Organization",
       "name": "TweenLabs",

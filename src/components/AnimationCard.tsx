@@ -2,6 +2,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import { useAuthModal } from "@/provider/AuthModalProvider";
+import { useSession } from "@/provider/SessionProvider";
 
 interface AnimationItem {
   id: string;
@@ -28,7 +29,7 @@ const hoverColorsMap: Record<string, string> = {
 
 export default function AnimationCard({ anim }: AnimationCardProps) {
   const router = useRouter();
-  const { data: session } = authClient.useSession();
+  const { session } = useSession();
   const { openModal } = useAuthModal();
 
   const handleGetCode = (e: React.MouseEvent) => {
