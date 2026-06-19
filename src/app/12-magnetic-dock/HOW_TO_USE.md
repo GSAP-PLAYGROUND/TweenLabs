@@ -256,6 +256,9 @@ export default function Page() {
 
 ## 🛠️ Customization & Component Properties (Props)
 
+> [!NOTE]
+> This component is fully customizable and ready to use.
+
 You can pass the following settings to configure the layout and animation details:
 
 - `items` (Array): A list of dock navigation buttons containing labels, colors, and SVG icons.

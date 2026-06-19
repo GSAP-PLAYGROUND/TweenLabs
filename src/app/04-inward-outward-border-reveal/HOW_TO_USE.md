@@ -231,6 +231,9 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 ## 🛠️ Customization & Component Properties (Props)
 
+> [!NOTE]
+> This component is fully customizable and ready to use.
+
 You can pass the following settings to configure the layout and animation details:
 
 - `phrase` (string): The message string that scrolls horizontally and drops characters. Defaults to `'HELLO THIS IS GSAP'`.

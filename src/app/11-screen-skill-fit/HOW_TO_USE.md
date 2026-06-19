@@ -155,6 +155,9 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 ## 🛠️ Customization & Component Properties (Props)
 
+> [!NOTE]
+> This component is fully customizable and ready to use.
+
 You can pass the following settings to configure the layout and animation details:
 
 - `steps` (Array): List of candidate checkpoints containing profile stats, score gauges, and descriptions.

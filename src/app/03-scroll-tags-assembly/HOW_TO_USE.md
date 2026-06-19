@@ -191,6 +191,9 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 ## 🛠️ Customization & Component Properties (Props)
 
+> [!NOTE]
+> This component is fully customizable and ready to use.
+
 You can pass the following settings to configure the layout and animation details:
 
 - `tags` (Array): An array of tag objects. Each object contains `text` (string), `color` (Tailwind class), `xStart` (number), `yStart` (number), and `rotate` (number).

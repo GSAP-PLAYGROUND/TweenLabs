@@ -211,6 +211,9 @@ export default function Page() {
 
 ## 🛠️ Customization & Component Properties (Props)
 
+> [!NOTE]
+> This component is fully customizable and ready to use.
+
 You can pass the following settings to configure the layout and animation details:
 
 - `children` (ReactNode): Wrap your page elements. Transition triggers automatically during Route Navigation (Next.js Link clicks or window routing).

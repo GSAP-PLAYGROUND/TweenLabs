@@ -568,6 +568,9 @@ export default function Page() {
 
 ## 🛠️ Customization & Component Properties (Props)
 
+> [!NOTE]
+> This component is fully customizable and ready to use.
+
 You can pass the following settings to configure the layout and animation details:
 
 - `items` (Array): An array of card specs containing category tags, image paths, descriptions, and color accents.

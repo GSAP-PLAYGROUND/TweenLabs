@@ -338,6 +338,9 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 ## 🛠️ Customization & Component Properties (Props)
 
+> [!NOTE]
+> This component is fully customizable and ready to use.
+
 You can pass the following settings to configure the layout and animation details:
 
 - `images` (string[]): A list of absolute paths or URLs to render in the circular scrolling orbit.

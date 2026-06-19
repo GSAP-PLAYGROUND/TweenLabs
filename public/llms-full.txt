@@ -690,6 +690,9 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 ## 🛠️ Customization & Component Properties (Props)
 
+> [!NOTE]
+> This component is fully customizable and ready to use.
+
 You can pass the following settings to configure the layout and animation details:
 
 - `cards` (Array): List of cards that fall, scatter horizontally, and flip 180° on scroll scrub.
@@ -956,6 +959,9 @@ export default function Page() {
 ---
 
 ## 🛠️ Customization & Component Properties (Props)
+
+> [!NOTE]
+> This component is fully customizable and ready to use.
 
 You can pass the following settings to configure the layout and animation details:
 
@@ -1340,6 +1346,9 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
 ---
 
 ## 🛠️ Customization & Component Properties (Props)
+
+> [!NOTE]
+> This component is fully customizable and ready to use.
 
 You can pass the following settings to configure the layout and animation details:
 
@@ -1787,6 +1796,9 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
 ---
 
 ## 🛠️ Customization & Component Properties (Props)
+
+> [!NOTE]
+> This component is fully customizable and ready to use.
 
 You can pass the following settings to configure the layout and animation details:
 
@@ -2344,6 +2356,9 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
 ---
 
 ## 🛠️ Customization & Component Properties (Props)
+
+> [!NOTE]
+> This component is fully customizable and ready to use.
 
 You can pass the following settings to configure the layout and animation details:
 
@@ -3018,6 +3033,9 @@ export default function Page() {
 
 ## 🛠️ Customization & Component Properties (Props)
 
+> [!NOTE]
+> This component is fully customizable and ready to use.
+
 You can pass the following settings to configure the layout and animation details:
 
 - `children` (ReactNode): Wrap your page elements. Transition triggers automatically during Route Navigation (Next.js Link clicks or window routing).
@@ -3671,6 +3689,9 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
 ---
 
 ## 🛠️ Customization & Component Properties (Props)
+
+> [!NOTE]
+> This component is fully customizable and ready to use.
 
 You can pass the following settings to configure the layout and animation details:
 
@@ -4556,6 +4577,9 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 ## 🛠️ Customization & Component Properties (Props)
 
+> [!NOTE]
+> This component is fully customizable and ready to use.
+
 You can pass the following settings to configure the layout and animation details:
 
 - `images` (string[]): A list of absolute paths or URLs to render in the circular scrolling orbit.
@@ -5158,6 +5182,9 @@ export default function Page() {
 ---
 
 ## 🛠️ Customization & Component Properties (Props)
+
+> [!NOTE]
+> This component is fully customizable and ready to use.
 
 You can pass the following settings to configure the layout and animation details:
 
@@ -5825,6 +5852,9 @@ export default function Page() {
 
 ## 🛠️ Customization & Component Properties (Props)
 
+> [!NOTE]
+> This component is fully customizable and ready to use.
+
 You can pass the following settings to configure the layout and animation details:
 
 - `cards` (Array): A list of circular scatter card datasets.
@@ -6457,6 +6487,9 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 ## 🛠️ Customization & Component Properties (Props)
 
+> [!NOTE]
+> This component is fully customizable and ready to use.
+
 You can pass the following settings to configure the layout and animation details:
 
 - `steps` (Array): List of candidate checkpoints containing profile stats, score gauges, and descriptions.
@@ -7001,6 +7034,9 @@ export default function Page() {
 ---
 
 ## 🛠️ Customization & Component Properties (Props)
+
+> [!NOTE]
+> This component is fully customizable and ready to use.
 
 You can pass the following settings to configure the layout and animation details:
 
@@ -7610,6 +7646,9 @@ export default function Page() {
 
 ## 🛠️ Customization & Component Properties (Props)
 
+> [!NOTE]
+> This component is fully customizable and ready to use.
+
 You can pass the following settings to configure the layout and animation details:
 
 - `children` (ReactNode): The layout children inside which the custom cursor tracks.
@@ -7652,82 +7691,31 @@ interface BentoItem {
   statValue: string;
 }
 
-export default function BentoGridPage() {
-  const containerRef = useRef<HTMLDivElement>(null);
+interface BentoTiltCardProps {
+  children: React.ReactNode;
+  accentHex?: string; // rgb value string: e.g. "229, 91, 60"
+  className?: string;
+}
 
-  const bentoItems: BentoItem[] = [
-    {
-      id: 1,
-      title: "Core Mechanics",
-      subtitle: "STATS MONITOR",
-      description:
-        "Optimized event pipelines running at 60fps. Handles complex coordinate transforms and collision grids dynamically.",
-      gridClass: "col-span-1 md:col-span-2 h-[280px]",
-      color: "bg-[#e55b3c]",
-      accentHex: "229, 91, 60", // wtf-orange rgb
-      imgUrl: "https://tweenlabs.xyz/showcase-1.png",
-      statLabel: "RENDER STABILITY",
-      statValue: "99.8% // PASS",
-    },
-    {
-      id: 2,
-      title: "Design System",
-      subtitle: "UI TOKENS",
-      description:
-        "Neo-Brutalist utility layers, interactive variables, and asymmetric structural skews.",
-      gridClass: "col-span-1 row-span-1 md:row-span-2 h-auto md:h-[584px]",
-      color: "bg-[#0c9367]",
-      accentHex: "12, 147, 103", // wtf-green rgb
-      imgUrl: "https://tweenlabs.xyz/showcase-2.png",
-      statLabel: "VARIABLE SYNC",
-      statValue: "42 TOKENS",
-    },
-    {
-      id: 3,
-      title: "Velocity Engine",
-      subtitle: "SCROLL DETECTOR",
-      description:
-        "Inertia metrics reading delta inputs to drive canvas rendering. Auto-clamps bounds to maximize frames.",
-      gridClass: "col-span-1 h-[280px]",
-      color: "bg-[#f1b333]",
-      accentHex: "241, 179, 51", // wtf-yellow rgb
-      imgUrl: "https://tweenlabs.xyz/showcase-3.png",
-      statLabel: "INTERPOLATION RATE",
-      statValue: "0.15s DAMP",
-    },
-    {
-      id: 4,
-      title: "Elastic Cursor",
-      subtitle: "LAGGING RETICLE",
-      description:
-        "Dual-coordinate pointer smoothing with custom elasticity weights. Morphing boundaries snap to hover nodes.",
-      gridClass: "col-span-1 h-[280px]",
-      color: "bg-[#6758a5]",
-      accentHex: "103, 88, 165", // wtf-purple rgb
-      imgUrl: "https://tweenlabs.xyz/showcase-4.png",
-      statLabel: "SPRING STIFFNESS",
-      statValue: "k=0.75",
-    },
-    {
-      id: 5,
-      title: "Morphing Accordions",
-      subtitle: "STAGGER DETAIL",
-      description:
-        "Color transitions driven by background morph targets. Inner elements unfold using autoAlpha spring tweens.",
-      gridClass: "col-span-1 md:col-span-2 h-[280px]",
-      color: "bg-[#3b82f6]",
-      accentHex: "59, 130, 246", // wtf-blue rgb
-      imgUrl: "https://tweenlabs.xyz/showcase-5.png",
-      statLabel: "TRANSITION DELAY",
-      statValue: "0.08s STAG",
-    },
-  ];
+/* 
+  =========================================
+  REUSABLE TILT CARD COMPONENT
+  This wraps the core GSAP 3D perspective 
+  tilt and spotlight hover animations.
+  =========================================
+*/
+export function BentoTiltCard({
+  children,
+  accentHex = "229, 91, 60",
+  className = "",
+}: BentoTiltCardProps) {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const { contextSafe } = useGSAP({ scope: cardRef });
 
-  const { contextSafe } = useGSAP({ scope: containerRef });
-
-  // 3D Perspective Tilt on Hover (subtle and controlled)
   const handleMouseMove = contextSafe((e: React.MouseEvent<HTMLDivElement>) => {
-    const card = e.currentTarget;
+    const card = cardRef.current;
+    if (!card) return;
+
     const rect = card.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
@@ -7775,47 +7763,96 @@ export default function BentoGridPage() {
     }
   });
 
-  // Reset 3D Tilt on Mouse Leave
-  const handleMouseLeave = contextSafe(
-    (e: React.MouseEvent<HTMLDivElement>) => {
-      const card = e.currentTarget;
-      gsap.to(card, {
-        rotateX: 0,
-        rotateY: 0,
+  const handleMouseLeave = contextSafe(() => {
+    const card = cardRef.current;
+    if (!card) return;
+
+    gsap.to(card, {
+      rotateX: 0,
+      rotateY: 0,
+      ease: "elastic.out(1.1, 0.4)",
+      duration: 0.75,
+      overwrite: "auto",
+    });
+
+    const crosshair = card.querySelector(".accents-crosshair");
+    if (crosshair) {
+      gsap.to(crosshair, {
+        rotation: 0,
+        duration: 0.6,
         ease: "elastic.out(1.1, 0.4)",
-        duration: 0.75,
         overwrite: "auto",
       });
+    }
 
-      const crosshair = card.querySelector(".accents-crosshair");
-      if (crosshair) {
-        gsap.to(crosshair, {
-          rotation: 0,
-          duration: 0.6,
-          ease: "elastic.out(1.1, 0.4)",
-          overwrite: "auto",
-        });
-      }
-
-      const imgFrame = card.querySelector(".inner-img-container img");
-      if (imgFrame) {
-        gsap.to(imgFrame, {
-          x: 0,
-          y: 0,
-          scale: 1.0,
-          duration: 0.6,
-          ease: "power2.out",
-          overwrite: "auto",
-        });
-      }
-    },
-  );
+    const imgFrame = card.querySelector(".inner-img-container img");
+    if (imgFrame) {
+      gsap.to(imgFrame, {
+        x: 0,
+        y: 0,
+        scale: 1.0,
+        duration: 0.6,
+        ease: "power2.out",
+        overwrite: "auto",
+      });
+    }
+  });
 
   return (
     <div
-      className="relative min-h-screen bg-[#f0eadf] text-[#2a2a2a] flex flex-col items-center justify-between p-6 md:p-12 selection:bg-[#f1b333] selection:text-black overflow-x-hidden font-sans"
-      ref={containerRef}
+      ref={cardRef}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      className={`group relative overflow-hidden rounded-2xl border-3 border-[#2a2a2a] bg-white p-6 shadow-[5px_5px_0px_#2a2a2a] hover:shadow-[10px_10px_0px_#2a2a2a] transition-shadow duration-200 cursor-pointer select-none ${className}`}
+      style={{
+        transformStyle: "preserve-3d",
+        transform: "perspective(1000px) rotateX(0deg) rotateY(0deg)",
+      }}
     >
+      {/* Pointer Spotlight Overlay Element */}
+      <div
+        className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl z-0"
+        style={{
+          background: `radial-gradient(280px circle at var(--mouse-x, 0px) var(--mouse-y, 0px), rgba(${accentHex}, 0.08), transparent 85%)`,
+        }}
+      />
+      {children}
+    </div>
+  );
+}
+
+export default function BentoGridPage() {
+  const bentoItems: BentoItem[] = [
+    {
+      id: 1,
+      title: "Core Mechanics",
+      subtitle: "STATS MONITOR",
+      description:
+        "Optimized event pipelines running at 60fps. Handles complex coordinate transforms and collision grids dynamically.",
+      gridClass: "col-span-1 md:col-span-2 h-[280px]",
+      color: "bg-[#e55b3c]",
+      accentHex: "229, 91, 60", // wtf-orange rgb
+      imgUrl: "https://tweenlabs.xyz/showcase-1.png",
+      statLabel: "RENDER STABILITY",
+      statValue: "99.8% // PASS",
+    },
+    {
+      id: 2,
+      title: "Design System",
+      subtitle: "UI TOKENS",
+      description:
+        "Neo-Brutalist utility layers, interactive variables, and asymmetric structural skews.",
+      gridClass: "col-span-1 h-[280px]",
+      color: "bg-[#0c9367]",
+      accentHex: "12, 147, 103", // wtf-green rgb
+      imgUrl: "https://tweenlabs.xyz/showcase-2.png",
+      statLabel: "VARIABLE SYNC",
+      statValue: "42 TOKENS",
+    },
+  ];
+
+  return (
+    <div className="relative min-h-screen bg-[#f0eadf] text-[#2a2a2a] flex flex-col items-center justify-between p-6 md:p-12 selection:bg-[#f1b333] selection:text-black overflow-x-hidden font-sans">
       {/* Background Dot Grid */}
       <div
         className="absolute inset-0 pointer-events-none z-0 opacity-15"
@@ -7835,7 +7872,7 @@ export default function BentoGridPage() {
       {/* Header Info */}
       <header className="z-10 w-full max-w-3xl text-center flex flex-col gap-3 mt-12 md:mt-6 select-none">
         <div className="inline-flex self-center items-center gap-2 bg-[#0c9367] border-2 border-[#2a2a2a] px-4 py-1.5 rounded-full text-[10px] font-mono font-bold text-white uppercase tracking-widest shadow-[3px_3px_0px_#2a2a2a] rotate-2">
-          <span>Component 13</span>
+          <span>Component 14</span>
         </div>
         <h1 className="text-4xl md:text-5xl font-serif font-black uppercase tracking-tight text-[#2a2a2a] leading-none">
           Bento Grid Tilt
@@ -7851,29 +7888,13 @@ export default function BentoGridPage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-auto">
           {bentoItems.map((item) => {
             const isWide = item.gridClass.includes("col-span-2");
-            const isTall = item.gridClass.includes("md:h-[584px]");
 
             return (
-              <div
+              <BentoTiltCard
                 key={item.id}
-                onMouseMove={handleMouseMove}
-                onMouseLeave={handleMouseLeave}
-                className={`group p-6 bg-white flex flex-col justify-between overflow-hidden relative select-none cursor-pointer rounded-2xl border-3 border-[#2a2a2a] shadow-[5px_5px_0px_#2a2a2a] hover:shadow-[10px_10px_0px_#2a2a2a] transition-shadow duration-200 ${
-                  item.gridClass
-                }`}
-                style={{
-                  transformStyle: "preserve-3d",
-                  transform: "perspective(1000px) rotateX(0deg) rotateY(0deg)",
-                }}
+                accentHex={item.accentHex}
+                className={item.gridClass}
               >
-                {/* Pointer Spotlight Overlay Element */}
-                <div
-                  className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl z-0"
-                  style={{
-                    background: `radial-gradient(280px circle at var(--mouse-x, 0px) var(--mouse-y, 0px), rgba(${item.accentHex}, 0.08), transparent 85%)`,
-                  }}
-                />
-
                 {/* Tech Blueprint Accent Crosshairs */}
                 <div
                   className="accents-crosshair absolute bottom-4 right-4 text-zinc-300 opacity-20 pointer-events-none group-hover:opacity-60 transition-opacity"
@@ -7897,8 +7918,8 @@ export default function BentoGridPage() {
                   </svg>
                 </div>
 
-                {/* For Wide Layouts (Image on the right, content on the left) */}
                 {isWide ? (
+                  // For Wide Layouts (Image on the right, content on the left)
                   <div className="flex flex-row h-full gap-6 w-full relative z-10">
                     <div className="flex-1 flex flex-col justify-between h-full">
                       <div className="flex flex-col gap-2">
@@ -7915,7 +7936,7 @@ export default function BentoGridPage() {
                         <h2 className="text-xl md:text-2xl font-serif font-black uppercase tracking-tight text-[#2a2a2a] leading-none">
                           {item.title}
                         </h2>
-                        <p className="font-sans font-medium text-zinc-600 text-[11px] md:text-xs leading-relaxed mt-1">
+                        <p className="font-sans font-medium text-zinc-650 text-[11px] md:text-xs leading-relaxed mt-1">
                           {item.description}
                         </p>
                       </div>
@@ -7946,58 +7967,6 @@ export default function BentoGridPage() {
                         alt={item.title}
                         className="absolute inset-0 w-full h-full object-cover transition-transform duration-300"
                       />
-                    </div>
-                  </div>
-                ) : isTall ? (
-                  // For Tall Layouts (Text, then Image, then Stat)
-                  <div className="flex flex-col h-full justify-between w-full relative z-10">
-                    <div className="flex flex-col gap-2">
-                      <div className="flex items-center justify-between">
-                        <span className="font-mono text-[9px] font-black text-zinc-400">
-                          [{item.subtitle}]
-                        </span>
-                        <span
-                          className={`inline-block border border-[#2a2a2a] px-2 py-0.5 rounded-full text-[8px] font-mono font-bold text-white uppercase ${item.color}`}
-                        >
-                          SYS ACTIVE
-                        </span>
-                      </div>
-                      <h2 className="text-xl md:text-2xl font-serif font-black uppercase tracking-tight text-[#2a2a2a] leading-none">
-                        {item.title}
-                      </h2>
-                    </div>
-
-                    {/* Centered Image frame */}
-                    <div
-                      className="inner-img-container w-full h-[220px] md:h-[260px] border-3 border-[#2a2a2a] relative overflow-hidden rounded-xl bg-zinc-50 my-4 shadow-[3px_3px_0px_#2a2a2a]"
-                      style={{ transform: "translateZ(15px)" }}
-                    >
-                      <img
-                        src={item.imgUrl}
-                        alt={item.title}
-                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-300"
-                      />
-                    </div>
-
-                    <div className="flex flex-col gap-3">
-                      <p className="font-sans font-medium text-zinc-600 text-xs leading-relaxed">
-                        {item.description}
-                      </p>
-
-                      {/* Stat box at bottom */}
-                      <div className="border-2 border-[#2a2a2a] bg-zinc-50 p-2.5 rounded-xl flex items-center justify-between font-mono shadow-[2px_2px_0px_#2a2a2a]">
-                        <div className="flex flex-col">
-                          <span className="text-[7px] text-zinc-400 font-bold uppercase">
-                            {item.statLabel}
-                          </span>
-                          <span className="text-[9px] font-black text-[#2a2a2a]">
-                            {item.statValue}
-                          </span>
-                        </div>
-                        <span
-                          className={`h-2.5 w-2.5 rounded-full border border-black animate-pulse ${item.color}`}
-                        />
-                      </div>
                     </div>
                   </div>
                 ) : (
@@ -8038,7 +8007,7 @@ export default function BentoGridPage() {
                     </div>
                   </div>
                 )}
-              </div>
+              </BentoTiltCard>
             );
           })}
         </div>
@@ -8279,6 +8248,9 @@ export default function Page() {
 ---
 
 ## 🛠️ Customization & Component Properties (Props)
+
+> [!NOTE]
+> This component is fully customizable and ready to use.
 
 You can pass the following settings to configure the layout and animation details:
 
@@ -9638,6 +9610,9 @@ export default function Page() {
 
 ## 🛠️ Customization & Component Properties (Props)
 
+> [!NOTE]
+> This component is fully customizable and ready to use.
+
 You can pass the following settings to configure the layout and animation details:
 
 - `items` (Array): An array of card specs containing category tags, image paths, descriptions, and color accents.
@@ -10184,6 +10159,9 @@ export default function Page() {
 ---
 
 ## 🛠️ Customization & Component Properties (Props)
+
+> [!NOTE]
+> This component is fully customizable and ready to use.
 
 You can pass the following settings to configure the layout and animation details:
 
@@ -10797,6 +10775,9 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
 ---
 
 ## 🛠️ Customization & Component Properties (Props)
+
+> [!NOTE]
+> This component is fully customizable and ready to use.
 
 You can pass the following settings to configure the layout and animation details:
 
@@ -11602,6 +11583,9 @@ gsap.registerPlugin(useGSAP, ScrollTrigger, MotionPathPlugin);
 ---
 
 ## 🛠️ Customization & Component Properties (Props)
+
+> [!NOTE]
+> This component is fully customizable and ready to use.
 
 You can pass the following settings to configure the layout and animation details:
 
