@@ -172,12 +172,23 @@ export default function Footer() {
           <span className="text-xs font-mono text-zinc-500">
             © {new Date().getFullYear()} TweenLabs. All rights reserved. Open source library licensed under MIT.
           </span>
-          <button
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-            className="brutalist-btn bg-white hover:bg-wtf-yellow text-[#2a2a2a] font-mono font-bold text-xs py-2 px-4 rounded-md cursor-pointer transition-all"
-          >
-            Back To Top ↑
-          </button>
+          <div className="flex items-center gap-4">
+            <Link
+              href="/about"
+              className="text-xs font-mono font-bold uppercase tracking-wider text-[#2a2a2a] hover:text-wtf-orange transition-colors duration-150"
+            >
+              About
+            </Link>
+            <iframe
+              src="https://ghbtns.com/github-btn.html?user=TweenLabs&repo=TweenLabs&type=star&count=true&size=large"
+              frameBorder="0"
+              scrolling="0"
+              width="120"
+              height="30"
+              title="GitHub Star"
+              className="overflow-hidden border-0"
+            />
+          </div>
         </div>
       </div>
     </footer>

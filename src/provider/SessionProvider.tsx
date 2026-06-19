@@ -37,9 +37,15 @@ export function SessionProvider({
   initialSession: SessionData | null;
 }) {
   const { data: clientSession, isPending: clientPending, error } = authClient.useSession();
-  
-  const session = !clientPending ? (clientSession as SessionData | null) : initialSession;
-  const isPending = clientPending && initialSession === undefined;
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // During hydration/first render on client, match server exactly
+  const session = (!mounted || clientPending) ? initialSession : (clientSession as SessionData | null);
+  const isPending = !mounted ? false : (clientPending && initialSession === undefined);
 
   return (
     <SessionContext.Provider value={{ session, isPending, error: error as Error | null }}>
