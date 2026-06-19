@@ -1000,7 +1000,7 @@ export default function CodePageClient({
                 onClick={handleDownload}
                 className="brutalist-btn bg-wtf-yellow hover:bg-[#e5a420] text-black font-mono text-[10px] md:text-xs font-bold px-2.5 md:px-4 py-1.5 md:py-2 rounded-lg flex items-center gap-1.5 md:gap-2 cursor-pointer shadow-[2px_2px_0px_#000] md:shadow-[2.5px_2.5px_0px_#000] transition-all duration-75 active:translate-y-[1px] active:shadow-[1.5px_1.5px_0px_#000]"
               >
-                💾 Save
+                ⬇️ Download
               </button>
             </div>
           </div>

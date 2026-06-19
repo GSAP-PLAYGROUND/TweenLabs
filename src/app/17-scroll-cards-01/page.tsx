@@ -3,7 +3,7 @@
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -59,7 +59,7 @@ const cardsData: CardItem[] = [
 
 export default function ScrollCardsPage() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [activeStep, setActiveStep] = useState(0);
+
 
   useGSAP(
     () => {
@@ -84,83 +84,13 @@ export default function ScrollCardsPage() {
           end: `+=${pinDuration}`,
           pin: true,
           pinSpacing: false,
-          onToggle: (self) => {
-            if (self.isActive) {
-              setActiveStep(index);
-            }
-          },
+
         });
       });
     },
     { scope: containerRef },
   );
 
-  const { contextSafe } = useGSAP({ scope: containerRef });
-
-  // 3D Card Perspective Tilt
-  const handleMouseMove = contextSafe((e: React.MouseEvent<HTMLDivElement>) => {
-    const card = e.currentTarget;
-    const rect = card.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
-    // Set custom coordinates on card for pointer spotlight
-    card.style.setProperty("--mouse-x", `${x}px`);
-    card.style.setProperty("--mouse-y", `${y}px`);
-
-    const rotateY = ((x - rect.width / 2) / (rect.width / 2)) * 6;
-    const rotateX = -((y - rect.height / 2) / (rect.height / 2)) * 6;
-
-    gsap.to(card, {
-      rotateX: rotateX,
-      rotateY: rotateY,
-      transformPerspective: 1000,
-      ease: "power1.out",
-      duration: 0.35,
-      overwrite: "auto",
-    });
-
-    // Image offset push
-    const img = card.querySelector(".inner-img-frame img");
-    if (img) {
-      const moveX = ((x - rect.width / 2) / rect.width) * 12;
-      const moveY = ((y - rect.height / 2) / rect.height) * 12;
-      gsap.to(img, {
-        x: moveX,
-        y: moveY,
-        scale: 1.06,
-        duration: 0.4,
-        ease: "power1.out",
-        overwrite: "auto",
-      });
-    }
-  });
-
-  // Reset 3D Tilt
-  const handleMouseLeave = contextSafe(
-    (e: React.MouseEvent<HTMLDivElement>) => {
-      const card = e.currentTarget;
-      gsap.to(card, {
-        rotateX: 0,
-        rotateY: 0,
-        ease: "elastic.out(1.1, 0.4)",
-        duration: 0.8,
-        overwrite: "auto",
-      });
-
-      const img = card.querySelector(".inner-img-frame img");
-      if (img) {
-        gsap.to(img, {
-          x: 0,
-          y: 0,
-          scale: 1.0,
-          duration: 0.6,
-          ease: "power2.out",
-          overwrite: "auto",
-        });
-      }
-    },
-  );
 
   return (
     <div
@@ -183,42 +113,7 @@ export default function ScrollCardsPage() {
         }}
       />
 
-      {/* Page Heading readout (absolute right) */}
-      <div className="absolute top-6 right-6 z-30 flex flex-col items-end gap-1 select-none text-right">
-        <span className="font-mono text-[10px] font-bold text-zinc-500 uppercase tracking-widest border border-zinc-300 bg-white px-2 py-0.5 rounded">
-          Component 16
-        </span>
-        <h1 className="font-serif font-black text-lg uppercase text-[#2a2a2a]">
-          Stacking Cards
-        </h1>
-      </div>
 
-      {/* Left-Side Fixed Progress Gauge (Only desktop) */}
-      <div className="hidden lg:flex absolute left-10 top-1/2 -translate-y-1/2 z-40 flex-col items-center gap-6 select-none pointer-events-none">
-        <div className="w-[4px] h-48 bg-zinc-300 relative rounded">
-          {/* Active progress fill line */}
-          <div
-            className="absolute top-0 left-0 w-full bg-[#2a2a2a] rounded transition-all duration-300"
-            style={{
-              height: `${(activeStep / (cardsData.length - 1)) * 100}%`,
-            }}
-          />
-        </div>
-        <div className="flex flex-col gap-5 items-center font-mono text-[10px] font-bold">
-          {cardsData.map((card, idx) => (
-            <div
-              key={idx}
-              className={`w-9 h-9 rounded-full border-2 border-[#2a2a2a] flex items-center justify-center transition-all duration-300 shadow-[2px_2px_0px_#2a2a2a] ${
-                idx === activeStep
-                  ? `${card.themeColor} text-white scale-110`
-                  : "bg-white text-zinc-400"
-              }`}
-            >
-              0{idx + 1}
-            </div>
-          ))}
-        </div>
-      </div>
 
       {/* Cards List Section directly (no intro or outro sections) */}
       <section className="relative w-full flex flex-col z-20 pt-28 pb-48">
@@ -229,22 +124,11 @@ export default function ScrollCardsPage() {
             id={`card-${index + 1}`}
           >
             <div
-              onMouseMove={handleMouseMove}
-              onMouseLeave={handleMouseLeave}
-              className={`scroll-card-inner border-3 border-[#2a2a2a] shadow-[6px_6px_0px_#2a2a2a] w-full max-w-4xl p-6 md:p-10 flex flex-col md:flex-row gap-6 md:gap-10 items-center select-none cursor-pointer rounded-2xl will-change-transform relative overflow-hidden ${card.bgColor} ${card.textColor}`}
+              className={`scroll-card-inner border-3 border-[#2a2a2a] shadow-[6px_6px_0px_#2a2a2a] w-full max-w-4xl p-6 md:p-10 flex flex-col md:flex-row gap-6 md:gap-10 items-center select-none rounded-2xl relative overflow-hidden ${card.bgColor} ${card.textColor}`}
               style={{
                 top: `${index * 44}px`,
-                transformStyle: "preserve-3d",
-                transform: "perspective(1000px) rotateX(0deg) rotateY(0deg)",
               }}
             >
-              {/* Radial Pointer spotlight glow */}
-              <div
-                className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl z-0"
-                style={{
-                  background: `radial-gradient(280px circle at var(--mouse-x, 0px) var(--mouse-y, 0px), rgba(${card.accentHex}, 0.08), transparent 85%)`,
-                }}
-              />
 
               {/* Step info on left */}
               <div className="flex-1 flex flex-col gap-3 relative z-10">
@@ -284,7 +168,6 @@ export default function ScrollCardsPage() {
               {/* Framed Image on right */}
               <div
                 className="inner-img-frame w-full md:w-80 h-48 md:h-56 relative rounded-xl border-3 border-[#2a2a2a] overflow-hidden shadow-[4px_4px_0px_#2a2a2a] flex-shrink-0 z-10"
-                style={{ transform: "translateZ(15px)" }}
               >
                 <img
                   src={card.imgUrl}
