@@ -40,7 +40,7 @@ export function BentoTiltCard({
   const cardRef = useRef<HTMLDivElement>(null);
   const { contextSafe } = useGSAP({ scope: cardRef });
 
-  const handleMouseMove = contextSafe((e: React.MouseEvent<HTMLDivElement>) => {
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const card = cardRef.current;
     if (!card) return;
 
@@ -56,75 +56,79 @@ export function BentoTiltCard({
     const rotateY = ((x - rect.width / 2) / (rect.width / 2)) * 5;
     const rotateX = -((y - rect.height / 2) / (rect.height / 2)) * 5;
 
-    gsap.to(card, {
-      rotateX: rotateX,
-      rotateY: rotateY,
-      transformPerspective: 1000,
-      ease: "power1.out",
-      duration: 0.3,
-      overwrite: "auto",
-    });
-
-    const crosshair = card.querySelector(".accents-crosshair");
-    if (crosshair) {
-      gsap.to(crosshair, {
-        rotation: ((x - rect.width / 2) / rect.width) * 90,
-        duration: 0.45,
+    contextSafe(() => {
+      gsap.to(card, {
+        rotateX: rotateX,
+        rotateY: rotateY,
+        transformPerspective: 1000,
         ease: "power1.out",
+        duration: 0.3,
         overwrite: "auto",
       });
-    }
 
-    // Interactive image push inside frame
-    const imgFrame = card.querySelector(".inner-img-container img");
-    if (imgFrame) {
-      const moveX = ((x - rect.width / 2) / rect.width) * 10;
-      const moveY = ((y - rect.height / 2) / rect.height) * 10;
-      gsap.to(imgFrame, {
-        x: moveX,
-        y: moveY,
-        scale: 1.05,
-        duration: 0.4,
-        ease: "power1.out",
-        overwrite: "auto",
-      });
-    }
-  });
+      const crosshair = card.querySelector(".accents-crosshair");
+      if (crosshair) {
+        gsap.to(crosshair, {
+          rotation: ((x - rect.width / 2) / rect.width) * 90,
+          duration: 0.45,
+          ease: "power1.out",
+          overwrite: "auto",
+        });
+      }
 
-  const handleMouseLeave = contextSafe(() => {
+      // Interactive image push inside frame
+      const imgFrame = card.querySelector(".inner-img-container img");
+      if (imgFrame) {
+        const moveX = ((x - rect.width / 2) / rect.width) * 10;
+        const moveY = ((y - rect.height / 2) / rect.height) * 10;
+        gsap.to(imgFrame, {
+          x: moveX,
+          y: moveY,
+          scale: 1.05,
+          duration: 0.4,
+          ease: "power1.out",
+          overwrite: "auto",
+        });
+      }
+    })();
+  };
+
+  const handleMouseLeave = () => {
     const card = cardRef.current;
     if (!card) return;
 
-    gsap.to(card, {
-      rotateX: 0,
-      rotateY: 0,
-      ease: "elastic.out(1.1, 0.4)",
-      duration: 0.75,
-      overwrite: "auto",
-    });
-
-    const crosshair = card.querySelector(".accents-crosshair");
-    if (crosshair) {
-      gsap.to(crosshair, {
-        rotation: 0,
-        duration: 0.6,
+    contextSafe(() => {
+      gsap.to(card, {
+        rotateX: 0,
+        rotateY: 0,
         ease: "elastic.out(1.1, 0.4)",
+        duration: 0.75,
         overwrite: "auto",
       });
-    }
 
-    const imgFrame = card.querySelector(".inner-img-container img");
-    if (imgFrame) {
-      gsap.to(imgFrame, {
-        x: 0,
-        y: 0,
-        scale: 1.0,
-        duration: 0.6,
-        ease: "power2.out",
-        overwrite: "auto",
-      });
-    }
-  });
+      const crosshair = card.querySelector(".accents-crosshair");
+      if (crosshair) {
+        gsap.to(crosshair, {
+          rotation: 0,
+          duration: 0.6,
+          ease: "elastic.out(1.1, 0.4)",
+          overwrite: "auto",
+        });
+      }
+
+      const imgFrame = card.querySelector(".inner-img-container img");
+      if (imgFrame) {
+        gsap.to(imgFrame, {
+          x: 0,
+          y: 0,
+          scale: 1.0,
+          duration: 0.6,
+          ease: "power2.out",
+          overwrite: "auto",
+        });
+      }
+    })();
+  };
 
   return (
     <div

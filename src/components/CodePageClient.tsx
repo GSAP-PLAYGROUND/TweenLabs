@@ -524,6 +524,11 @@ function renderMarkdown(md: string) {
 
     if (
       line.startsWith("# ") ||
+      (line.startsWith("## ") && (
+        line.toLowerCase().includes("customization") ||
+        line.toLowerCase().includes("properties") ||
+        line.toLowerCase().includes("props")
+      )) ||
       line.toLowerCase().includes("setup &amp; dependencies") ||
       line.toLowerCase().includes("setup & dependencies")
     ) {
@@ -536,6 +541,8 @@ function renderMarkdown(md: string) {
   const elements: React.ReactNode[] = [];
   let currentList: React.ReactNode[] = [];
   let listType: "ordered" | "unordered" | null = null;
+  let currentBlockquote: string[] = [];
+  let inBlockquote = false;
 
   const flushList = (key: string) => {
     if (currentList.length > 0) {
@@ -563,6 +570,84 @@ function renderMarkdown(md: string) {
     }
   };
 
+  const flushBlockquote = (key: string) => {
+    if (currentBlockquote.length > 0) {
+      const contentLines = [...currentBlockquote];
+      currentBlockquote = [];
+      inBlockquote = false;
+
+      const firstLine = contentLines[0].trim();
+      const alertMatch = firstLine.match(/^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]$/i);
+
+      if (alertMatch) {
+        const alertType = alertMatch[1].toUpperCase();
+        const alertBodyLines = contentLines.slice(1);
+        
+        let bgColor = "bg-blue-50/70";
+        const borderColor = "border-[#2a2a2a]";
+        let textColor = "text-blue-900";
+        let icon = "💡";
+        let title = "NOTE";
+
+        if (alertType === "TIP") {
+          bgColor = "bg-emerald-50/70";
+          textColor = "text-emerald-900";
+          icon = "⚡";
+          title = "TIP";
+        } else if (alertType === "IMPORTANT") {
+          bgColor = "bg-purple-50/70";
+          textColor = "text-purple-900";
+          icon = "🚨";
+          title = "IMPORTANT";
+        } else if (alertType === "WARNING") {
+          bgColor = "bg-amber-50/70";
+          textColor = "text-amber-900";
+          icon = "⚠️";
+          title = "WARNING";
+        } else if (alertType === "CAUTION") {
+          bgColor = "bg-red-50/70";
+          textColor = "text-red-900";
+          icon = "🛑";
+          title = "CAUTION";
+        }
+
+        elements.push(
+          <div
+            key={`alert-${key}`}
+            className={`my-4 p-4 border-3 ${borderColor} ${bgColor} ${textColor} rounded-xl shadow-[3px_3px_0px_#2a2a2a] flex gap-3`}
+          >
+            <span className="text-lg select-none">{icon}</span>
+            <div className="flex-1">
+              <div className="font-mono font-black text-xs uppercase tracking-wider mb-1">
+                {title}
+              </div>
+              <div className="font-sans font-medium text-sm leading-relaxed">
+                {alertBodyLines.map((l, idx) => (
+                  <p key={idx} className={idx > 0 ? "mt-2" : ""}>
+                    {parseInlineMarkdown(l)}
+                  </p>
+                ))}
+              </div>
+            </div>
+          </div>
+        );
+      } else {
+        elements.push(
+          <blockquote
+            key={`quote-${key}`}
+            className="my-4 border-l-4 border-zinc-400 pl-4 py-1.5 italic text-zinc-650 bg-zinc-50/50 rounded-r font-sans font-medium text-sm leading-relaxed"
+          >
+            {contentLines.map((l, idx) => (
+              <p key={idx} className={idx > 0 ? "mt-1.5" : ""}>
+                {parseInlineMarkdown(l)}
+              </p>
+            ))}
+          </blockquote>
+        );
+      }
+    }
+  };
+
   const parseInlineMarkdown = (text: string) => {
     let html = text
       .replace(/&/g, "&amp;")
@@ -583,6 +668,18 @@ function renderMarkdown(md: string) {
 
   for (let i = 0; i < filteredLines.length; i++) {
     const line = filteredLines[i];
+
+    if (line.trim().startsWith(">")) {
+      flushList(String(i));
+      const cleanLine = line.trim().replace(/^>\s?/, "");
+      currentBlockquote.push(cleanLine);
+      inBlockquote = true;
+      continue;
+    }
+
+    if (inBlockquote && !line.trim().startsWith(">")) {
+      flushBlockquote(String(i));
+    }
 
     if (line.startsWith("## ")) {
       flushList(String(i));
@@ -644,6 +741,7 @@ function renderMarkdown(md: string) {
   }
 
   flushList("end");
+  flushBlockquote("end");
   return <div className="markdown-body mt-2">{elements}</div>;
 }
 

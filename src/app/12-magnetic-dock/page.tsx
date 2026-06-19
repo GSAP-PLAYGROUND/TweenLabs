@@ -2,7 +2,7 @@
 
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 
 gsap.registerPlugin(useGSAP);
 
@@ -16,7 +16,6 @@ interface DockItem {
 export default function MagneticDockPage() {
   const containerRef = useRef<HTMLDivElement>(null);
   const dockItemsRef = useRef<(HTMLButtonElement | null)[]>([]);
-  const [activeItem, setActiveItem] = useState<string | null>(null);
 
   const dockData: DockItem[] = [
     {
@@ -184,7 +183,6 @@ export default function MagneticDockPage() {
   };
 
   const handleClick = (id: string, index: number) => {
-    setActiveItem(id);
     const btn = dockItemsRef.current[index];
     if (!btn) return;
 
