@@ -621,13 +621,6 @@ export default function CodePageClient({
     }
     
     downloadFile(activeTab.code, fileName);
-
-    // Automatically download styles.css as well when a component is downloaded
-    if ((activeTab.id === "page" || activeTab.id === "standalone") && cssCode) {
-      setTimeout(() => {
-        downloadFile(cssCode, "styles.css");
-      }, 150);
-    }
   };
 
   const usesScrollTrigger = activeTab.code.includes("ScrollTrigger");
