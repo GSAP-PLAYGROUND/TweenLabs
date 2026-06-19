@@ -311,7 +311,7 @@ export default function StringLinePage() {
           id="team-svg"
           className="absolute inset-0 w-full h-full z-0"
           viewBox="0 0 1600 900"
-          preserveAspectRatio="xMidYMid slice"
+          preserveAspectRatio="none"
           fill="none"
         >
           <path
