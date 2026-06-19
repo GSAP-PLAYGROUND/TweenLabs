@@ -1,4 +1,3 @@
-"use client";
 
 import AnimationCard from "@/components/AnimationCard";
 import FAQ from "@/components/FAQ";
