@@ -31,7 +31,8 @@
     "LICENSE"
   ],
   "scripts": {
-    "dev": "node --max-old-space-size=4096 node_modules/next/dist/bin/next dev",
+    "dev": "node --max-old-space-size=8192 node_modules/next/dist/bin/next dev",
+    "dev:stable": "node --max-old-space-size=8192 node_modules/next/dist/bin/next dev --no-turbopack",
     "build": "node scripts/generate-llms-full.js && next build",
     "vercel-build": "convex deploy --cmd \"node scripts/generate-llms-full.js && next build\"",
     "start": "next start",

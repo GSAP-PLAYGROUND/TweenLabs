@@ -49,6 +49,14 @@ export const storeUser = mutation({
       throw new Error("Called storeUser without authentication");
     }
 
+    // Input validation — prevent oversized payloads
+    if (args.name && args.name.length > 100) {
+      throw new Error("Name must be 100 characters or less");
+    }
+    if (args.image && args.image.length > 2048) {
+      throw new Error("Image URL must be 2048 characters or less");
+    }
+
     let userId = identity.subject as Id<"user">;
     let existingUser = await ctx.db.get(userId);
     if (!existingUser && identity.email) {
@@ -80,19 +88,5 @@ export const storeUser = mutation({
       });
       return newUserId;
     }
-  },
-});
-
-/**
- * Checks if a user exists in the database by their email address.
- */
-export const checkUserByEmail = query({
-  args: { email: v.string() },
-  handler: async (ctx, args) => {
-    const user = await ctx.db
-      .query("user")
-      .withIndex("email_name", (q) => q.eq("email", args.email))
-      .first();
-    return !!user;
   },
 });

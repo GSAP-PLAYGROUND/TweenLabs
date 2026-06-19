@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { animations } from "@/data/animations";
 import { authClient } from "@/lib/auth-client";
 import { useAuthModal } from "@/provider/AuthModalProvider";
@@ -17,6 +17,7 @@ export default function Header() {
   const [lastUserId, setLastUserId] = useState<string | undefined>(undefined);
   const [mounted, setMounted] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const hasEverOpened = useRef(false);
 
   useEffect(() => {
     setMounted(true);
@@ -171,7 +172,10 @@ export default function Header() {
 
         {/* Mobile Hamburger Button */}
         <button
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          onClick={() => {
+            if (!mobileMenuOpen) hasEverOpened.current = true;
+            setMobileMenuOpen(!mobileMenuOpen);
+          }}
           className="md:hidden flex flex-col items-center justify-center w-10 h-10 gap-[5px] cursor-pointer z-[60]"
           aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
         >
@@ -193,20 +197,24 @@ export default function Header() {
         </button>
       </div>
 
-      {/* Mobile Menu Overlay */}
-      {mobileMenuOpen && (
-        <div
-          className="md:hidden fixed inset-0 bg-black/30 backdrop-blur-sm z-40"
-          onClick={() => setMobileMenuOpen(false)}
-        />
-      )}
+      {/* Lazy-mounted mobile menu: zero DOM cost until first open, stays mounted after */}
+      {hasEverOpened.current && (
+        <>
+          {/* Backdrop overlay — toggled via opacity + pointer-events for zero layout cost */}
+          <div
+            className={`md:hidden fixed inset-0 bg-black/30 backdrop-blur-sm z-40 transition-opacity duration-300 ${
+              mobileMenuOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+            }`}
+            onClick={() => setMobileMenuOpen(false)}
+          />
 
-      {/* Mobile Menu Panel */}
-      <div
-        className={`md:hidden fixed top-[53px] right-0 w-[280px] max-w-[85vw] h-[calc(100vh-53px)] bg-[#fafaf9] border-l-3 border-[#2a2a2a] z-50 transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] overflow-y-auto ${
-          mobileMenuOpen ? "translate-x-0" : "translate-x-full"
-        }`}
-      >
+          {/* Slide panel — toggled via transform, always in DOM after first open */}
+          <div
+            className={`md:hidden fixed top-[53px] right-0 w-[280px] max-w-[85vw] h-[calc(100dvh-53px)] bg-[#fafaf9] border-l-3 border-[#2a2a2a] z-50 transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] overflow-y-auto ${
+              mobileMenuOpen ? "translate-x-0" : "translate-x-full"
+            }`}
+            aria-hidden={!mobileMenuOpen}
+          >
         <div className="flex flex-col gap-3 p-5">
           {currentAnim && (
             <Link
@@ -287,7 +295,9 @@ export default function Header() {
             </button>
           )}
         </div>
-      </div>
+          </div>
+        </>
+      )}
     </header>
   );
 }
