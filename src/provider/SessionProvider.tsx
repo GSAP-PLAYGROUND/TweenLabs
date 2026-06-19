@@ -24,12 +24,10 @@ export function SessionProvider({
 }) {
   const { data: clientSession, isPending: clientPending, error } = authClient.useSession();
   
-  // If we receive an explicit initialSession from the server (either null or user object),
-  // we don't need to block on isPending since we know the initial state.
-  const hasInitialSession = initialSession !== undefined;
-  
   const [session, setSession] = useState(initialSession);
-  const [isPending, setIsPending] = useState(!hasInitialSession);
+  // Only set isPending to false if the server successfully resolved an active session.
+  // If the server resolved null (or is undefined), wait for client-side confirmation.
+  const [isPending, setIsPending] = useState(initialSession === null || initialSession === undefined);
 
   useEffect(() => {
     if (!clientPending) {
