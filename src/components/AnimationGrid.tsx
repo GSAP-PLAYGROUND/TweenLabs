@@ -11,10 +11,8 @@ interface AnimationGridProps {
 
 export default function AnimationGrid({ animations }: AnimationGridProps) {
   const [showAll, setShowAll] = useState(() => {
-    if (typeof window !== "undefined") {
-      return sessionStorage.getItem("grid-show-all") === "true";
-    }
-    return false;
+    if (typeof window === "undefined") return false;
+    return sessionStorage.getItem("grid-show-all") === "true";
   });
   const [isMobile, setIsMobile] = useState(false);
   const [hasMounted, setHasMounted] = useState(false);
@@ -34,10 +32,19 @@ export default function AnimationGrid({ animations }: AnimationGridProps) {
 
   const initialCount = isMobile ? 3 : 6;
 
-  // Persist showAll state across navigations
+  // Persist showAll state across client-side navigations
   useEffect(() => {
     sessionStorage.setItem("grid-show-all", showAll.toString());
   }, [showAll]);
+
+  // Clear grid state on actual page refresh/close (beforeunload only fires on real navigations, not Next.js client-side)
+  useEffect(() => {
+    const handleUnload = () => {
+      sessionStorage.removeItem("grid-show-all");
+    };
+    window.addEventListener("beforeunload", handleUnload);
+    return () => window.removeEventListener("beforeunload", handleUnload);
+  }, []);
 
   const totalCount = animations.length;
   const visibleCount = showAll ? totalCount : initialCount;
