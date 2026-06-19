@@ -153,9 +153,10 @@ body {
   transform-style: preserve-3d;
 }
 
-/* Push floating back buttons on component pages down so they do not overlap with the relative Header */
-.demo-page-container .fixed:has(button.brutalist-btn) {
-  top: 5rem !important; /* 80px */
+/* Hide floating back buttons on component pages since they are now in the header */
+.demo-page-container div.fixed.left-6.top-6,
+.demo-page-container div.fixed.top-6.left-6 {
+  display: none !important;
 }
 
 /* 3D Card Flip Utilities */

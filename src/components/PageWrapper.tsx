@@ -51,6 +51,9 @@ export default function PageWrapper({ children }: { children: React.ReactNode })
     }
 
     // ——— BELOW RUNS ONLY ON DEMO PAGES ———
+    
+    // Reset window scroll position to top before locking to prevent cut-off header
+    window.scrollTo(0, 0);
 
     // Lock root window scrolling
     document.documentElement.style.overflow = "hidden";

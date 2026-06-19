@@ -35,24 +35,40 @@ export default function Header() {
 
   return (
     <header className="fixed top-0 left-0 w-full z-50 bg-[#fafaf9] border-b-3 border-[#2a2a2a]">
-      <div className="max-w-7xl mx-auto px-4 md:px-8 h-16 flex items-center justify-between">
-        <Link 
-          href="/" 
-          className="flex items-center gap-3 cursor-pointer group"
-          aria-label="TweenLabs Home"
-        >
-          <Image
-            src="/logo.svg"
-            alt="TweenLabs Logo"
-            width={32}
-            height={32}
-            priority
-            className="object-contain transition-transform duration-200 group-hover:scale-105"
-          />
-          <span className="font-serif font-black text-xl md:text-2xl tracking-tight text-[#2a2a2a] group-hover:text-wtf-orange transition-colors duration-150">
-            TweenLabs
-          </span>
-        </Link>
+      <div className="w-full px-4 md:px-8 h-16 flex items-center justify-between">
+        <div className="flex items-center gap-3 md:gap-4">
+          {currentAnim && (
+            <button
+              onClick={() => {
+                if (typeof window !== "undefined") {
+                  window.history.length > 1
+                    ? window.history.back()
+                    : (window.location.href = "/");
+                }
+              }}
+              className="brutalist-btn bg-white hover:bg-wtf-orange hover:text-white text-[#2a2a2a] font-mono font-bold text-xs py-1.5 px-3.5 rounded-lg uppercase tracking-wider cursor-pointer transition-colors duration-150"
+            >
+              ← Back
+            </button>
+          )}
+          <Link 
+            href="/" 
+            className="flex items-center gap-3 cursor-pointer group"
+            aria-label="TweenLabs Home"
+          >
+            <Image
+              src="/logo.svg"
+              alt="TweenLabs Logo"
+              width={32}
+              height={32}
+              priority
+              className="object-contain transition-transform duration-200 group-hover:scale-105"
+            />
+            <span className="font-serif font-black text-xl md:text-2xl tracking-tight text-[#2a2a2a] group-hover:text-wtf-orange transition-colors duration-150">
+              TweenLabs
+            </span>
+          </Link>
+        </div>
 
         <div className="flex items-center gap-3">
           {currentAnim && (

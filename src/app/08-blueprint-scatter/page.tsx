@@ -61,7 +61,7 @@ function ScrambleText({
 const talentData = [
   {
     id: 0,
-    img: "https://tweenlabs.xyz/Untitled%20design.png",
+    img: "https://tweenlabs.xyz/showcase-1.png",
     name: "Sarah Jenkins",
     role: "iOS Tech Lead",
     skills: ["Swift", "UIKit", "Combine", "Architecture"],
@@ -72,7 +72,7 @@ const talentData = [
   },
   {
     id: 1,
-    img: "https://tweenlabs.xyz/Untitled%20design%20(1).png",
+    img: "https://tweenlabs.xyz/showcase-2.png",
     name: "Alex Rivera",
     role: "Android Architect",
     skills: ["Kotlin", "Compose", "Coroutines", "Dagger"],
@@ -83,7 +83,7 @@ const talentData = [
   },
   {
     id: 2,
-    img: "https://tweenlabs.xyz/Untitled%20design%20(2).png",
+    img: "https://tweenlabs.xyz/showcase-3.png",
     name: "Elena Rostova",
     role: "SwiftUI Lead",
     skills: ["SwiftUI", "CoreData", "Combine", "Metal"],
@@ -94,7 +94,7 @@ const talentData = [
   },
   {
     id: 3,
-    img: "https://tweenlabs.xyz/Untitled%20design%20(3).png",
+    img: "https://tweenlabs.xyz/showcase-4.png",
     name: "Marcus Vance",
     role: "Flutter Specialist",
     skills: ["Dart", "Flutter", "BLoC", "Firebase"],
@@ -105,7 +105,7 @@ const talentData = [
   },
   {
     id: 4,
-    img: "https://tweenlabs.xyz/Untitled%20design%20(4).png",
+    img: "https://tweenlabs.xyz/showcase-5.png",
     name: "Siddharth Mehta",
     role: "React Native Lead",
     skills: ["TS", "React Native", "Redux", "JSI"],
@@ -116,7 +116,7 @@ const talentData = [
   },
   {
     id: 5,
-    img: "https://tweenlabs.xyz/Untitled%20design%20(5).png",
+    img: "https://tweenlabs.xyz/showcase-6.png",
     name: "Chloe Dupont",
     role: "KMP Engineer",
     skills: ["Kotlin", "KMP", "Compose", "Ktor"],
@@ -127,7 +127,7 @@ const talentData = [
   },
   {
     id: 6,
-    img: "https://tweenlabs.xyz/Untitled%20design%20(6).png",
+    img: "https://tweenlabs.xyz/showcase-7.png",
     name: "Liam O'Connor",
     role: "iOS UI Specialist",
     skills: ["Swift", "CoreAnimation", "Metal", "UI"],
@@ -138,7 +138,7 @@ const talentData = [
   },
   {
     id: 7,
-    img: "https://tweenlabs.xyz/Untitled%20design%20(7).png",
+    img: "https://tweenlabs.xyz/showcase-8.png",
     name: "Sofia Giraldo",
     role: "Mobile DevOps Lead",
     skills: ["CI/CD", "Fastlane", "Actions", "Docker"],
