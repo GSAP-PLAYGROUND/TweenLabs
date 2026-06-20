@@ -3,7 +3,7 @@
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const showupSectionSelector = ".showup-cards-sec";
 
@@ -56,6 +56,19 @@ const stageData: StageItem[] = [
 export default function ShowUpCardsPage() {
   const containerRef = useRef<HTMLDivElement>(null);
   const showupSectionRef = useRef<HTMLDivElement>(null);
+  const [isInView, setIsInView] = useState(false);
+
+  // IntersectionObserver: only run CSS floating animation when visible
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsInView(entry.isIntersecting),
+      { threshold: 0.1 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   useGSAP(
     () => {
@@ -267,7 +280,7 @@ export default function ShowUpCardsPage() {
               }}
             >
               <div
-                className="card-wrapper w-full h-full animate-[floating_2.5s_infinite_ease-in-out] transform-gpu"
+                className={`card-wrapper w-full h-full ${isInView ? 'animate-[floating_2.5s_infinite_ease-in-out]' : ''} transform-gpu`}
                 style={{ animationDelay: `${(stage.id - 1) * 0.25}s` }}
               >
                 <div

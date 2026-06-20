@@ -11,16 +11,19 @@ function ScrambleText({
   text,
   speed = 25,
   delay = 0,
+  isActive = true,
 }: {
   text: string;
   speed?: number;
   delay?: number;
+  isActive?: boolean;
 }) {
   const [displayText, setDisplayText] = useState("");
   const chars =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%&*";
 
   useEffect(() => {
+    if (!isActive) return;
     let timer: NodeJS.Timeout;
     let frame = 0;
     const finalLength = text.length;
@@ -52,7 +55,7 @@ function ScrambleText({
       clearTimeout(timer);
       clearTimeout(delayTimer);
     };
-  }, [text, speed, delay]);
+  }, [text, speed, delay, isActive]);
 
   return <span>{displayText}</span>;
 }
@@ -153,9 +156,28 @@ export default function BlueprintScatterPage() {
   const heroRef = useRef<HTMLDivElement>(null);
   const floatingCardsRef = useRef<HTMLDivElement>(null);
   const floatTimelineRef = useRef<gsap.core.Timeline | null>(null);
+  const [hasEntered, setHasEntered] = useState(false);
+
+  // IntersectionObserver: only trigger animation when component enters viewport
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setHasEntered(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.2 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   useGSAP(
     () => {
+      if (!hasEntered) return;
       // 1. Page Load Intro Animation Sequence
       const introTl = gsap.timeline({
         defaults: { ease: "power4.out" },
@@ -164,24 +186,24 @@ export default function BlueprintScatterPage() {
       // Fade in hero titles
       introTl
         .fromTo(
-          ".hero-tagline",
+          ".bp-hero-tagline",
           { y: 20, opacity: 0 },
           { y: 0, opacity: 1, duration: 0.8 },
         )
         .fromTo(
-          ".hero-title-scramble",
+          ".bp-hero-title-scramble",
           { opacity: 0 },
           { opacity: 1, duration: 0.5 },
           "-=0.6",
         )
         .fromTo(
-          ".hero-subtitle",
+          ".bp-hero-subtitle",
           { y: 20, opacity: 0 },
           { y: 0, opacity: 1, duration: 0.8 },
           "-=0.5",
         )
         .fromTo(
-          ".hero-cta-btn",
+          ".bp-hero-cta-btn",
           { y: 20, opacity: 0 },
           { y: 0, opacity: 1, duration: 0.8 },
           "-=0.6",
@@ -190,7 +212,7 @@ export default function BlueprintScatterPage() {
       // Exploding / Scattering Cards Animation:
       // Cards start centered and stacked behind the hero text, then explode outwards.
       introTl.fromTo(
-        ".scatter-card",
+        ".bp-scatter-card",
         {
           x: (i, target) => {
             const rect = target.getBoundingClientRect();
@@ -229,7 +251,7 @@ export default function BlueprintScatterPage() {
       function startFloatingIdle() {
         floatTimelineRef.current = gsap.timeline({ repeat: -1 });
 
-        const cards = Array.from(containerRef.current?.querySelectorAll<HTMLElement>(".scatter-card") ?? []);
+        const cards = Array.from(containerRef.current?.querySelectorAll<HTMLElement>(".bp-scatter-card") ?? []);
         cards.forEach((card, idx) => {
           const offset = idx % 2 === 0 ? 1 : -1;
           gsap.to(card, {
@@ -248,7 +270,7 @@ export default function BlueprintScatterPage() {
         if (floatTimelineRef.current) floatTimelineRef.current.kill();
       };
     },
-    { scope: containerRef },
+    { scope: containerRef, dependencies: [hasEntered] },
   );
 
   // Custom mouse-move/hover functions for cards
@@ -307,17 +329,17 @@ export default function BlueprintScatterPage() {
       >
         {/* Central Hero Text Area */}
         <div className="absolute bottom-[4vh] md:bottom-[6vh] left-1/2 -translate-x-1/2 z-20 text-center w-full max-w-2xl px-6 pointer-events-none">
-          <span className="hero-tagline inline-block font-mono text-[9px] tracking-[0.2em] uppercase text-[#f1b333] font-black bg-[#2a2a2a] text-white px-3 py-1 rounded-full mb-4">
+          <span className="bp-hero-tagline inline-block font-mono text-[9px] tracking-[0.2em] uppercase text-[#f1b333] font-black bg-[#2a2a2a] text-white px-3 py-1 rounded-full mb-4">
             Vetted Mobile Engineers
           </span>
-          <h1 className="hero-title-scramble font-serif font-black text-4xl md:text-6xl text-[#2a2a2a] leading-[1.05] tracking-tighter uppercase mb-4">
-            <ScrambleText text="Hire Mobile Devs" delay={600} />
+          <h1 className="bp-hero-title-scramble font-serif font-black text-4xl md:text-6xl text-[#2a2a2a] leading-[1.05] tracking-tighter uppercase mb-4">
+            <ScrambleText text="Hire Mobile Devs" delay={600} isActive={hasEntered} />
             <br />
             <span className="text-[#f1b333]">
-              <ScrambleText text="Differently" delay={1200} />
+              <ScrambleText text="Differently" delay={1200} isActive={hasEntered} />
             </span>
           </h1>
-          <p className="hero-subtitle font-mono text-[11px] md:text-xs text-[#2a2a2a]/70 max-w-lg mx-auto leading-relaxed mb-8 pointer-events-auto">
+          <p className="bp-hero-subtitle font-mono text-[11px] md:text-xs text-[#2a2a2a]/70 max-w-lg mx-auto leading-relaxed mb-8 pointer-events-auto">
             Engineers who own outcomes — CTO-screened with a ≤ 5% pass rate.
             Ready to scale your product immediately.
           </p>
@@ -331,7 +353,7 @@ export default function BlueprintScatterPage() {
           {talentData.map((card, idx) => (
             <div
               key={card.id}
-              className={`scatter-card absolute w-[36vw] md:w-[13.5vw] aspect-[3/4] pointer-events-auto select-none rounded-3xl border-2 border-[#2a2a2a] bg-white p-3 shadow-[4px_4px_0px_#2a2a2a] cursor-pointer transition-shadow duration-200`}
+              className={`bp-scatter-card absolute w-[36vw] md:w-[13.5vw] aspect-[3/4] pointer-events-auto select-none rounded-3xl border-2 border-[#2a2a2a] bg-white p-3 shadow-[4px_4px_0px_#2a2a2a] cursor-pointer transition-shadow duration-200`}
               style={{
                 left: card.left,
                 top: card.top,

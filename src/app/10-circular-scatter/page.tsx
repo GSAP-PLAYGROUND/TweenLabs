@@ -11,16 +11,19 @@ function ScrambleText({
   text,
   speed = 25,
   delay = 0,
+  isActive = true,
 }: {
   text: string;
   speed?: number;
   delay?: number;
+  isActive?: boolean;
 }) {
   const [displayText, setDisplayText] = useState("");
   const chars =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%&*";
 
   useEffect(() => {
+    if (!isActive) return;
     let timer: NodeJS.Timeout;
     let frame = 0;
     const finalLength = text.length;
@@ -52,7 +55,7 @@ function ScrambleText({
       clearTimeout(timer);
       clearTimeout(delayTimer);
     };
-  }, [text, speed, delay]);
+  }, [text, speed, delay, isActive]);
 
   return <span>{displayText}</span>;
 }
@@ -145,10 +148,29 @@ export default function CircularScatterPage() {
   const heroRef = useRef<HTMLDivElement>(null);
   const floatingCardsRef = useRef<HTMLDivElement>(null);
   const floatTimelineRef = useRef<gsap.core.Timeline | null>(null);
+  const [hasEntered, setHasEntered] = useState(false);
+
+  // IntersectionObserver: only trigger animation when component enters viewport
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setHasEntered(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.2 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   useGSAP(
     () => {
-      const cards = Array.from(containerRef.current?.querySelectorAll<HTMLElement>(".scatter-card") ?? []);
+      if (!hasEntered) return;
+      const cards = Array.from(containerRef.current?.querySelectorAll<HTMLElement>(".cs-scatter-card") ?? []);
 
       // Compute all coordinates relative to screen center while cards are in their initial CSS positions
       const cardParams = cards.map((card) => {
@@ -196,7 +218,7 @@ export default function CircularScatterPage() {
       // Cards appear one-by-one in the exact center of the screen
       talentData.forEach((card, idx) => {
         introTl.to(
-          `.scatter-card-${idx}`,
+          `.cs-scatter-card-${idx}`,
           {
             opacity: 1,
             scale: 1.02,
@@ -250,25 +272,25 @@ export default function CircularScatterPage() {
       // Fade/Slide in the Central Hero text at the same time
       introTl
         .fromTo(
-          ".hero-tagline",
+          ".cs-hero-tagline",
           { y: 30, opacity: 0 },
           { y: 0, opacity: 1, duration: 1.2 },
           scatterStart,
         )
         .fromTo(
-          ".hero-title-scramble",
+          ".cs-hero-title-scramble",
           { opacity: 0 },
           { opacity: 1, duration: 0.8 },
           scatterStart + 0.2,
         )
         .fromTo(
-          ".hero-subtitle",
+          ".cs-hero-subtitle",
           { y: 30, opacity: 0 },
           { y: 0, opacity: 1, duration: 1.2 },
           scatterStart + 0.4,
         )
         .fromTo(
-          ".hero-cta-btn",
+          ".cs-hero-cta-btn",
           { y: 30, opacity: 0 },
           { y: 0, opacity: 1, duration: 1.2 },
           scatterStart + 0.6,
@@ -296,7 +318,7 @@ export default function CircularScatterPage() {
         if (floatTimelineRef.current) floatTimelineRef.current.kill();
       };
     },
-    { scope: containerRef },
+    { scope: containerRef, dependencies: [hasEntered] },
   );
 
   // Custom mouse-move/hover functions for cards
@@ -352,17 +374,17 @@ export default function CircularScatterPage() {
       >
         {/* Central Hero Text Area (Bottom Centered) */}
         <div className="absolute bottom-[4vh] md:bottom-[6vh] left-1/2 -translate-x-1/2 z-20 text-center w-full max-w-2xl px-6 pointer-events-none">
-          <span className="hero-tagline inline-block font-mono text-[9px] tracking-[0.2em] uppercase text-[#f1b333] font-black bg-[#2a2a2a] text-white px-3 py-1 rounded-full mb-4">
+          <span className="cs-hero-tagline inline-block font-mono text-[9px] tracking-[0.2em] uppercase text-[#f1b333] font-black bg-[#2a2a2a] text-white px-3 py-1 rounded-full mb-4">
             Vetted Mobile Engineers
           </span>
-          <h1 className="hero-title-scramble font-serif font-black text-4xl md:text-6xl text-[#2a2a2a] leading-[1.05] tracking-tighter uppercase mb-4">
-            <ScrambleText text="Hire Mobile Devs" delay={2800} />
+          <h1 className="cs-hero-title-scramble font-serif font-black text-4xl md:text-6xl text-[#2a2a2a] leading-[1.05] tracking-tighter uppercase mb-4">
+            <ScrambleText text="Hire Mobile Devs" delay={2800} isActive={hasEntered} />
             <br />
             <span className="text-[#f1b333]">
-              <ScrambleText text="Differently" delay={3400} />
+              <ScrambleText text="Differently" delay={3400} isActive={hasEntered} />
             </span>
           </h1>
-          <p className="hero-subtitle font-mono text-[11px] md:text-xs text-[#2a2a2a]/70 max-w-lg mx-auto leading-relaxed mb-8 pointer-events-auto">
+          <p className="cs-hero-subtitle font-mono text-[11px] md:text-xs text-[#2a2a2a]/70 max-w-lg mx-auto leading-relaxed mb-8 pointer-events-auto">
             Engineers who own outcomes — CTO-screened with a ≤ 5% pass rate.
             Ready to scale your product immediately.
           </p>
@@ -376,7 +398,7 @@ export default function CircularScatterPage() {
           {talentData.map((card, idx) => (
             <div
               key={card.id}
-              className={`scatter-card scatter-card-${idx} absolute w-[36vw] md:w-[13.5vw] aspect-[3/4] pointer-events-auto select-none rounded-3xl border-2 border-[#2a2a2a] bg-white p-3 shadow-[4px_4px_0px_#2a2a2a] cursor-pointer transition-shadow duration-200`}
+              className={`cs-scatter-card cs-scatter-card-${idx} absolute w-[36vw] md:w-[13.5vw] aspect-[3/4] pointer-events-auto select-none rounded-3xl border-2 border-[#2a2a2a] bg-white p-3 shadow-[4px_4px_0px_#2a2a2a] cursor-pointer transition-shadow duration-200`}
               style={{
                 left: card.left,
                 top: card.top,

@@ -2,18 +2,31 @@
 
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 gsap.registerPlugin(useGSAP);
 
 export default function KineticTypographyPage() {
   const containerRef = useRef<HTMLDivElement>(null);
   const textContainerRef = useRef<HTMLDivElement>(null);
+  const [isInView, setIsInView] = useState(false);
   const text = "KINETIC TYPE";
+
+  // IntersectionObserver: only bind mouse listeners when visible
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsInView(entry.isIntersecting),
+      { threshold: 0.1 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   useGSAP(
     (context, contextSafe) => {
-      if (!contextSafe) return;
+      if (!contextSafe || !isInView) return;
 
       const chars = textContainerRef.current?.querySelectorAll(".kinetic-char");
       if (!chars || chars.length === 0) return;
@@ -95,7 +108,7 @@ export default function KineticTypographyPage() {
         container?.removeEventListener("mouseleave", onMouseLeave);
       };
     },
-    { scope: containerRef },
+    { scope: containerRef, dependencies: [isInView] },
   );
 
   return (

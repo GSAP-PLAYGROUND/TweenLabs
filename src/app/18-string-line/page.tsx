@@ -4,7 +4,7 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { MotionPathPlugin } from "gsap/all";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger, MotionPathPlugin);
 
@@ -113,7 +113,8 @@ const networkData: NetworkItem[] = [
 
 export default function StringLinePage() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [currentProgress, setCurrentProgress] = useState(0);
+  const progressRef = useRef(0);
+  const progressDisplayRef = useRef<HTMLSpanElement>(null);
 
   useGSAP(
     () => {
@@ -184,7 +185,10 @@ export default function StringLinePage() {
           pin: true,
           onUpdate: (self) => {
             const progress = self.progress;
-            setCurrentProgress(Math.round(progress * 100));
+            progressRef.current = Math.round(progress * 100);
+            if (progressDisplayRef.current) {
+              progressDisplayRef.current.textContent = String(progressRef.current);
+            }
 
             const pastelColors = [
               "#FFE5EC", // soft pink
@@ -297,7 +301,7 @@ export default function StringLinePage() {
         {/* Console readout display (Top center/right) */}
         <div className="absolute top-6 right-6 z-30 font-mono text-[9px] md:text-[10px] font-bold text-zinc-500 text-right flex flex-col gap-1">
           <span>[ SYSTEM: TRACKING ]</span>
-          <span>PATH PROGRESS: {currentProgress}%</span>
+          <span>PATH PROGRESS: <span ref={progressDisplayRef}>0</span>%</span>
         </div>
 
         {/* Decorative typography background */}

@@ -14,7 +14,9 @@ Source Code URL: https://tweenlabs.xyz/code/01-showup-cards
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+
+const showupSectionSelector = ".showup-cards-sec";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -64,6 +66,20 @@ const stageData: StageItem[] = [
 
 export default function ShowUpCardsPage() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const showupSectionRef = useRef<HTMLDivElement>(null);
+  const [isInView, setIsInView] = useState(false);
+
+  // IntersectionObserver: only run CSS floating animation when visible
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsInView(entry.isIntersecting),
+      { threshold: 0.1 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   useGSAP(
     () => {
@@ -77,7 +93,7 @@ export default function ShowUpCardsPage() {
         scroller: scroller,
         start: "top top",
         end: "bottom bottom",
-        pin: ".showup-cards-sec",
+        pin: showupSectionRef.current,
         pinSpacing: false,
       });
 
@@ -98,7 +114,7 @@ export default function ShowUpCardsPage() {
               1,
               (progress - delay * 0.1) / (0.9 - delay * 0.1),
             );
-            const innerCard = document.querySelector(
+            const innerCard = containerRef.current?.querySelector(
               `${cardId} .flip-card-inner`,
             );
 
@@ -244,7 +260,7 @@ export default function ShowUpCardsPage() {
         }}
       />
       <div
-        className="fixed inset-0 pointer-events-none z-10 opacity-[0.035]"
+        className="absolute inset-0 pointer-events-none z-10 opacity-[0.035]"
         style={{
           backgroundImage:
             "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E\")",
@@ -252,7 +268,7 @@ export default function ShowUpCardsPage() {
       />
 
       {/* Interactive Cards Overlay (Pins on scroll) */}
-      <section className="showup-cards-sec relative w-full h-screen flex flex-col justify-center items-center bg-[#f8f5ee] border-b-3 border-[#2a2a2a] overflow-hidden">
+      <section ref={showupSectionRef} className="showup-cards-sec relative w-full h-screen flex flex-col justify-center items-center bg-[#f8f5ee] border-b-3 border-[#2a2a2a] overflow-hidden">
         <div
           className="absolute inset-0 opacity-15"
           style={{
@@ -275,7 +291,7 @@ export default function ShowUpCardsPage() {
               }}
             >
               <div
-                className="card-wrapper w-full h-full animate-[floating_2.5s_infinite_ease-in-out] transform-gpu"
+                className={`card-wrapper w-full h-full ${isInView ? 'animate-[floating_2.5s_infinite_ease-in-out]' : ''} transform-gpu`}
                 style={{ animationDelay: `${(stage.id - 1) * 0.25}s` }}
               >
                 <div
@@ -717,17 +733,36 @@ Source Code URL: https://tweenlabs.xyz/code/02-gravity-drop
 
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 gsap.registerPlugin(useGSAP);
 
 export default function AnimationOnePage() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [triggerKey, setTriggerKey] = useState(0);
+  const [hasEntered, setHasEntered] = useState(false);
   const text = "GRAVITY DROP";
+
+  // IntersectionObserver: only trigger animation when component enters viewport
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setHasEntered(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.3 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   useGSAP(
     () => {
+      if (!hasEntered) return;
       // Animate the letters falling down
       gsap.fromTo(
         ".falling-letter",
@@ -751,7 +786,7 @@ export default function AnimationOnePage() {
         },
       );
     },
-    { scope: containerRef, dependencies: [triggerKey] },
+    { scope: containerRef, dependencies: [triggerKey, hasEntered] },
   );
 
   const handleReplay = () => {
@@ -1057,7 +1092,7 @@ export default function AnimationTwoPage() {
 
   useGSAP(
     () => {
-      const tags = gsap.utils.toArray<HTMLElement>(".assembler-tag");
+      const tags = Array.from(containerRef.current?.querySelectorAll<HTMLElement>(".assembler-tag") ?? []);
 
       const scroller =
         containerRef.current?.closest("#main-scroller") || undefined;
@@ -1388,7 +1423,7 @@ export default function AnimationThreePage() {
     () => {
       const scroller =
         containerRef.current?.closest("#main-scroller") || undefined;
-      const chars = gsap.utils.toArray<HTMLElement>(".reveal-char");
+      const chars = Array.from(containerRef.current?.querySelectorAll<HTMLElement>(".reveal-char") ?? []);
 
       // 1. Create the main horizontal translation tween
       const horizontalTween = gsap.to(textTrackRef.current, {
@@ -1535,7 +1570,7 @@ export default function AnimationThreePage() {
       />
 
       {/* Scroll Indicator */}
-      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 font-mono text-xs uppercase tracking-widest text-white/50 animate-bounce pointer-events-none flex flex-col items-center gap-1">
+      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-40 font-mono text-xs uppercase tracking-widest text-white/50 animate-bounce pointer-events-none flex flex-col items-center gap-1">
         <span>Scroll to Explore</span>
         <span className="text-[#e55b3c] font-bold text-sm">↓</span>
       </div>
@@ -1825,7 +1860,7 @@ Source Code URL: https://tweenlabs.xyz/code/05-horizontal-cards-showcase
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -1875,6 +1910,20 @@ const cardsData = [
 export default function AnimationFourPage() {
   const containerRef = useRef<HTMLDivElement>(null);
   const scrollSectionRef = useRef<HTMLDivElement>(null);
+  const floatTweenRef = useRef<gsap.core.Tween | null>(null);
+  const [isInView, setIsInView] = useState(false);
+
+  // IntersectionObserver: track viewport visibility for float animation
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsInView(entry.isIntersecting),
+      { threshold: 0.1 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   useGSAP(
     () => {
@@ -1895,7 +1944,7 @@ export default function AnimationFourPage() {
         },
       });
 
-      const cards = gsap.utils.toArray<HTMLElement>(".card-item");
+      const cards = Array.from(containerRef.current?.querySelectorAll<HTMLElement>(".card-item") ?? []);
 
       // Timeline Sequence:
       // 1. Staggered Entry: Cards enter from bottom one by one.
@@ -1960,19 +2009,22 @@ export default function AnimationFourPage() {
           );
       });
 
-      // Continuous idle floating/bouncing effect for cards when standing still
-      gsap.to(".card-inner", {
-        y: "-10px",
-        rotation: "1.5",
-        duration: 2.2,
-        ease: "sine.inOut",
-        yoyo: true,
-        repeat: -1,
-        stagger: {
-          each: 0.35,
-          from: "random",
-        },
-      });
+      // Infinite floating idle — only when in view
+      if (isInView) {
+        const cardInners = Array.from(containerRef.current?.querySelectorAll<HTMLElement>(".card-inner") ?? []);
+        floatTweenRef.current = gsap.to(cardInners, {
+          y: "-10px",
+          rotation: "1.5",
+          duration: 2.2,
+          ease: "sine.inOut",
+          yoyo: true,
+          repeat: -1,
+          stagger: {
+            each: 0.35,
+            from: "random",
+          },
+        });
+      }
 
       // Recalculate ScrollTrigger parameters once fonts load
       const handleLoad = () => {
@@ -1993,9 +2045,13 @@ export default function AnimationFourPage() {
       return () => {
         window.removeEventListener("load", handleLoad);
         clearTimeout(timer);
+        if (floatTweenRef.current) {
+          floatTweenRef.current.kill();
+          floatTweenRef.current = null;
+        }
       };
     },
-    { scope: containerRef },
+    { scope: containerRef, dependencies: [isInView] },
   );
 
   return (
@@ -2440,7 +2496,7 @@ export default function AnimationFivePage() {
 
             // Directly update DOM nodes for high-performance scroll transitions
             navItems.forEach((item) => {
-              const el = document.getElementById(`nav-${item}`);
+              const el = containerRef.current?.querySelector(`#nav-${item}`) as HTMLElement | null;
               if (el) {
                 if (item === active) {
                   el.classList.add(
@@ -2635,26 +2691,13 @@ export default function AnimationFivePage() {
     >
       {/* Tactile Noise Overlay */}
       <div
-        className="fixed inset-0 pointer-events-none z-[49] opacity-[0.035]"
+        className="absolute inset-0 pointer-events-none z-[49] opacity-[0.035]"
         style={{
           backgroundImage:
             "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E\")",
         }}
       />
 
-      {/* Floating Navigator */}
-      <div className="fixed right-8 top-1/2 -translate-y-1/2 z-50 hidden md:flex flex-col gap-4">
-        {navItems.map((item) => (
-          <button
-            key={item}
-            id={`nav-${item}`}
-            onClick={() => handleNavClick(item)}
-            className={`w-28 text-left border-2 border-black bg-white text-[#2a2a2a] px-3 py-1.5 font-mono font-bold text-[10px] uppercase rounded shadow-[2px_2px_0px_rgba(0,0,0,0.85)] cursor-pointer transform rotate-[2deg] transition-all duration-200 hover:scale-105 opacity-60 hover:opacity-100 ${hoverClasses[item]}`}
-          >
-            {item}
-          </button>
-        ))}
-      </div>
 
       {/* Main Pinned Scroll Section Container — perspective + preserve-3d enables rotateX fall-back */}
       <div
@@ -2666,6 +2709,20 @@ export default function AnimationFivePage() {
           transformStyle: "preserve-3d",
         }}
       >
+        {/* Floating Navigator — inside pinned section so it stays visible */}
+        <div className="absolute right-8 top-1/2 -translate-y-1/2 z-50 hidden md:flex flex-col gap-4">
+          {navItems.map((item) => (
+            <button
+              key={item}
+              id={`nav-${item}`}
+              onClick={() => handleNavClick(item)}
+              className={`w-28 text-left border-2 border-black bg-white text-[#2a2a2a] px-3 py-1.5 font-mono font-bold text-[10px] uppercase rounded shadow-[2px_2px_0px_rgba(0,0,0,0.85)] cursor-pointer transform rotate-[2deg] transition-all duration-200 hover:scale-105 opacity-60 hover:opacity-100 ${hoverClasses[item]}`}
+            >
+              {item}
+            </button>
+          ))}
+        </div>
+
         {/* PANEL 0: GREEN SECTION (Pulsars) */}
         <section className="panel-item panel-0 absolute inset-0 bg-[#0c9367] text-white flex flex-col justify-between p-8 md:p-16 z-10 select-none">
           <div className="flex justify-between items-center w-full">
@@ -3060,18 +3117,31 @@ Source Code URL: https://tweenlabs.xyz/code/07-kinetic-typography
 
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 gsap.registerPlugin(useGSAP);
 
 export default function KineticTypographyPage() {
   const containerRef = useRef<HTMLDivElement>(null);
   const textContainerRef = useRef<HTMLDivElement>(null);
+  const [isInView, setIsInView] = useState(false);
   const text = "KINETIC TYPE";
+
+  // IntersectionObserver: only bind mouse listeners when visible
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsInView(entry.isIntersecting),
+      { threshold: 0.1 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   useGSAP(
     (context, contextSafe) => {
-      if (!contextSafe) return;
+      if (!contextSafe || !isInView) return;
 
       const chars = textContainerRef.current?.querySelectorAll(".kinetic-char");
       if (!chars || chars.length === 0) return;
@@ -3153,7 +3223,7 @@ export default function KineticTypographyPage() {
         container?.removeEventListener("mouseleave", onMouseLeave);
       };
     },
-    { scope: containerRef },
+    { scope: containerRef, dependencies: [isInView] },
   );
 
   return (
@@ -3995,7 +4065,7 @@ export default function ScrollOrbitGallery() {
       />
 
       {/* Scroll Indicator HUD */}
-      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 font-mono text-xs uppercase tracking-widest text-[#2a2a2a]/60 animate-bounce pointer-events-none flex flex-col items-center gap-1">
+      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-40 font-mono text-xs uppercase tracking-widest text-[#2a2a2a]/60 animate-bounce pointer-events-none flex flex-col items-center gap-1">
         <span>Scroll Down to Assemble</span>
         <span className="text-[#e55b3c] font-bold text-sm">↓</span>
       </div>
@@ -4613,16 +4683,19 @@ function ScrambleText({
   text,
   speed = 25,
   delay = 0,
+  isActive = true,
 }: {
   text: string;
   speed?: number;
   delay?: number;
+  isActive?: boolean;
 }) {
   const [displayText, setDisplayText] = useState("");
   const chars =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%&*";
 
   useEffect(() => {
+    if (!isActive) return;
     let timer: NodeJS.Timeout;
     let frame = 0;
     const finalLength = text.length;
@@ -4654,7 +4727,7 @@ function ScrambleText({
       clearTimeout(timer);
       clearTimeout(delayTimer);
     };
-  }, [text, speed, delay]);
+  }, [text, speed, delay, isActive]);
 
   return <span>{displayText}</span>;
 }
@@ -4755,9 +4828,28 @@ export default function BlueprintScatterPage() {
   const heroRef = useRef<HTMLDivElement>(null);
   const floatingCardsRef = useRef<HTMLDivElement>(null);
   const floatTimelineRef = useRef<gsap.core.Timeline | null>(null);
+  const [hasEntered, setHasEntered] = useState(false);
+
+  // IntersectionObserver: only trigger animation when component enters viewport
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setHasEntered(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.2 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   useGSAP(
     () => {
+      if (!hasEntered) return;
       // 1. Page Load Intro Animation Sequence
       const introTl = gsap.timeline({
         defaults: { ease: "power4.out" },
@@ -4766,24 +4858,24 @@ export default function BlueprintScatterPage() {
       // Fade in hero titles
       introTl
         .fromTo(
-          ".hero-tagline",
+          ".bp-hero-tagline",
           { y: 20, opacity: 0 },
           { y: 0, opacity: 1, duration: 0.8 },
         )
         .fromTo(
-          ".hero-title-scramble",
+          ".bp-hero-title-scramble",
           { opacity: 0 },
           { opacity: 1, duration: 0.5 },
           "-=0.6",
         )
         .fromTo(
-          ".hero-subtitle",
+          ".bp-hero-subtitle",
           { y: 20, opacity: 0 },
           { y: 0, opacity: 1, duration: 0.8 },
           "-=0.5",
         )
         .fromTo(
-          ".hero-cta-btn",
+          ".bp-hero-cta-btn",
           { y: 20, opacity: 0 },
           { y: 0, opacity: 1, duration: 0.8 },
           "-=0.6",
@@ -4792,7 +4884,7 @@ export default function BlueprintScatterPage() {
       // Exploding / Scattering Cards Animation:
       // Cards start centered and stacked behind the hero text, then explode outwards.
       introTl.fromTo(
-        ".scatter-card",
+        ".bp-scatter-card",
         {
           x: (i, target) => {
             const rect = target.getBoundingClientRect();
@@ -4831,7 +4923,7 @@ export default function BlueprintScatterPage() {
       function startFloatingIdle() {
         floatTimelineRef.current = gsap.timeline({ repeat: -1 });
 
-        const cards = gsap.utils.toArray<HTMLElement>(".scatter-card");
+        const cards = Array.from(containerRef.current?.querySelectorAll<HTMLElement>(".bp-scatter-card") ?? []);
         cards.forEach((card, idx) => {
           const offset = idx % 2 === 0 ? 1 : -1;
           gsap.to(card, {
@@ -4850,7 +4942,7 @@ export default function BlueprintScatterPage() {
         if (floatTimelineRef.current) floatTimelineRef.current.kill();
       };
     },
-    { scope: containerRef },
+    { scope: containerRef, dependencies: [hasEntered] },
   );
 
   // Custom mouse-move/hover functions for cards
@@ -4909,17 +5001,17 @@ export default function BlueprintScatterPage() {
       >
         {/* Central Hero Text Area */}
         <div className="absolute bottom-[4vh] md:bottom-[6vh] left-1/2 -translate-x-1/2 z-20 text-center w-full max-w-2xl px-6 pointer-events-none">
-          <span className="hero-tagline inline-block font-mono text-[9px] tracking-[0.2em] uppercase text-[#f1b333] font-black bg-[#2a2a2a] text-white px-3 py-1 rounded-full mb-4">
+          <span className="bp-hero-tagline inline-block font-mono text-[9px] tracking-[0.2em] uppercase text-[#f1b333] font-black bg-[#2a2a2a] text-white px-3 py-1 rounded-full mb-4">
             Vetted Mobile Engineers
           </span>
-          <h1 className="hero-title-scramble font-serif font-black text-4xl md:text-6xl text-[#2a2a2a] leading-[1.05] tracking-tighter uppercase mb-4">
-            <ScrambleText text="Hire Mobile Devs" delay={600} />
+          <h1 className="bp-hero-title-scramble font-serif font-black text-4xl md:text-6xl text-[#2a2a2a] leading-[1.05] tracking-tighter uppercase mb-4">
+            <ScrambleText text="Hire Mobile Devs" delay={600} isActive={hasEntered} />
             <br />
             <span className="text-[#f1b333]">
-              <ScrambleText text="Differently" delay={1200} />
+              <ScrambleText text="Differently" delay={1200} isActive={hasEntered} />
             </span>
           </h1>
-          <p className="hero-subtitle font-mono text-[11px] md:text-xs text-[#2a2a2a]/70 max-w-lg mx-auto leading-relaxed mb-8 pointer-events-auto">
+          <p className="bp-hero-subtitle font-mono text-[11px] md:text-xs text-[#2a2a2a]/70 max-w-lg mx-auto leading-relaxed mb-8 pointer-events-auto">
             Engineers who own outcomes — CTO-screened with a ≤ 5% pass rate.
             Ready to scale your product immediately.
           </p>
@@ -4933,7 +5025,7 @@ export default function BlueprintScatterPage() {
           {talentData.map((card, idx) => (
             <div
               key={card.id}
-              className={`scatter-card absolute w-[36vw] md:w-[13.5vw] aspect-[3/4] pointer-events-auto select-none rounded-3xl border-2 border-[#2a2a2a] bg-white p-3 shadow-[4px_4px_0px_#2a2a2a] cursor-pointer transition-shadow duration-200`}
+              className={`bp-scatter-card absolute w-[36vw] md:w-[13.5vw] aspect-[3/4] pointer-events-auto select-none rounded-3xl border-2 border-[#2a2a2a] bg-white p-3 shadow-[4px_4px_0px_#2a2a2a] cursor-pointer transition-shadow duration-200`}
               style={{
                 left: card.left,
                 top: card.top,
@@ -5219,16 +5311,19 @@ function ScrambleText({
   text,
   speed = 25,
   delay = 0,
+  isActive = true,
 }: {
   text: string;
   speed?: number;
   delay?: number;
+  isActive?: boolean;
 }) {
   const [displayText, setDisplayText] = useState("");
   const chars =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%&*";
 
   useEffect(() => {
+    if (!isActive) return;
     let timer: NodeJS.Timeout;
     let frame = 0;
     const finalLength = text.length;
@@ -5260,7 +5355,7 @@ function ScrambleText({
       clearTimeout(timer);
       clearTimeout(delayTimer);
     };
-  }, [text, speed, delay]);
+  }, [text, speed, delay, isActive]);
 
   return <span>{displayText}</span>;
 }
@@ -5353,10 +5448,29 @@ export default function CircularScatterPage() {
   const heroRef = useRef<HTMLDivElement>(null);
   const floatingCardsRef = useRef<HTMLDivElement>(null);
   const floatTimelineRef = useRef<gsap.core.Timeline | null>(null);
+  const [hasEntered, setHasEntered] = useState(false);
+
+  // IntersectionObserver: only trigger animation when component enters viewport
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setHasEntered(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.2 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   useGSAP(
     () => {
-      const cards = gsap.utils.toArray<HTMLElement>(".scatter-card");
+      if (!hasEntered) return;
+      const cards = Array.from(containerRef.current?.querySelectorAll<HTMLElement>(".cs-scatter-card") ?? []);
 
       // Compute all coordinates relative to screen center while cards are in their initial CSS positions
       const cardParams = cards.map((card) => {
@@ -5404,7 +5518,7 @@ export default function CircularScatterPage() {
       // Cards appear one-by-one in the exact center of the screen
       talentData.forEach((card, idx) => {
         introTl.to(
-          `.scatter-card-${idx}`,
+          `.cs-scatter-card-${idx}`,
           {
             opacity: 1,
             scale: 1.02,
@@ -5458,25 +5572,25 @@ export default function CircularScatterPage() {
       // Fade/Slide in the Central Hero text at the same time
       introTl
         .fromTo(
-          ".hero-tagline",
+          ".cs-hero-tagline",
           { y: 30, opacity: 0 },
           { y: 0, opacity: 1, duration: 1.2 },
           scatterStart,
         )
         .fromTo(
-          ".hero-title-scramble",
+          ".cs-hero-title-scramble",
           { opacity: 0 },
           { opacity: 1, duration: 0.8 },
           scatterStart + 0.2,
         )
         .fromTo(
-          ".hero-subtitle",
+          ".cs-hero-subtitle",
           { y: 30, opacity: 0 },
           { y: 0, opacity: 1, duration: 1.2 },
           scatterStart + 0.4,
         )
         .fromTo(
-          ".hero-cta-btn",
+          ".cs-hero-cta-btn",
           { y: 30, opacity: 0 },
           { y: 0, opacity: 1, duration: 1.2 },
           scatterStart + 0.6,
@@ -5504,7 +5618,7 @@ export default function CircularScatterPage() {
         if (floatTimelineRef.current) floatTimelineRef.current.kill();
       };
     },
-    { scope: containerRef },
+    { scope: containerRef, dependencies: [hasEntered] },
   );
 
   // Custom mouse-move/hover functions for cards
@@ -5560,17 +5674,17 @@ export default function CircularScatterPage() {
       >
         {/* Central Hero Text Area (Bottom Centered) */}
         <div className="absolute bottom-[4vh] md:bottom-[6vh] left-1/2 -translate-x-1/2 z-20 text-center w-full max-w-2xl px-6 pointer-events-none">
-          <span className="hero-tagline inline-block font-mono text-[9px] tracking-[0.2em] uppercase text-[#f1b333] font-black bg-[#2a2a2a] text-white px-3 py-1 rounded-full mb-4">
+          <span className="cs-hero-tagline inline-block font-mono text-[9px] tracking-[0.2em] uppercase text-[#f1b333] font-black bg-[#2a2a2a] text-white px-3 py-1 rounded-full mb-4">
             Vetted Mobile Engineers
           </span>
-          <h1 className="hero-title-scramble font-serif font-black text-4xl md:text-6xl text-[#2a2a2a] leading-[1.05] tracking-tighter uppercase mb-4">
-            <ScrambleText text="Hire Mobile Devs" delay={2800} />
+          <h1 className="cs-hero-title-scramble font-serif font-black text-4xl md:text-6xl text-[#2a2a2a] leading-[1.05] tracking-tighter uppercase mb-4">
+            <ScrambleText text="Hire Mobile Devs" delay={2800} isActive={hasEntered} />
             <br />
             <span className="text-[#f1b333]">
-              <ScrambleText text="Differently" delay={3400} />
+              <ScrambleText text="Differently" delay={3400} isActive={hasEntered} />
             </span>
           </h1>
-          <p className="hero-subtitle font-mono text-[11px] md:text-xs text-[#2a2a2a]/70 max-w-lg mx-auto leading-relaxed mb-8 pointer-events-auto">
+          <p className="cs-hero-subtitle font-mono text-[11px] md:text-xs text-[#2a2a2a]/70 max-w-lg mx-auto leading-relaxed mb-8 pointer-events-auto">
             Engineers who own outcomes — CTO-screened with a ≤ 5% pass rate.
             Ready to scale your product immediately.
           </p>
@@ -5584,7 +5698,7 @@ export default function CircularScatterPage() {
           {talentData.map((card, idx) => (
             <div
               key={card.id}
-              className={`scatter-card scatter-card-${idx} absolute w-[36vw] md:w-[13.5vw] aspect-[3/4] pointer-events-auto select-none rounded-3xl border-2 border-[#2a2a2a] bg-white p-3 shadow-[4px_4px_0px_#2a2a2a] cursor-pointer transition-shadow duration-200`}
+              className={`cs-scatter-card cs-scatter-card-${idx} absolute w-[36vw] md:w-[13.5vw] aspect-[3/4] pointer-events-auto select-none rounded-3xl border-2 border-[#2a2a2a] bg-white p-3 shadow-[4px_4px_0px_#2a2a2a] cursor-pointer transition-shadow duration-200`}
               style={{
                 left: card.left,
                 top: card.top,
@@ -7061,7 +7175,7 @@ Source Code URL: https://tweenlabs.xyz/code/13-fluid-cursor
 
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 
 gsap.registerPlugin(useGSAP);
 
@@ -7076,6 +7190,19 @@ export default function FluidCursorPage() {
   const mouseCoords = useRef({ x: 0, y: 0 });
   const isHovered = useRef(false);
   const activeTargetRef = useRef<HTMLElement | null>(null);
+  const [isInView, setIsInView] = useState(false);
+
+  // IntersectionObserver: only activate cursor effects when component is in viewport
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsInView(entry.isIntersecting),
+      { threshold: 0.1 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   const { contextSafe } = useGSAP(
     () => {
@@ -7131,10 +7258,11 @@ export default function FluidCursorPage() {
         }
       };
 
+      if (!isInView) return;
       window.addEventListener("mousemove", updateCursor);
       return () => window.removeEventListener("mousemove", updateCursor);
     },
-    { scope: containerRef },
+    { scope: containerRef, dependencies: [isInView] },
   );
 
   // Handle snapping mouse enter
@@ -7230,7 +7358,7 @@ export default function FluidCursorPage() {
 
   return (
     <div
-      className="relative min-h-screen bg-[#f0eadf] text-[#2a2a2a] flex flex-col items-center justify-center p-8 selection:bg-[#f1b333] selection:text-black overflow-hidden cursor-none"
+      className={`relative min-h-screen bg-[#f0eadf] text-[#2a2a2a] flex flex-col items-center justify-center p-8 selection:bg-[#f1b333] selection:text-black overflow-hidden ${isInView ? 'cursor-none' : ''}`}
       ref={containerRef}
     >
       <div
@@ -7245,11 +7373,12 @@ export default function FluidCursorPage() {
       <div
         ref={dotRef}
         className="fixed top-0 left-0 w-3 h-3 bg-[#2a2a2a] rounded-full pointer-events-none z-[9999] transform -translate-x-1/2 -translate-y-1/2"
+        style={{ display: isInView ? 'block' : 'none' }}
       />
       <div
         ref={ringRef}
         className="fixed top-0 left-0 w-8 h-8 border-3 border-[#2a2a2a] rounded-full pointer-events-none z-[9998] flex items-center justify-center bg-transparent"
-        style={{ transformOrigin: "top left" }}
+        style={{ transformOrigin: "top left", display: isInView ? 'flex' : 'none' }}
       >
         <span className="cursor-label absolute pointer-events-none font-mono text-[9px] font-black bg-[#f1b333] text-black border-2 border-[#2a2a2a] px-2 py-0.5 rounded shadow-[1.5px_1.5px_0px_#2a2a2a] uppercase opacity-0 scale-75 tracking-widest whitespace-nowrap z-50 select-none" />
       </div>
@@ -7864,7 +7993,7 @@ export default function BentoGridPage() {
         }}
       />
       <div
-        className="fixed inset-0 pointer-events-none z-10 opacity-[0.035]"
+        className="absolute inset-0 pointer-events-none z-10 opacity-[0.035]"
         style={{
           backgroundImage:
             "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E\")",
@@ -8280,9 +8409,11 @@ Source Code URL: https://tweenlabs.xyz/code/15-3d-carousel
 
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useCallback, useEffect, useRef, useState } from "react";
+import type { WheelEvent as ReactWheelEvent } from "react";
 
-gsap.registerPlugin(useGSAP);
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 interface CarouselItem {
   id: number;
@@ -8374,6 +8505,19 @@ export default function ThreeDCarouselPage() {
 
   const [activeIdx, setActiveIdx] = useState(0);
   const [detailIdx, setDetailIdx] = useState<number | null>(null);
+  const [isInView, setIsInView] = useState(false);
+
+  // IntersectionObserver: only activate keyboard listener when component is in viewport
+  useEffect(() => {
+    const el = wrapperRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsInView(entry.isIntersecting),
+      { threshold: 0.3 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   // Dragging and scrolling state references
   const dragRef = useRef({
@@ -8399,6 +8543,7 @@ export default function ThreeDCarouselPage() {
   useGSAP(
     () => {
       const updatePositions = () => {
+        if (!isInView) return;
         const state = dragRef.current;
         const numCards = items.length;
 
@@ -8491,9 +8636,26 @@ export default function ThreeDCarouselPage() {
       };
 
       gsap.ticker.add(updatePositions);
-      return () => gsap.ticker.remove(updatePositions);
+
+      // Pin the carousel dome so it stays fixed when embedded in another page.
+      // The carousel itself uses onWheel to rotate cards (not ScrollTrigger scrub).
+      const scroller =
+        wrapperRef.current?.closest("#main-scroller") || undefined;
+
+      ScrollTrigger.create({
+        trigger: wrapperRef.current,
+        scroller: scroller,
+        pin: true,
+        start: "top top",
+        end: "+=2000", // Enough scroll distance for carousel interaction
+        pinSpacing: true,
+      });
+
+      return () => {
+        gsap.ticker.remove(updatePositions);
+      };
     },
-    { scope: wrapperRef, dependencies: [detailIdx] },
+    { scope: wrapperRef, dependencies: [detailIdx, isInView] },
   );
 
   // Handle Drag / Pointer Events
@@ -8566,15 +8728,19 @@ export default function ThreeDCarouselPage() {
     state.velocity = 0;
   };
 
-  // Handle Wheel Scrolling
-  const handleWheel = (e: React.WheelEvent) => {
+  // Handle Wheel Scrolling — native event for { passive: false } support
+  const handleWheel = useCallback((e: WheelEvent) => {
     if (detailIdx !== null) return;
+
+    // Prevent outer page from scrolling while interacting with carousel
+    e.preventDefault();
+    e.stopPropagation();
 
     const state = dragRef.current;
     const numCards = items.length;
 
     // Scroll amount converts to small delta offset
-    const delta = e.deltaY * 0.0015;
+    const delta = e.deltaY * 0.006;
     state.rotation = Math.max(
       0,
       Math.min(numCards - 1, state.rotation + delta),
@@ -8588,7 +8754,15 @@ export default function ThreeDCarouselPage() {
       ease: "power2.out",
       overwrite: "auto",
     });
-  };
+  }, [detailIdx]);
+
+  // Attach wheel listener with { passive: false } to allow preventDefault
+  useEffect(() => {
+    const el = wrapperRef.current;
+    if (!el) return;
+    el.addEventListener("wheel", handleWheel, { passive: false });
+    return () => el.removeEventListener("wheel", handleWheel);
+  }, [handleWheel]);
 
   const closeDetail = useCallback(() => {
     if (detailIdx === null) return;
@@ -8622,6 +8796,8 @@ export default function ThreeDCarouselPage() {
 
   // Keyboard navigation
   useEffect(() => {
+    if (!isInView) return;
+
     const handleKeyDown = (e: KeyboardEvent) => {
       if (detailIdx !== null) {
         if (e.key === "Escape") {
@@ -8644,7 +8820,7 @@ export default function ThreeDCarouselPage() {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [detailIdx, closeDetail]);
+  }, [detailIdx, closeDetail, isInView]);
 
   // Card Mouse Hover 3D Tilt Effect
   const handleCardMouseMove = (e: React.MouseEvent, index: number) => {
@@ -8766,7 +8942,6 @@ export default function ThreeDCarouselPage() {
   return (
     <div
       ref={wrapperRef}
-      onWheel={handleWheel}
       className="relative w-full h-screen overflow-hidden bg-[#f0eadf] text-[#2a2a2a] selection:bg-[#f1b333] selection:text-black font-sans transition-colors duration-500"
     >
       {/* Dynamic tactile noise overlay */}
@@ -10190,7 +10365,7 @@ Source Code URL: https://tweenlabs.xyz/code/17-scroll-cards-01
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -10246,11 +10421,11 @@ const cardsData: CardItem[] = [
 
 export default function ScrollCardsPage() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [activeStep, setActiveStep] = useState(0);
+
 
   useGSAP(
     () => {
-      const cardEls = gsap.utils.toArray<HTMLElement>(".scroll-card-item");
+      const cardEls = Array.from(containerRef.current?.querySelectorAll<HTMLElement>(".scroll-card-item") ?? []);
       if (cardEls.length === 0) return;
 
       const scroller =
@@ -10271,83 +10446,13 @@ export default function ScrollCardsPage() {
           end: `+=${pinDuration}`,
           pin: true,
           pinSpacing: false,
-          onToggle: (self) => {
-            if (self.isActive) {
-              setActiveStep(index);
-            }
-          },
+
         });
       });
     },
     { scope: containerRef },
   );
 
-  const { contextSafe } = useGSAP({ scope: containerRef });
-
-  // 3D Card Perspective Tilt
-  const handleMouseMove = contextSafe((e: React.MouseEvent<HTMLDivElement>) => {
-    const card = e.currentTarget;
-    const rect = card.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
-    // Set custom coordinates on card for pointer spotlight
-    card.style.setProperty("--mouse-x", `${x}px`);
-    card.style.setProperty("--mouse-y", `${y}px`);
-
-    const rotateY = ((x - rect.width / 2) / (rect.width / 2)) * 6;
-    const rotateX = -((y - rect.height / 2) / (rect.height / 2)) * 6;
-
-    gsap.to(card, {
-      rotateX: rotateX,
-      rotateY: rotateY,
-      transformPerspective: 1000,
-      ease: "power1.out",
-      duration: 0.35,
-      overwrite: "auto",
-    });
-
-    // Image offset push
-    const img = card.querySelector(".inner-img-frame img");
-    if (img) {
-      const moveX = ((x - rect.width / 2) / rect.width) * 12;
-      const moveY = ((y - rect.height / 2) / rect.height) * 12;
-      gsap.to(img, {
-        x: moveX,
-        y: moveY,
-        scale: 1.06,
-        duration: 0.4,
-        ease: "power1.out",
-        overwrite: "auto",
-      });
-    }
-  });
-
-  // Reset 3D Tilt
-  const handleMouseLeave = contextSafe(
-    (e: React.MouseEvent<HTMLDivElement>) => {
-      const card = e.currentTarget;
-      gsap.to(card, {
-        rotateX: 0,
-        rotateY: 0,
-        ease: "elastic.out(1.1, 0.4)",
-        duration: 0.8,
-        overwrite: "auto",
-      });
-
-      const img = card.querySelector(".inner-img-frame img");
-      if (img) {
-        gsap.to(img, {
-          x: 0,
-          y: 0,
-          scale: 1.0,
-          duration: 0.6,
-          ease: "power2.out",
-          overwrite: "auto",
-        });
-      }
-    },
-  );
 
   return (
     <div
@@ -10363,49 +10468,14 @@ export default function ScrollCardsPage() {
         }}
       />
       <div
-        className="fixed inset-0 pointer-events-none z-10 opacity-[0.035]"
+        className="absolute inset-0 pointer-events-none z-10 opacity-[0.035]"
         style={{
           backgroundImage:
             "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E\")",
         }}
       />
 
-      {/* Page Heading readout (absolute right) */}
-      <div className="absolute top-6 right-6 z-30 flex flex-col items-end gap-1 select-none text-right">
-        <span className="font-mono text-[10px] font-bold text-zinc-500 uppercase tracking-widest border border-zinc-300 bg-white px-2 py-0.5 rounded">
-          Component 16
-        </span>
-        <h1 className="font-serif font-black text-lg uppercase text-[#2a2a2a]">
-          Stacking Cards
-        </h1>
-      </div>
 
-      {/* Left-Side Fixed Progress Gauge (Only desktop) */}
-      <div className="hidden lg:flex fixed left-10 top-1/2 -translate-y-1/2 z-40 flex-col items-center gap-6 select-none pointer-events-none">
-        <div className="w-[4px] h-48 bg-zinc-300 relative rounded">
-          {/* Active progress fill line */}
-          <div
-            className="absolute top-0 left-0 w-full bg-[#2a2a2a] rounded transition-all duration-300"
-            style={{
-              height: `${(activeStep / (cardsData.length - 1)) * 100}%`,
-            }}
-          />
-        </div>
-        <div className="flex flex-col gap-5 items-center font-mono text-[10px] font-bold">
-          {cardsData.map((card, idx) => (
-            <div
-              key={idx}
-              className={`w-9 h-9 rounded-full border-2 border-[#2a2a2a] flex items-center justify-center transition-all duration-300 shadow-[2px_2px_0px_#2a2a2a] ${
-                idx === activeStep
-                  ? `${card.themeColor} text-white scale-110`
-                  : "bg-white text-zinc-400"
-              }`}
-            >
-              0{idx + 1}
-            </div>
-          ))}
-        </div>
-      </div>
 
       {/* Cards List Section directly (no intro or outro sections) */}
       <section className="relative w-full flex flex-col z-20 pt-28 pb-48">
@@ -10416,22 +10486,11 @@ export default function ScrollCardsPage() {
             id={`card-${index + 1}`}
           >
             <div
-              onMouseMove={handleMouseMove}
-              onMouseLeave={handleMouseLeave}
-              className={`scroll-card-inner border-3 border-[#2a2a2a] shadow-[6px_6px_0px_#2a2a2a] w-full max-w-4xl p-6 md:p-10 flex flex-col md:flex-row gap-6 md:gap-10 items-center select-none cursor-pointer rounded-2xl will-change-transform relative overflow-hidden ${card.bgColor} ${card.textColor}`}
+              className={`scroll-card-inner border-3 border-[#2a2a2a] shadow-[6px_6px_0px_#2a2a2a] w-full max-w-4xl p-6 md:p-10 flex flex-col md:flex-row gap-6 md:gap-10 items-center select-none rounded-2xl relative overflow-hidden ${card.bgColor} ${card.textColor}`}
               style={{
                 top: `${index * 44}px`,
-                transformStyle: "preserve-3d",
-                transform: "perspective(1000px) rotateX(0deg) rotateY(0deg)",
               }}
             >
-              {/* Radial Pointer spotlight glow */}
-              <div
-                className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl z-0"
-                style={{
-                  background: `radial-gradient(280px circle at var(--mouse-x, 0px) var(--mouse-y, 0px), rgba(${card.accentHex}, 0.08), transparent 85%)`,
-                }}
-              />
 
               {/* Step info on left */}
               <div className="flex-1 flex flex-col gap-3 relative z-10">
@@ -10471,7 +10530,6 @@ export default function ScrollCardsPage() {
               {/* Framed Image on right */}
               <div
                 className="inner-img-frame w-full md:w-80 h-48 md:h-56 relative rounded-xl border-3 border-[#2a2a2a] overflow-hidden shadow-[4px_4px_0px_#2a2a2a] flex-shrink-0 z-10"
-                style={{ transform: "translateZ(15px)" }}
               >
                 <img
                   src={card.imgUrl}
@@ -10807,7 +10865,7 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { MotionPathPlugin } from "gsap/all";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger, MotionPathPlugin);
 
@@ -10916,17 +10974,18 @@ const networkData: NetworkItem[] = [
 
 export default function StringLinePage() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [currentProgress, setCurrentProgress] = useState(0);
+  const progressRef = useRef(0);
+  const progressDisplayRef = useRef<HTMLSpanElement>(null);
 
   useGSAP(
     () => {
-      const path = document.querySelector(
+      const path = containerRef.current?.querySelector(
         "#network-path",
       ) as SVGPathElement | null;
-      const dot = document.querySelector(
+      const dot = containerRef.current?.querySelector(
         ".moving-dot",
       ) as HTMLDivElement | null;
-      const cards = document.querySelectorAll(".im-card");
+      const cards = containerRef.current?.querySelectorAll(".im-card") ?? [];
 
       if (!path) return;
       const pathLength = path.getTotalLength();
@@ -10987,7 +11046,10 @@ export default function StringLinePage() {
           pin: true,
           onUpdate: (self) => {
             const progress = self.progress;
-            setCurrentProgress(Math.round(progress * 100));
+            progressRef.current = Math.round(progress * 100);
+            if (progressDisplayRef.current) {
+              progressDisplayRef.current.textContent = String(progressRef.current);
+            }
 
             const pastelColors = [
               "#FFE5EC", // soft pink
@@ -11100,7 +11162,7 @@ export default function StringLinePage() {
         {/* Console readout display (Top center/right) */}
         <div className="absolute top-6 right-6 z-30 font-mono text-[9px] md:text-[10px] font-bold text-zinc-500 text-right flex flex-col gap-1">
           <span>[ SYSTEM: TRACKING ]</span>
-          <span>PATH PROGRESS: {currentProgress}%</span>
+          <span>PATH PROGRESS: <span ref={progressDisplayRef}>0</span>%</span>
         </div>
 
         {/* Decorative typography background */}
@@ -11114,7 +11176,7 @@ export default function StringLinePage() {
           id="team-svg"
           className="absolute inset-0 w-full h-full z-0"
           viewBox="0 0 1600 900"
-          preserveAspectRatio="xMidYMid slice"
+          preserveAspectRatio="none"
           fill="none"
         >
           <path

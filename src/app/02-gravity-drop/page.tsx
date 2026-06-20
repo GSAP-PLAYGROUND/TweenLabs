@@ -2,17 +2,36 @@
 
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 gsap.registerPlugin(useGSAP);
 
 export default function AnimationOnePage() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [triggerKey, setTriggerKey] = useState(0);
+  const [hasEntered, setHasEntered] = useState(false);
   const text = "GRAVITY DROP";
+
+  // IntersectionObserver: only trigger animation when component enters viewport
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setHasEntered(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.3 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   useGSAP(
     () => {
+      if (!hasEntered) return;
       // Animate the letters falling down
       gsap.fromTo(
         ".falling-letter",
@@ -36,7 +55,7 @@ export default function AnimationOnePage() {
         },
       );
     },
-    { scope: containerRef, dependencies: [triggerKey] },
+    { scope: containerRef, dependencies: [triggerKey, hasEntered] },
   );
 
   const handleReplay = () => {

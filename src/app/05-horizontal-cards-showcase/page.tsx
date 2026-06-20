@@ -3,7 +3,7 @@
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -53,6 +53,20 @@ const cardsData = [
 export default function AnimationFourPage() {
   const containerRef = useRef<HTMLDivElement>(null);
   const scrollSectionRef = useRef<HTMLDivElement>(null);
+  const floatTweenRef = useRef<gsap.core.Tween | null>(null);
+  const [isInView, setIsInView] = useState(false);
+
+  // IntersectionObserver: track viewport visibility for float animation
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsInView(entry.isIntersecting),
+      { threshold: 0.1 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   useGSAP(
     () => {
@@ -138,19 +152,22 @@ export default function AnimationFourPage() {
           );
       });
 
-      const cardInners = Array.from(containerRef.current?.querySelectorAll<HTMLElement>(".card-inner") ?? []);
-      gsap.to(cardInners, {
-        y: "-10px",
-        rotation: "1.5",
-        duration: 2.2,
-        ease: "sine.inOut",
-        yoyo: true,
-        repeat: -1,
-        stagger: {
-          each: 0.35,
-          from: "random",
-        },
-      });
+      // Infinite floating idle — only when in view
+      if (isInView) {
+        const cardInners = Array.from(containerRef.current?.querySelectorAll<HTMLElement>(".card-inner") ?? []);
+        floatTweenRef.current = gsap.to(cardInners, {
+          y: "-10px",
+          rotation: "1.5",
+          duration: 2.2,
+          ease: "sine.inOut",
+          yoyo: true,
+          repeat: -1,
+          stagger: {
+            each: 0.35,
+            from: "random",
+          },
+        });
+      }
 
       // Recalculate ScrollTrigger parameters once fonts load
       const handleLoad = () => {
@@ -171,9 +188,13 @@ export default function AnimationFourPage() {
       return () => {
         window.removeEventListener("load", handleLoad);
         clearTimeout(timer);
+        if (floatTweenRef.current) {
+          floatTweenRef.current.kill();
+          floatTweenRef.current = null;
+        }
       };
     },
-    { scope: containerRef },
+    { scope: containerRef, dependencies: [isInView] },
   );
 
   return (

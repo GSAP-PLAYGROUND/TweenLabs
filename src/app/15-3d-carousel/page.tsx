@@ -135,6 +135,7 @@ export default function ThreeDCarouselPage() {
   useGSAP(
     () => {
       const updatePositions = () => {
+        if (!isInView) return;
         const state = dragRef.current;
         const numCards = items.length;
 
@@ -246,7 +247,7 @@ export default function ThreeDCarouselPage() {
         gsap.ticker.remove(updatePositions);
       };
     },
-    { scope: wrapperRef, dependencies: [detailIdx] },
+    { scope: wrapperRef, dependencies: [detailIdx, isInView] },
   );
 
   // Handle Drag / Pointer Events
@@ -319,8 +320,8 @@ export default function ThreeDCarouselPage() {
     state.velocity = 0;
   };
 
-  // Handle Wheel Scrolling
-  const handleWheel = (e: React.WheelEvent) => {
+  // Handle Wheel Scrolling — native event for { passive: false } support
+  const handleWheel = useCallback((e: WheelEvent) => {
     if (detailIdx !== null) return;
 
     // Prevent outer page from scrolling while interacting with carousel
@@ -345,7 +346,15 @@ export default function ThreeDCarouselPage() {
       ease: "power2.out",
       overwrite: "auto",
     });
-  };
+  }, [detailIdx]);
+
+  // Attach wheel listener with { passive: false } to allow preventDefault
+  useEffect(() => {
+    const el = wrapperRef.current;
+    if (!el) return;
+    el.addEventListener("wheel", handleWheel, { passive: false });
+    return () => el.removeEventListener("wheel", handleWheel);
+  }, [handleWheel]);
 
   const closeDetail = useCallback(() => {
     if (detailIdx === null) return;
@@ -525,7 +534,6 @@ export default function ThreeDCarouselPage() {
   return (
     <div
       ref={wrapperRef}
-      onWheel={handleWheel}
       className="relative w-full h-screen overflow-hidden bg-[#f0eadf] text-[#2a2a2a] selection:bg-[#f1b333] selection:text-black font-sans transition-colors duration-500"
     >
       {/* Dynamic tactile noise overlay */}
