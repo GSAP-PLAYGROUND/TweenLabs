@@ -4,58 +4,6 @@ import path from "path";
 import { animations } from "@/data/animations";
 import { isAuthenticated } from "@/lib/auth-server";
 
-const componentNamesMap: Record<string, string> = {
-  "01-showup-cards": "FlipCards",
-  "showup-cards": "FlipCards",
-  "02-gravity-drop": "GravityDrop",
-  "gravity-drop": "GravityDrop",
-  "03-scroll-tags-assembly": "ScrollTags",
-  "scroll-tags-assembly": "ScrollTags",
-  "04-inward-outward-border-reveal": "BorderReveal",
-  "inward-outward-border-reveal": "BorderReveal",
-  "05-horizontal-cards-showcase": "HorizontalCards",
-  "horizontal-cards-showcase": "HorizontalCards",
-  "06-page-change-animation": "PageTransition",
-  "page-change-animation": "PageTransition",
-  "07-kinetic-typography": "KineticText",
-  "kinetic-typography": "KineticText",
-  "08-scroll-orbit-gallery": "OrbitGallery",
-  "scroll-orbit-gallery": "OrbitGallery",
-  "09-blueprint-scatter": "Blueprint",
-  "blueprint-scatter": "Blueprint",
-  "10-circular-scatter": "CircularScatter",
-  "circular-scatter": "CircularScatter",
-  "11-screen-skill-fit": "SkillFit",
-  "screen-skill-fit": "SkillFit",
-  "12-magnetic-dock": "MagneticDock",
-  "magnetic-dock": "MagneticDock",
-  "13-fluid-cursor": "FluidCursor",
-  "fluid-cursor": "FluidCursor",
-  "14-bento-grid-flip": "BentoGrid",
-  "bento-grid-flip": "BentoGrid",
-  "15-3d-carousel": "Carousel3D",
-  "3d-carousel": "Carousel3D",
-  "16-morphing-accordion": "Accordion",
-  "morphing-accordion": "Accordion",
-  "17-scroll-cards-01": "ScrollCards",
-  "scroll-cards-01": "ScrollCards",
-  "18-string-line": "StringLine",
-  "string-line": "StringLine",
-};
-
-// Helper to convert slug to clean PascalCase component name
-const getClassName = (slug: string) => {
-  const cleanSlug = slug.toLowerCase().trim();
-  if (componentNamesMap[cleanSlug]) {
-    return componentNamesMap[cleanSlug];
-  }
-  const clean = cleanSlug.replace(/^\d+[a-z]?[-_]/, "");
-  return clean
-    .split("-")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join("");
-};
-
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ slug: string }> },
@@ -82,6 +30,7 @@ export async function GET(
       const folderName = anim.route.replace("/animations/", "");
       return {
         name: anim.name,
+        componentName: anim.componentName,
         slug: folderName,
         cleanSlug: folderName.replace(/^\d+[a-z]?[-_]/, ""),
         description: anim.description,
@@ -99,9 +48,8 @@ export async function GET(
       const pagePath = path.join(animationsDir, folderName, "page.tsx");
       try {
         const pageCode = fs.readFileSync(pagePath, "utf-8");
-        const componentName = getClassName(folderName);
         files.push({
-          name: `${componentName}.tsx`,
+          name: `${anim.componentName}.tsx`,
           content: pageCode,
         });
       } catch (err) {
@@ -117,7 +65,7 @@ export async function GET(
     });
   }
 
-  // Find the animation (supporting both exact folder slug "11-magnetic-dock" and clean slug "magnetic-dock")
+  // Find the animation (supporting both exact folder slug "01-showup-cards" and clean slug "showup-cards")
   const anim = animations.find((a) => {
     const routeName = a.route.replace("/animations/", "");
     const cleanRouteName = routeName.replace(/^\d+[a-z]?[-_]/, "");
@@ -143,16 +91,15 @@ export async function GET(
     );
   }
 
-  const componentName = getClassName(folderName);
   const dependencies = ["gsap", "@gsap/react"];
 
   return NextResponse.json({
     name: folderName,
-    className: componentName,
+    className: anim.componentName,
     dependencies,
     files: [
       {
-        name: `${componentName}.tsx`,
+        name: `${anim.componentName}.tsx`,
         content: pageCode,
       },
     ],
