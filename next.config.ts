@@ -1,6 +1,28 @@
 import type { NextConfig } from "next";
 import path from "path";
 
+// Old slug → new route mapping for SEO redirects (one-time, won't grow)
+const oldToNew: Record<string, string> = {
+  "01-showup-cards": "FlipCards",
+  "02-3d-carousel": "Carousel3D",
+  "03-screen-skill-fit": "SkillFit",
+  "04-page-change-animation": "PageTransition",
+  "05-horizontal-cards-showcase": "HorizontalCards",
+  "06-circular-scatter": "CircularScatter",
+  "07-fluid-cursor": "FluidCursor",
+  "08-blueprint-scatter": "Blueprint",
+  "09-scroll-cards-01": "ScrollCards",
+  "10-scroll-tags-assembly": "ScrollTags",
+  "11-scroll-orbit-gallery": "OrbitGallery",
+  "12-gravity-drop": "GravityDrop",
+  "13-string-line": "StringLine",
+  "14-inward-outward-border-reveal": "BorderReveal",
+  "15-kinetic-typography": "KineticText",
+  "16-magnetic-dock": "MagneticDock",
+  "17-bento-grid-flip": "BentoGrid",
+  "18-morphing-accordion": "Accordion",
+};
+
 const nextConfig: NextConfig = {
   turbopack: {
     root: path.resolve(__dirname),
@@ -11,6 +33,26 @@ const nextConfig: NextConfig = {
   outputFileTracingIncludes: {
     "/api/registry/[slug]": ["./src/app/**/*"],
     "/code/[slug]": ["./src/app/**/*"],
+  },
+  async redirects() {
+    const redirects: { source: string; destination: string; permanent: boolean }[] = [
+      // Redirect bare /animations to homepage
+      { source: "/animations", destination: "/", permanent: false },
+    ];
+    // 301 redirects from old URLs to preserve SEO rankings
+    for (const [oldSlug, componentName] of Object.entries(oldToNew)) {
+      redirects.push({
+        source: `/${oldSlug}`,
+        destination: `/animations/${componentName}`,
+        permanent: true,
+      });
+      redirects.push({
+        source: `/code/${oldSlug}`,
+        destination: `/code/${componentName}`,
+        permanent: true,
+      });
+    }
+    return redirects;
   },
   async headers() {
     return [

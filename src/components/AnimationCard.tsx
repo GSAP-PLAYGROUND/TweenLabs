@@ -5,15 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAuthModal } from "@/provider/AuthModalProvider";
 import { useSession } from "@/provider/SessionProvider";
 
-interface AnimationItem {
-  id: string;
-  name: string;
-  route: string;
-  bgColor: string;
-  textColor: string;
-  description: string;
-  tiltClass: string;
-}
+import type { AnimationItem } from "@/data/animations";
 
 interface AnimationCardProps {
   anim: AnimationItem;
@@ -35,7 +27,7 @@ export default function AnimationCard({ anim }: AnimationCardProps) {
 
   const handleGetCode = (e: React.MouseEvent) => {
     e.preventDefault();
-    const targetUrl = `/code/${anim.route.replace("/animations/", "")}`;
+    const targetUrl = `/code/${anim.componentName}`;
     if (session) {
       router.push(targetUrl);
     } else {

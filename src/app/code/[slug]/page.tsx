@@ -86,14 +86,14 @@ function parseHowToUse(markdown: string): ParsedMarkdown {
 // Generate static params for all available animations
 export async function generateStaticParams() {
   return animations.map((anim) => ({
-    slug: anim.route.replace("/animations/", ""),
+    slug: anim.componentName,
   }));
 }
 
 // Dynamic Metadata generation for SEO optimization
 export async function generateMetadata({ params }: PageProps) {
   const { slug } = await params;
-  const anim = animations.find((a) => a.route.replace("/animations/", "") === slug);
+  const anim = animations.find((a) => a.componentName === slug);
 
   return {
     title: anim
@@ -109,7 +109,7 @@ export default async function CodePage({ params }: PageProps) {
   const { slug } = await params;
 
   // Verify that the slug is a valid animation
-  const anim = animations.find((a) => a.route.replace("/animations/", "") === slug);
+  const anim = animations.find((a) => a.componentName === slug);
   if (!anim) {
     notFound();
   }
@@ -117,8 +117,8 @@ export default async function CodePage({ params }: PageProps) {
   const authenticated = await isAuthenticated();
 
   const animationsDir = path.join(process.cwd(), "src", "app", "animations");
-  const pagePath = path.join(animationsDir, slug, "page.tsx");
-  const howToUsePath = path.join(animationsDir, slug, "HOW_TO_USE.md");
+  const pagePath = path.join(animationsDir, anim.componentName, "page.tsx");
+  const howToUsePath = path.join(animationsDir, anim.componentName, "HOW_TO_USE.md");
 
   let pageCode = "";
   let standaloneCode: string | null = null;
@@ -194,11 +194,7 @@ export default async function CodePage({ params }: PageProps) {
       {
         "@type": "HowToStep",
         name: "Save Component File",
-        text: `Create a new file src/components/${slug
-          .replace(/^\d+-/, "")
-          .split("-")
-          .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-          .join("")}.tsx and paste the Standalone Component Code.`,
+        text: `Create a new file src/components/${slug}.tsx and paste the Standalone Component Code.`,
         url: `https://tweenlabs.xyz/code/${slug}#step-2`,
       },
       {

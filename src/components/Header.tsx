@@ -15,12 +15,13 @@ export default function Header() {
   const { session, isPending } = useSession();
   const { openModal } = useAuthModal();
 
-  const handleGetCode = (animRoute: string) => {
-    const codeUrl = `/code/${animRoute.replace("/animations/", "")}`;
+  const handleGetCode = () => {
+    if (!currentAnim) return;
+    const codeUrl = `/code/${currentAnim.componentName}`;
     if (session) {
       router.push(codeUrl);
     } else {
-      openModal(animRoute, true);
+      openModal(currentAnim.route, true);
     }
   };
   const [avatarError, setAvatarError] = useState(false);
@@ -66,7 +67,7 @@ export default function Header() {
   const isCodePage = normalizedPath.startsWith("/code/");
   const codeSlug = isCodePage ? normalizedPath.split("/").pop() || null : null;
   const codeAnim = codeSlug
-    ? animations.find((anim) => anim.route.replace("/animations/", "") === codeSlug)
+    ? animations.find((anim) => anim.componentName === codeSlug)
     : null;
 
   return (
@@ -110,7 +111,7 @@ export default function Header() {
         <div className="hidden md:flex items-center gap-3">
           {currentAnim && (
             <button
-              onClick={() => handleGetCode(currentAnim.route)}
+              onClick={() => handleGetCode()}
               className="brutalist-btn bg-wtf-yellow hover:bg-[#e5a420] text-[#2a2a2a] font-mono font-bold text-xs py-1.5 px-3.5 rounded-lg uppercase tracking-wider cursor-pointer transition-colors duration-150"
               aria-label={`Get source code for ${currentAnim.name}`}
             >
@@ -228,7 +229,7 @@ export default function Header() {
             <button
               onClick={() => {
                 setMobileMenuOpen(false);
-                handleGetCode(currentAnim.route);
+                handleGetCode();
               }}
               className="brutalist-btn bg-wtf-yellow hover:bg-[#e5a420] text-[#2a2a2a] font-mono font-bold text-[11px] py-2.5 px-4 rounded-lg uppercase tracking-wider cursor-pointer transition-colors duration-150 text-center w-full"
               aria-label={`Get source code for ${currentAnim.name}`}

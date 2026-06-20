@@ -26,16 +26,12 @@ export async function GET(
 
   // Handle list of components request
   if (slug === "list" || slug === "index") {
-    const list = animations.map((anim) => {
-      const folderName = anim.route.replace("/animations/", "");
-      return {
-        name: anim.name,
-        componentName: anim.componentName,
-        slug: folderName,
-        cleanSlug: folderName.replace(/^\d+[a-z]?[-_]/, ""),
-        description: anim.description,
-      };
-    });
+    const list = animations.map((anim) => ({
+      name: anim.name,
+      componentName: anim.componentName,
+      slug: anim.componentName,
+      description: anim.description,
+    }));
     return NextResponse.json({ components: list });
   }
 
@@ -44,8 +40,7 @@ export async function GET(
     const files = [];
     const animationsDir = path.join(process.cwd(), "src", "app", "animations");
     for (const anim of animations) {
-      const folderName = anim.route.replace("/animations/", "");
-      const pagePath = path.join(animationsDir, folderName, "page.tsx");
+      const pagePath = path.join(animationsDir, anim.componentName, "page.tsx");
       try {
         const pageCode = fs.readFileSync(pagePath, "utf-8");
         files.push({
@@ -53,7 +48,7 @@ export async function GET(
           content: pageCode,
         });
       } catch (err) {
-        console.error(`Skipping ${folderName} due to error:`, err);
+        console.error(`Skipping ${anim.componentName} due to error:`, err);
       }
     }
 
@@ -65,20 +60,15 @@ export async function GET(
     });
   }
 
-  // Find the animation (supporting both exact folder slug "01-showup-cards" and clean slug "showup-cards")
-  const anim = animations.find((a) => {
-    const routeName = a.route.replace("/animations/", "");
-    const cleanRouteName = routeName.replace(/^\d+[a-z]?[-_]/, "");
-    return routeName === slug || cleanRouteName === slug;
-  });
+  // Find the animation by componentName (e.g. "FlipCards" or "MagneticDock")
+  const anim = animations.find((a) => a.componentName === slug);
 
   if (!anim) {
     return NextResponse.json({ error: "Component not found" }, { status: 404 });
   }
 
-  const folderName = anim.route.replace("/animations/", "");
   const animationsDir = path.join(process.cwd(), "src", "app", "animations");
-  const pagePath = path.join(animationsDir, folderName, "page.tsx");
+  const pagePath = path.join(animationsDir, anim.componentName, "page.tsx");
 
   let pageCode = "";
   try {
@@ -94,7 +84,7 @@ export async function GET(
   const dependencies = ["gsap", "@gsap/react"];
 
   return NextResponse.json({
-    name: folderName,
+    name: anim.componentName,
     className: anim.componentName,
     dependencies,
     files: [
