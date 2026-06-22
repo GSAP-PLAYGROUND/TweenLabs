@@ -133,13 +133,13 @@ jobs:
           FAILURES=0
           for dir in 'src/app/(main)/components'/*/; do
             NAME=$(basename "$dir")
-            RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" "http://localhost:3000/api/registry/$NAME")
+            RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" -H "User-Agent: tweenlabs-cli" "http://localhost:3000/api/registry/$NAME")
             if [ "$RESPONSE" -ne 200 ]; then
               echo "❌ /api/registry/$NAME returned HTTP $RESPONSE"
               FAILURES=$((FAILURES + 1))
             else
               # Verify response has expected fields
-              BODY=$(curl -s "http://localhost:3000/api/registry/$NAME")
+              BODY=$(curl -s -H "User-Agent: tweenlabs-cli" "http://localhost:3000/api/registry/$NAME")
               if ! echo "$BODY" | python3 -c "import sys,json; d=json.load(sys.stdin); assert 'files' in d and len(d['files'])>0" 2>/dev/null; then
                 echo "❌ /api/registry/$NAME returned invalid JSON (missing files)"
                 FAILURES=$((FAILURES + 1))

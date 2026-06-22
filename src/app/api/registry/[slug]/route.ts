@@ -15,16 +15,23 @@ export async function GET(
   // If not CLI, require standard user session.
   const userAgent = request.headers.get("user-agent") || "";
   const isCli = userAgent.includes("tweenlabs-cli");
-  const authenticated = await isAuthenticated();
 
-  if (!authenticated && !isCli) {
-    return NextResponse.json(
-      {
-        error:
-          "Unauthorized. Please sign in to view this component's registry code.",
-      },
-      { status: 401 },
-    );
+  if (!isCli) {
+    let authenticated = false;
+    try {
+      authenticated = await isAuthenticated();
+    } catch {
+      // Auth service unreachable — treat as unauthenticated
+    }
+    if (!authenticated) {
+      return NextResponse.json(
+        {
+          error:
+            "Unauthorized. Please sign in to view this component's registry code.",
+        },
+        { status: 401 },
+      );
+    }
   }
 
   // Handle list of components request
