@@ -1,9 +1,6 @@
 import type { Metadata } from "next";
-import { AppSidebar } from "@/components/app-sidebar";
-import {
-  SidebarInset,
-  SidebarProvider,
-} from "@/components/ui/sidebar";
+import { animations } from "@/data/components";
+import ComponentsPageClient from "./ComponentsPageClient";
 
 export const metadata: Metadata = {
   title: "All Components | TweenLabs",
@@ -12,12 +9,5 @@ export const metadata: Metadata = {
 };
 
 export default function ComponentsPage() {
-  return (
-    <SidebarProvider className="pt-14 md:pt-16">
-      <AppSidebar />
-      <SidebarInset className="overflow-y-auto overflow-x-hidden">
-        <main className="flex-1 min-h-screen bg-[#f0eadf]" />
-      </SidebarInset>
-    </SidebarProvider>
-  );
+  return <ComponentsPageClient animations={animations} />;
 }

@@ -1,5 +1,8 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import {
   Sidebar,
   SidebarContent,
@@ -11,81 +14,221 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
+  useSidebar,
 } from "@/components/ui/sidebar";
+import { cn } from "@/lib/utils";
 import { animations } from "@/data/components";
 
-const colorDot: Record<string, string> = {
-  "bg-wtf-green": "bg-[#0c9367]",
-  "bg-wtf-yellow": "bg-[#f1b333]",
-  "bg-wtf-blue": "bg-[#3b82f6]",
-  "bg-wtf-orange": "bg-[#e55b3c]",
-  "bg-wtf-purple": "bg-[#6758a5]",
-  "bg-wtf-red": "bg-[#c53b3a]",
+interface QuickSetupItem {
+  name: string;
+  href: string;
+  external?: boolean;
+  badge?: string;
+  badgeColor?: string;
+}
+
+interface CategoryGroup {
+  label: string;
+  items?: QuickSetupItem[];
+  components?: typeof animations;
+}
+
+const categories: CategoryGroup[] = [
+  {
+    label: "Quick Setup",
+    items: [
+      { name: "Installation", href: "/components" },
+      { name: "How to Setup", href: "/components" },
+      { name: "Collaborate", href: "https://github.com/TweenLabs/TweenLabs", external: true },
+      { name: "Playground", href: "/playground", badge: "BETA", badgeColor: "bg-[#0c9367] text-white" },
+    ],
+  },
+  {
+    label: "Text Animations",
+    components: animations.filter((a) =>
+      ["KineticText", "ParallaxHero", "RevealText", "MorphingText"].includes(a.componentName)
+    ),
+  },
+  {
+    label: "Scroll Effects",
+    components: animations.filter((a) =>
+      ["ScrollCards", "ScrollTags", "HorizontalCards", "PageTransition", "BorderReveal"].includes(a.componentName)
+    ),
+  },
+  {
+    label: "Cards & Grids",
+    components: animations.filter((a) =>
+      ["FlipCards", "BentoGrid", "Carousel3D", "CircularScatter", "OrbitGallery"].includes(a.componentName)
+    ),
+  },
+  {
+    label: "Interactive",
+    components: animations.filter((a) =>
+      ["FluidCursor", "MagneticDock", "GravityDrop", "StringLine", "TabsMotion"].includes(a.componentName)
+    ),
+  },
+  {
+    label: "Layout & UI",
+    components: animations.filter((a) =>
+      ["Blueprint", "SkillFit", "Accordion"].includes(a.componentName)
+    ),
+  },
+];
+
+// Tags for special components
+const specialTags: Record<string, { label: string; color: string }[]> = {
+  MorphingText: [
+    { label: "HOT", color: "bg-[#e55b3c] text-white" },
+    { label: "NEW", color: "bg-[#0c9367] text-white" },
+  ],
+  TabsMotion: [{ label: "NEW", color: "bg-[#0c9367] text-white" }],
+  ParallaxHero: [{ label: "NEW", color: "bg-[#0c9367] text-white" }],
 };
 
 export function AppSidebar() {
+  const pathname = usePathname();
+  const normalizedPath = pathname?.replace(/\/$/, "") ?? "";
+  const { state } = useSidebar();
+  const isCollapsed = state === "collapsed";
+
   return (
-    <Sidebar className="border-r-2 border-[#2a2a2a]/15">
-      <SidebarHeader className="p-4 border-b-2 border-[#2a2a2a]/10">
-        <Link href="/" className="flex items-center gap-2 group">
+    <Sidebar
+      collapsible="icon"
+      className="border-r-3 border-[#2a2a2a] bg-white text-[#2a2a2a] transition-all duration-200"
+    >
+      {/* Sidebar Header: Brand Info */}
+      <SidebarHeader className="h-14 md:h-16 flex flex-row items-center px-4 border-b-3 border-[#2a2a2a] justify-between shrink-0 bg-white p-0">
+        <Link href="/" className="flex items-center gap-2.5 group">
           <Image
             src="/logo.svg"
             alt="TweenLabs Logo"
-            width={24}
-            height={24}
-            className="object-contain transition-transform duration-200 group-hover:scale-105"
+            width={28}
+            height={28}
+            className="object-contain transition-transform duration-200 group-hover:scale-105 shrink-0"
           />
-          <span className="font-serif font-black text-lg tracking-tight text-[#2a2a2a] group-hover:text-[#e55b3c] transition-colors duration-150">
+          <span className="font-serif font-black text-lg md:text-xl tracking-tight text-[#2a2a2a] group-hover:text-[#e55b3c] transition-colors duration-150 group-data-[collapsible=icon]:hidden whitespace-nowrap">
             TweenLabs
           </span>
         </Link>
       </SidebarHeader>
 
-      <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel className="font-mono text-[9px] font-bold text-zinc-400 uppercase tracking-widest px-3">
-            Components ({animations.length})
-          </SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {animations.map((anim) => (
-                <SidebarMenuItem key={anim.id}>
-                  <SidebarMenuButton asChild>
-                    <Link
-                      href={anim.route}
-                      className="flex items-center gap-2.5 font-mono text-xs font-bold text-[#2a2a2a]"
-                    >
-                      <span
-                        className={`w-2 h-2 rounded-full shrink-0 ${colorDot[anim.bgColor] || "bg-zinc-400"}`}
-                      />
-                      <span className="truncate">{anim.name}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+      {/* Sidebar Navigation items */}
+      <SidebarContent className="bg-white py-4">
+        {categories.map((cat) => (
+          <SidebarGroup key={cat.label} className="py-2 px-0">
+            <SidebarGroupLabel className="font-mono text-[10px] font-bold text-zinc-500 uppercase tracking-widest px-4 mb-1 group-data-[collapsible=icon]:hidden">
+              {cat.label}
+            </SidebarGroupLabel>
+            
+            {/* Dashed line separator */}
+            <div className="border-b border-dashed border-[#2a2a2a]/15 mx-4 mb-2 group-data-[collapsible=icon]:hidden" />
+            
+            <SidebarGroupContent>
+              <SidebarMenu className="px-2">
+                {/* Static items (Quick Setup) */}
+                {cat.items?.map((item) => {
+                  const isActive = normalizedPath === item.href;
+                  return (
+                    <SidebarMenuItem key={item.name}>
+                      <SidebarMenuButton
+                        asChild
+                        isActive={isActive}
+                        className="hover:bg-[#2a2a2a]/5 active:bg-[#2a2a2a]/10"
+                      >
+                        {item.external ? (
+                          <a
+                            href={item.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-2.5 font-serif text-[13px] font-black text-[#2a2a2a] hover:text-[#e55b3c] transition-colors w-full"
+                          >
+                            <span className="group-data-[collapsible=icon]:hidden truncate">{item.name}</span>
+                            {item.badge && (
+                              <span className={cn(item.badgeColor, "text-[8px] font-bold px-1.5 py-0.5 rounded uppercase ml-auto shrink-0 group-data-[collapsible=icon]:hidden")}>
+                                {item.badge}
+                              </span>
+                            )}
+                          </a>
+                        ) : (
+                          <Link
+                            href={item.href}
+                            className="flex items-center gap-2.5 font-serif text-[13px] font-black text-[#2a2a2a] hover:text-[#e55b3c] transition-colors w-full"
+                          >
+                            <span className="group-data-[collapsible=icon]:hidden truncate">{item.name}</span>
+                            {item.badge && (
+                              <span className={cn(item.badgeColor, "text-[8px] font-bold px-1.5 py-0.5 rounded uppercase ml-auto shrink-0 group-data-[collapsible=icon]:hidden")}>
+                                {item.badge}
+                              </span>
+                            )}
+                          </Link>
+                        )}
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  );
+                })}
+
+                {/* Component items */}
+                {cat.components?.map((anim) => {
+                  const isActive = normalizedPath === anim.route;
+                  const tags = specialTags[anim.componentName];
+
+                  return (
+                    <SidebarMenuItem key={anim.id}>
+                      <SidebarMenuButton
+                        asChild
+                        isActive={isActive}
+                        className="hover:bg-[#2a2a2a]/5 active:bg-[#2a2a2a]/10"
+                      >
+                        <Link
+                          href={anim.route}
+                          className={cn(
+                            "flex items-center gap-2.5 font-serif text-[13px] font-black text-[#2a2a2a] hover:text-[#e55b3c] transition-colors w-full",
+                            isActive && "text-[#e55b3c]"
+                          )}
+                        >
+                          {/* Left dot shown on collapsed view for visual representation */}
+                          {isCollapsed && (
+                            <span className="w-1.5 h-1.5 rounded-full bg-wtf-orange shrink-0 mx-auto" />
+                          )}
+                          <span className="group-data-[collapsible=icon]:hidden truncate">{anim.name}</span>
+                          {tags && (
+                            <span className="flex items-center gap-1 ml-auto shrink-0 group-data-[collapsible=icon]:hidden">
+                              {tags.map((tag) => (
+                                <span
+                                  key={tag.label}
+                                  className={cn(tag.color, "text-[7px] font-bold px-1 py-0.5 rounded uppercase")}
+                                >
+                                  {tag.label}
+                                </span>
+                              ))}
+                            </span>
+                          )}
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  );
+                })}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        ))}
       </SidebarContent>
 
-      <SidebarFooter className="p-3 border-t-2 border-[#2a2a2a]/10">
-        <div className="flex flex-col gap-2">
-          <a
-            href="https://github.com/TweenLabs/TweenLabs"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-2 font-mono text-[10px] font-bold text-zinc-500 hover:text-[#e55b3c] transition-colors duration-150 uppercase tracking-wider"
-          >
-            <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
-            </svg>
-            GitHub ↗
-          </a>
+      {/* Sidebar Footer: Playground Card */}
+      <SidebarFooter className="border-t-3 border-[#2a2a2a] bg-white p-3 justify-center shrink-0">
+        <div className="bg-white border-2 border-[#2a2a2a] rounded-xl p-3 shadow-[4px_4px_0px_#2a2a2a] mx-1 my-1 group-data-[collapsible=icon]:hidden">
+          <div className="flex items-center gap-1.5 mb-1.5">
+            <span className="font-serif font-black text-[11px] text-[#2a2a2a] tracking-tight">PLAYGROUND</span>
+            <span className="bg-[#0c9367] text-white text-[8px] font-bold px-1.5 py-0.5 rounded uppercase">AI AGENT</span>
+          </div>
+          <p className="font-sans text-[10px] text-zinc-500 leading-relaxed mb-3">
+            Let agent make customized animation for you under 1 min.
+          </p>
           <Link
-            href="/"
-            className="font-mono text-[10px] font-bold text-zinc-500 hover:text-[#e55b3c] transition-colors duration-150 uppercase tracking-wider"
+            href="/playground"
+            className="flex items-center justify-center gap-1.5 w-full font-mono text-[10px] font-black text-[#2a2a2a] border-2 border-[#2a2a2a] rounded-lg py-1.5 hover:bg-[#2a2a2a] hover:text-white transition-all shadow-[2px_2px_0px_#2a2a2a] active:translate-y-[1px] active:translate-x-[1px] active:shadow-[1px_1px_0px_#2a2a2a]"
           >
-            ← Back to Home
+            TRY NOW ⚡
           </Link>
         </div>
       </SidebarFooter>

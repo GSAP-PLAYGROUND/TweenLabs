@@ -24,7 +24,7 @@ export default function PageWrapper({
   // Check if current page is one of the component demo pages
   const isDemoPage = animations.some((anim) => anim.route === normalizedPath);
   const isPlayground = normalizedPath === "/playground";
-  const isComponentsPage = normalizedPath === "/components";
+  const isComponentsPage = normalizedPath.startsWith("/components");
   const isCodePage = normalizedPath.startsWith("/code/");
 
   // Hide scrollbar on the main homepage
@@ -126,14 +126,9 @@ export default function PageWrapper({
     };
   }, [isDemoPage]);
 
-  // For /components page, render Header but skip main wrapper — (main) layout handles sidebar
+  // /components page has its own layout (custom header + sidebar) — skip PageWrapper entirely
   if (isComponentsPage) {
-    return (
-      <>
-        <Header />
-        {children}
-      </>
-    );
+    return <>{children}</>;
   }
 
   return (

@@ -133,79 +133,29 @@ export default function ComponentsPageClient({ animations }: Props) {
                 {filtered.length} of {animations.length} Components
               </p>
             </div>
-            <Link
-              href="/"
-              className="brutalist-btn bg-white hover:bg-wtf-orange hover:text-white text-[#2a2a2a] font-mono font-bold text-[10px] md:text-xs py-1.5 px-3.5 rounded-lg uppercase tracking-wider cursor-pointer transition-colors duration-150"
-            >
-              ← Back to Home
-            </Link>
+            
+            {/* Inline search bar and back link */}
+            <div className="flex items-center gap-3 w-full sm:w-auto">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search components..."
+                className="w-full sm:w-64 bg-white border-2 border-[#2a2a2a] rounded-lg px-3.5 py-1.5 font-mono text-xs font-bold text-[#2a2a2a] placeholder:text-zinc-450 outline-none focus:border-wtf-orange transition-colors duration-150 shadow-[2px_2px_0px_#2a2a2a]"
+              />
+              <Link
+                href="/"
+                className="brutalist-btn bg-white hover:bg-wtf-orange hover:text-white text-[#2a2a2a] font-mono font-bold text-[10px] md:text-xs py-2 px-3.5 rounded-lg uppercase tracking-wider cursor-pointer transition-colors duration-150 whitespace-nowrap"
+              >
+                ← Back to Home
+              </Link>
+            </div>
           </div>
         </div>
 
-        <div className="flex flex-col md:flex-row gap-8">
-          {/* ── Sidebar ── */}
-          <aside className="comp-sidebar w-full md:w-56 shrink-0">
-            <div className="brutalist-card p-4 bg-white md:sticky md:top-20">
-              {/* Search */}
-              <div className="mb-4">
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search components..."
-                  className="w-full bg-[#f0eadf] border-2 border-[#2a2a2a] rounded-lg px-3 py-2 font-mono text-xs font-bold text-[#2a2a2a] placeholder:text-zinc-400 outline-none focus:border-wtf-orange transition-colors duration-150"
-                />
-              </div>
-
-              {/* Category Filters */}
-              <p className="font-mono text-[9px] font-bold text-zinc-500 uppercase tracking-widest mb-2">
-                Filter by Theme
-              </p>
-              <div className="flex flex-row md:flex-col flex-wrap gap-1.5">
-                {CATEGORIES.map((cat) => (
-                  <button
-                    key={cat.label}
-                    onClick={() => handleFilterChange(cat.filter)}
-                    className={`flex items-center gap-2 px-3 py-1.5 rounded-lg font-mono font-bold text-[11px] uppercase tracking-wider cursor-pointer transition-all duration-150 border-2 ${
-                      activeFilter === cat.filter
-                        ? `${cat.color} ${cat.text} border-[#2a2a2a] shadow-[2px_2px_0px_#2a2a2a]`
-                        : "bg-transparent border-transparent text-[#2a2a2a] hover:bg-[#f0eadf]"
-                    }`}
-                  >
-                    <span
-                      className={`w-2.5 h-2.5 rounded-full ${cat.color} border border-[#2a2a2a]/30`}
-                    />
-                    {cat.label}
-                    {cat.filter && (
-                      <span className="ml-auto text-[9px] opacity-60">
-                        {animations.filter((a) => a.bgColor === cat.filter).length}
-                      </span>
-                    )}
-                  </button>
-                ))}
-              </div>
-
-              {/* Quick Stats */}
-              <div className="mt-4 pt-4 border-t-2 border-[#2a2a2a]/10">
-                <p className="font-mono text-[9px] font-bold text-zinc-500 uppercase tracking-widest mb-2">
-                  Stats
-                </p>
-                <div className="space-y-1.5">
-                  <div className="flex justify-between font-mono text-[11px] font-bold">
-                    <span className="text-zinc-500">Total</span>
-                    <span className="text-[#2a2a2a]">{animations.length}</span>
-                  </div>
-                  <div className="flex justify-between font-mono text-[11px] font-bold">
-                    <span className="text-zinc-500">Showing</span>
-                    <span className="text-wtf-orange">{filtered.length}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </aside>
-
+        <div className="w-full">
           {/* ── Component Grid ── */}
-          <div className="flex-1">
+          <div className="w-full">
             {filtered.length === 0 ? (
               <div className="brutalist-card p-12 bg-white flex flex-col items-center gap-3">
                 <span className="text-4xl">🔍</span>
@@ -225,7 +175,7 @@ export default function ComponentsPageClient({ animations }: Props) {
             ) : (
               <div
                 ref={gridRef}
-                className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"
+                className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
               >
                 {filtered.map((anim) => (
                   <div
@@ -246,7 +196,7 @@ export default function ComponentsPageClient({ animations }: Props) {
                       <h2 className="text-lg font-sans font-black uppercase tracking-tight text-[#2a2a2a]">
                         {anim.name}
                       </h2>
-                      <p className="text-xs font-sans font-medium text-zinc-600 leading-relaxed line-clamp-2">
+                      <p className="text-xs font-sans font-medium text-zinc-650 leading-relaxed line-clamp-2">
                         {anim.description}
                       </p>
                     </div>
