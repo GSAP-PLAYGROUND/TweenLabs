@@ -1,70 +1,96 @@
 # How to Use: Morphing Text
 
-This guide explains how to integrate the **Morphing Text** component — a smooth auto-cycling text animation that transitions between words using GSAP-powered blur, scale, and position morphing with an SVG threshold filter for a gooey dissolve effect.
+This guide explains how to integrate the **Morphing Text** component — a smooth auto-cycling text animation that dissolves between words using per-frame blur/opacity interpolation with an SVG threshold filter for a gooey morph effect. Each word transitions to its own unique accent color via real-time color lerping.
 
 ### Core GSAP Animation Code
 ```javascript
-// SVG filter for gooey threshold morph effect
-// Apply filter id="morph-threshold" to the container wrapping both text layers
-//
-// <filter id="morph-threshold">
-//   <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur" />
-//   <feColorMatrix in="blur" mode="matrix"
-//     values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -10" result="threshold" />
-//   <feComposite in="SourceGraphic" in2="threshold" operator="atop" />
-// </filter>
-
-const texts = ["Creative", "Morphing", "Dynamic", "Seamless", "Animated"];
-let currentIndex = 0;
-
-function morphToNext(text1El, text2El) {
-  const nextIndex = (currentIndex + 1) % texts.length;
-
-  // Update text content
-  text1El.textContent = texts[currentIndex];
-  text2El.textContent = texts[nextIndex];
-
-  // Set initial states
-  gsap.set(text1El, { autoAlpha: 1, y: 0, scale: 1, filter: "blur(0px)" });
-  gsap.set(text2El, { autoAlpha: 0, y: 40, scale: 0.92, filter: "blur(8px)" });
-
-  const tl = gsap.timeline();
-
-  // Current text morphs out
-  tl.to(text1El, {
-    autoAlpha: 0,
-    y: -40,
-    scale: 1.08,
-    filter: "blur(8px)",
-    duration: 0.7,
-    ease: "power2.inOut",
-  }, "morph");
-
-  // Next text morphs in
-  tl.to(text2El, {
-    autoAlpha: 1,
-    y: 0,
-    scale: 1,
-    filter: "blur(0px)",
-    duration: 0.7,
-    ease: "power2.inOut",
-  }, "morph+=0.15");
-
-  // After morph completes, swap layers
-  tl.call(() => {
-    gsap.set(text1El, { autoAlpha: 1, y: 0, scale: 1, filter: "blur(0px)" });
-    gsap.set(text2El, { autoAlpha: 0, y: 40, scale: 0.92, filter: "blur(8px)" });
-    text1El.textContent = texts[nextIndex];
-    currentIndex = nextIndex;
-  });
-
-  return tl;
+// ─── Color interpolation helper ───────────────────────────
+function hexToRgb(hex) {
+  const n = parseInt(hex.slice(1), 16);
+  return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
 }
 
-// Auto-cycle every 2.4 seconds
-setInterval(() => {
-  morphToNext(text1Element, text2Element);
-}, 2400);
+function lerpColor(a, b, t) {
+  const [r1, g1, b1] = hexToRgb(a);
+  const [r2, g2, b2] = hexToRgb(b);
+  return `rgb(${Math.round(r1 + (r2 - r1) * t)},${Math.round(g1 + (g2 - g1) * t)},${Math.round(b1 + (b2 - b1) * t)})`;
+}
+
+// ─── SVG filter for gooey threshold morph ─────────────────
+// Apply filter id="text-morph" to the container wrapping both text layers
+//
+// <filter id="text-morph">
+//   <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur" />
+//   <feColorMatrix in="blur" mode="matrix"
+//     values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 22 -10" result="snap" />
+//   <feComposite in="SourceGraphic" in2="snap" operator="atop" />
+// </filter>
+
+// ─── Per-frame morph via requestAnimationFrame ────────────
+const texts = ["Creative", "Morphing", "Dynamic", "Seamless", "Animated"];
+const colors = ["#e55b3c", "#6758a5", "#0c9367", "#3b82f6", "#c53b3a"];
+let currentIndex = 0;
+let morphing = false;
+
+function startMorph(text1El, text2El) {
+  if (morphing) return;
+  morphing = true;
+
+  const fromIdx = currentIndex;
+  const toIdx = (fromIdx + 1) % texts.length;
+  const fromColor = colors[fromIdx];
+  const toColor = colors[toIdx];
+
+  // Set text content
+  text1El.textContent = texts[fromIdx];
+  text2El.textContent = texts[toIdx];
+
+  let fraction = 0;
+
+  function tick() {
+    fraction += 0.01;
+    if (fraction > 1) fraction = 1;
+
+    // Ease in-out quad
+    const t = fraction < 0.5
+      ? 2 * fraction * fraction
+      : 1 - Math.pow(-2 * fraction + 2, 2) / 2;
+
+    // Single interpolated color — never two colors visible
+    const blendedColor = lerpColor(fromColor, toColor, t);
+
+    text1El.style.color = blendedColor;
+    text2El.style.color = blendedColor;
+
+    // Text 1 dissolves out
+    text1El.style.filter = `blur(${t * 8}px)`;
+    text1El.style.opacity = `${Math.pow(1 - t, 0.4)}`;
+
+    // Text 2 dissolves in
+    text2El.style.filter = `blur(${(1 - t) * 8}px)`;
+    text2El.style.opacity = `${Math.pow(t, 0.4)}`;
+
+    if (fraction < 1) {
+      requestAnimationFrame(tick);
+    } else {
+      morphing = false;
+      currentIndex = toIdx;
+
+      // Reset layers for next cycle
+      text1El.textContent = texts[toIdx];
+      text1El.style.filter = "blur(0px)";
+      text1El.style.opacity = "1";
+      text1El.style.color = toColor;
+      text2El.style.filter = "blur(8px)";
+      text2El.style.opacity = "0";
+    }
+  }
+
+  requestAnimationFrame(tick);
+}
+
+// Auto-cycle every 3.2 seconds
+setInterval(() => startMorph(text1Element, text2Element), 3200);
 ```
 
 ### Standalone Component Code
@@ -73,109 +99,177 @@ setInterval(() => {
 
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { useRef, useState, useCallback, useEffect } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 gsap.registerPlugin(useGSAP);
 
+// ─── HELPERS ──────────────────────────────────────────────
+function hexToRgb(hex: string) {
+  const n = parseInt(hex.slice(1), 16);
+  return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+}
+
+function lerpColor(a: string, b: string, t: number) {
+  const [r1, g1, b1] = hexToRgb(a);
+  const [r2, g2, b2] = hexToRgb(b);
+  const r = Math.round(r1 + (r2 - r1) * t);
+  const g = Math.round(g1 + (g2 - g1) * t);
+  const bl = Math.round(b1 + (b2 - b1) * t);
+  return `rgb(${r},${g},${bl})`;
+}
+
+// ─── TYPES ────────────────────────────────────────────────
 interface MorphingTextProps {
   /** Array of words/phrases to cycle through */
   texts: string[];
-  /** Accent colors for each text (cycles if fewer than texts) */
+  /** Accent color for each word (hex). Cycles if fewer than texts. */
   colors?: string[];
-  /** Time in ms between transitions (default: 2400) */
+  /** Time in ms between transitions (default: 3200) */
   interval?: number;
-  /** Morph transition duration in seconds (default: 0.7) */
-  morphDuration?: number;
-  /** Additional CSS class for the text */
+  /** Morph speed — lower = smoother & slower (default: 0.01) */
+  morphSpeed?: number;
+  /** Additional CSS class for the wrapper */
   className?: string;
 }
 
 export default function MorphingText({
   texts,
-  colors = ["#e55b3c", "#0c9367", "#6758a5", "#3b82f6", "#f1b333", "#c53b3a"],
-  interval = 2400,
-  morphDuration = 0.7,
+  colors = ["#e55b3c", "#6758a5", "#0c9367", "#3b82f6", "#f1b333", "#c53b3a"],
+  interval = 3200,
+  morphSpeed = 0.01,
   className = "",
 }: MorphingTextProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const text1Ref = useRef<HTMLSpanElement>(null);
   const text2Ref = useRef<HTMLSpanElement>(null);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [nextIndex, setNextIndex] = useState(1);
-  const timelineRef = useRef<gsap.core.Timeline | null>(null);
-
-  const cycleText = useCallback(() => {
-    setCurrentIndex((prev) => {
-      const next = (prev + 1) % texts.length;
-      setNextIndex((next + 1) % texts.length);
-      return next;
-    });
-  }, [texts.length]);
-
-  useGSAP(
-    () => {
-      if (!text1Ref.current || !text2Ref.current) return;
-      if (timelineRef.current) timelineRef.current.kill();
-
-      const tl = gsap.timeline();
-      timelineRef.current = tl;
-
-      gsap.set(text1Ref.current, { autoAlpha: 1, y: 0, scale: 1, filter: "blur(0px)" });
-      gsap.set(text2Ref.current, { autoAlpha: 0, y: 40, scale: 0.92, filter: "blur(8px)" });
-
-      tl.to(text1Ref.current, {
-        autoAlpha: 0, y: -40, scale: 1.08, filter: "blur(8px)",
-        duration: morphDuration, ease: "power2.inOut",
-      }, "morph")
-        .to(text2Ref.current, {
-          autoAlpha: 1, y: 0, scale: 1, filter: "blur(0px)",
-          duration: morphDuration, ease: "power2.inOut",
-        }, "morph+=0.15")
-        .call(() => {
-          if (text1Ref.current && text2Ref.current) {
-            gsap.set(text1Ref.current, { autoAlpha: 1, y: 0, scale: 1, filter: "blur(0px)" });
-            gsap.set(text2Ref.current, { autoAlpha: 0, y: 40, scale: 0.92, filter: "blur(8px)" });
-          }
-        });
-    },
-    { scope: containerRef, dependencies: [currentIndex] }
-  );
-
-  useEffect(() => {
-    const timer = setInterval(cycleText, interval);
-    return () => clearInterval(timer);
-  }, [cycleText, interval]);
+  const rafRef = useRef<number>(0);
+  const morphingRef = useRef(false);
+  const idxRef = useRef(0);
+  const [currentIdx, setCurrentIdx] = useState(0);
+  const nextIdx = (currentIdx + 1) % texts.length;
 
   const getColor = (idx: number) => colors[idx % colors.length];
 
+  const startMorph = useCallback(() => {
+    if (morphingRef.current) return;
+    morphingRef.current = true;
+
+    const fromIdx = idxRef.current;
+    const toIdx = (fromIdx + 1) % texts.length;
+    const fromColor = getColor(fromIdx);
+    const toColor = getColor(toIdx);
+
+    let fraction = 0;
+
+    const tick = () => {
+      fraction += morphSpeed;
+      if (fraction > 1) fraction = 1;
+
+      const t =
+        fraction < 0.5
+          ? 2 * fraction * fraction
+          : 1 - Math.pow(-2 * fraction + 2, 2) / 2;
+
+      const blendedColor = lerpColor(fromColor, toColor, t);
+
+      if (text1Ref.current && text2Ref.current) {
+        text1Ref.current.style.color = blendedColor;
+        text2Ref.current.style.color = blendedColor;
+
+        text1Ref.current.style.filter = `blur(${t * 8}px)`;
+        text1Ref.current.style.opacity = `${Math.pow(1 - t, 0.4)}`;
+
+        text2Ref.current.style.filter = `blur(${(1 - t) * 8}px)`;
+        text2Ref.current.style.opacity = `${Math.pow(t, 0.4)}`;
+      }
+
+      if (fraction < 1) {
+        rafRef.current = requestAnimationFrame(tick);
+      } else {
+        morphingRef.current = false;
+        idxRef.current = toIdx;
+        setCurrentIdx(toIdx);
+
+        requestAnimationFrame(() => {
+          if (text1Ref.current && text2Ref.current) {
+            text1Ref.current.style.filter = "blur(0px)";
+            text1Ref.current.style.opacity = "1";
+            text1Ref.current.style.color = toColor;
+            text2Ref.current.style.filter = "blur(8px)";
+            text2Ref.current.style.opacity = "0";
+          }
+        });
+      }
+    };
+
+    rafRef.current = requestAnimationFrame(tick);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [texts.length, morphSpeed]);
+
+  useEffect(() => {
+    const timer = setInterval(startMorph, interval);
+    return () => {
+      clearInterval(timer);
+      cancelAnimationFrame(rafRef.current);
+    };
+  }, [startMorph, interval]);
+
+  // Entrance animation
+  useGSAP(
+    () => {
+      gsap.from(containerRef.current, {
+        scale: 0.92,
+        autoAlpha: 0,
+        duration: 1.2,
+        ease: "power3.out",
+        delay: 0.15,
+      });
+    },
+    { scope: containerRef }
+  );
+
   return (
     <div ref={containerRef} className={`relative ${className}`}>
+      {/* SVG Threshold Filter */}
       <svg aria-hidden="true" style={{ position: "absolute", width: 0, height: 0 }}>
         <defs>
-          <filter id="morph-threshold">
-            <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur" />
-            <feColorMatrix in="blur" mode="matrix"
-              values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -10" result="threshold" />
-            <feComposite in="SourceGraphic" in2="threshold" operator="atop" />
+          <filter id="text-morph">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur" />
+            <feColorMatrix
+              in="blur"
+              mode="matrix"
+              values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 22 -10"
+              result="snap"
+            />
+            <feComposite in="SourceGraphic" in2="snap" operator="atop" />
           </filter>
         </defs>
       </svg>
 
-      <div style={{ filter: "url(#morph-threshold)" }}
+      <div
+        style={{ filter: "url(#text-morph)" }}
         className="relative flex items-center justify-center overflow-hidden"
       >
         <div className="relative h-[1.3em] flex items-center justify-center w-full">
-          <span ref={text1Ref}
-            className="absolute font-serif font-black uppercase tracking-tight will-change-transform select-none"
-            style={{ color: getColor(nextIndex) }}
+          <span
+            ref={text1Ref}
+            className="absolute font-serif font-black uppercase tracking-tight will-change-transform select-none leading-none"
+            style={{ color: getColor(currentIdx) }}
+            aria-live="polite"
           >
-            {texts[nextIndex]}
+            {texts[currentIdx]}
           </span>
-          <span ref={text2Ref}
-            className="absolute font-serif font-black uppercase tracking-tight will-change-transform select-none"
-            style={{ color: getColor((nextIndex + 1) % texts.length), visibility: "hidden" }}
+          <span
+            ref={text2Ref}
+            className="absolute font-serif font-black uppercase tracking-tight will-change-transform select-none leading-none"
+            style={{
+              color: getColor(currentIdx),
+              opacity: 0,
+              filter: "blur(8px)",
+            }}
+            aria-hidden="true"
           >
-            {texts[(nextIndex + 1) % texts.length]}
+            {texts[nextIdx]}
           </span>
         </div>
       </div>
@@ -214,12 +308,14 @@ Import the component and render it inside any page layout:
 import MorphingText from "@/components/MorphingText.tsx";
 
 const words = ["Creative", "Morphing", "Dynamic", "Seamless", "Animated"];
+const wordColors = ["#e55b3c", "#6758a5", "#0c9367", "#3b82f6", "#c53b3a"];
 
 export default function Page() {
   return (
     <main className="min-h-screen flex items-center justify-center bg-[#f0eadf] p-8">
       <MorphingText
         texts={words}
+        colors={wordColors}
         className="text-5xl md:text-8xl"
       />
     </main>
@@ -234,11 +330,11 @@ export default function Page() {
 > [!NOTE]
 > This component is fully customizable and ready to use.
 
-- `texts` (string[]): **Required**. An array of words or phrases to cycle through. Minimum 2 items recommended.
-- `colors` (string[]): Optional. Array of hex color strings for each text. Cycles through if fewer colors than texts. Defaults to the TweenLabs palette.
-- `interval` (number): Optional. Time in milliseconds between each morph transition. Default: `2400`.
-- `morphDuration` (number): Optional. Duration in seconds for each morph transition. Default: `0.7`.
-- `className` (string): Optional. Additional CSS classes for the wrapper. Use to control text size (e.g., `text-6xl md:text-9xl`).
+- `texts` (string[]): **Required**. Array of words or phrases to cycle through. Minimum 2 items.
+- `colors` (string[]): Optional. Hex color per word. Cycles if fewer colors than texts. Defaults to the TweenLabs palette.
+- `interval` (number): Optional. Milliseconds between morph transitions. Default: `3200`.
+- `morphSpeed` (number): Optional. Per-frame increment (lower = smoother & slower). Default: `0.01`.
+- `className` (string): Optional. CSS classes for the wrapper. Use for text sizing (e.g., `text-6xl md:text-9xl`).
 
 ### 🎨 Neo-Brutalist Theme Tokens
 To match TweenLabs' signature premium editorial styling:

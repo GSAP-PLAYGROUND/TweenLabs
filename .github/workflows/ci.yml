@@ -28,8 +28,197 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # ── Code Quality ───────────────────────────────────────
       - name: Run linter
         run: pnpm run lint
 
       - name: Run build compile checks
         run: pnpm run build
+
+      - name: Check formatting (Biome)
+        run: npx @biomejs/biome check --no-errors-on-unmatched src/
+
+      # ── Component Integrity Checks ─────────────────────────
+      - name: Verify animation registry matches folders
+        run: |
+          FOLDER_COUNT=$(find src/app/animations -mindepth 1 -maxdepth 1 -type d | wc -l)
+          REGISTRY_COUNT=$(grep -c '"componentName"' src/data/animations.ts)
+          echo "📁 Animation folders: $FOLDER_COUNT"
+          echo "📋 Registry entries:  $REGISTRY_COUNT"
+          if [ "$FOLDER_COUNT" -ne "$REGISTRY_COUNT" ]; then
+            echo "❌ MISMATCH: $FOLDER_COUNT folders vs $REGISTRY_COUNT registry entries"
+            echo "Every animation folder needs a matching entry in src/data/animations.ts"
+            exit 1
+          fi
+          echo "✅ Registry is in sync"
+
+      - name: Verify every component has required files
+        run: |
+          MISSING=0
+          for dir in src/app/animations/*/; do
+            NAME=$(basename "$dir")
+            for file in page.tsx layout.tsx HOW_TO_USE.md; do
+              if [ ! -f "$dir$file" ]; then
+                echo "❌ Missing: $dir$file"
+                MISSING=$((MISSING + 1))
+              fi
+            done
+          done
+          if [ "$MISSING" -gt 0 ]; then
+            echo "❌ $MISSING required file(s) missing"
+            exit 1
+          fi
+          echo "✅ All components have page.tsx, layout.tsx, HOW_TO_USE.md"
+
+      - name: Check components are self-contained (no project imports)
+        run: |
+          VIOLATIONS=0
+          for file in src/app/animations/*/page.tsx; do
+            if grep -qE "from ['\"]@/" "$file"; then
+              echo "❌ $file has project imports (@/...):"
+              grep -n "from ['\"]@/" "$file"
+              VIOLATIONS=$((VIOLATIONS + 1))
+            fi
+          done
+          if [ "$VIOLATIONS" -gt 0 ]; then
+            echo "❌ $VIOLATIONS component(s) have project imports — must be self-contained"
+            exit 1
+          fi
+          echo "✅ All components are self-contained"
+
+      - name: Check no custom Tailwind classes in components
+        run: |
+          VIOLATIONS=0
+          for file in src/app/animations/*/page.tsx; do
+            if grep -qE "(bg|text|border)-wtf-" "$file"; then
+              echo "❌ $file uses custom theme classes (wtf-*):"
+              grep -n "(bg|text|border)-wtf-" "$file"
+              VIOLATIONS=$((VIOLATIONS + 1))
+            fi
+          done
+          if [ "$VIOLATIONS" -gt 0 ]; then
+            echo "❌ $VIOLATIONS component(s) use custom Tailwind classes — use hex arbitrary values"
+            exit 1
+          fi
+          echo "✅ No custom Tailwind classes in downloadable components"
+
+      - name: Check all components start with 'use client'
+        run: |
+          VIOLATIONS=0
+          for file in src/app/animations/*/page.tsx; do
+            FIRST_LINE=$(head -1 "$file" | tr -d '\r')
+            if [ "$FIRST_LINE" != '"use client";' ]; then
+              echo "❌ $file does not start with \"use client\"; (found: $FIRST_LINE)"
+              VIOLATIONS=$((VIOLATIONS + 1))
+            fi
+          done
+          if [ "$VIOLATIONS" -gt 0 ]; then
+            echo "❌ $VIOLATIONS component(s) missing 'use client' directive on line 1"
+            exit 1
+          fi
+          echo "✅ All components have 'use client' directive"
+
+      # ── Registry API Smoke Test ────────────────────────────
+      - name: Verify registry API returns valid JSON for each component
+        run: |
+          pnpm start &
+          SERVER_PID=$!
+          # Wait for server to be ready
+          for i in $(seq 1 30); do
+            if curl -s http://localhost:3000 > /dev/null 2>&1; then
+              break
+            fi
+            sleep 1
+          done
+          FAILURES=0
+          for dir in src/app/animations/*/; do
+            NAME=$(basename "$dir")
+            RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" "http://localhost:3000/api/registry/$NAME")
+            if [ "$RESPONSE" -ne 200 ]; then
+              echo "❌ /api/registry/$NAME returned HTTP $RESPONSE"
+              FAILURES=$((FAILURES + 1))
+            else
+              # Verify response has expected fields
+              BODY=$(curl -s "http://localhost:3000/api/registry/$NAME")
+              if ! echo "$BODY" | python3 -c "import sys,json; d=json.load(sys.stdin); assert 'files' in d and len(d['files'])>0" 2>/dev/null; then
+                echo "❌ /api/registry/$NAME returned invalid JSON (missing files)"
+                FAILURES=$((FAILURES + 1))
+              fi
+            fi
+          done
+          kill $SERVER_PID 2>/dev/null
+          if [ "$FAILURES" -gt 0 ]; then
+            echo "❌ $FAILURES registry endpoint(s) failed"
+            exit 1
+          fi
+          echo "✅ All registry endpoints return valid JSON with files"
+
+      # ── Asset Link Checker ─────────────────────────────────
+      - name: Check hosted asset URLs are valid
+        run: |
+          BROKEN=0
+          URLS=$(grep -roh 'https://tweenlabs\.xyz/[^"'"'"' )*]*' src/app/animations/*/page.tsx | sort -u)
+          if [ -z "$URLS" ]; then
+            echo "ℹ️  No tweenlabs.xyz asset URLs found in components"
+            exit 0
+          fi
+          for url in $URLS; do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 "$url")
+            if [ "$STATUS" -ne 200 ]; then
+              echo "❌ Broken asset: $url (HTTP $STATUS)"
+              BROKEN=$((BROKEN + 1))
+            fi
+          done
+          if [ "$BROKEN" -gt 0 ]; then
+            echo "⚠️  $BROKEN broken asset URL(s) — components will show missing images"
+            exit 1
+          fi
+          echo "✅ All hosted asset URLs resolve"
+
+      # ── Security ───────────────────────────────────────────
+      - name: Audit dependencies for vulnerabilities
+        run: pnpm audit --prod || true
+        continue-on-error: true
+
+  # ── Auto-Label PRs ───────────────────────────────────────
+  label:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Auto-label PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: files } = await github.rest.pulls.listFiles({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number,
+            });
+            const labels = new Set();
+            for (const f of files) {
+              if (f.filename.startsWith('src/app/animations/') && f.status === 'added') {
+                labels.add('new-component');
+              }
+              if (f.filename.startsWith('src/app/animations/') && f.status === 'modified') {
+                labels.add('component-update');
+              }
+              if (f.filename.endsWith('.md')) {
+                labels.add('docs');
+              }
+              if (f.filename.startsWith('.github/')) {
+                labels.add('ci');
+              }
+            }
+            if (labels.size > 0) {
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                labels: [...labels],
+              });
+            }
