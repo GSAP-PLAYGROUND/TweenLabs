@@ -1,23 +1,24 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
 import {
-  Send,
-  Bot,
-  User,
-  Loader2,
-  CheckCircle2,
   AlertTriangle,
-  XCircle,
+  Bot,
+  CheckCircle2,
   Code,
-  ShieldCheck,
-  RefreshCw,
-  Sparkles,
-  Zap,
-  MousePointerClick,
   Layers,
+  Loader2,
+  MousePointerClick,
+  RefreshCw,
+  Send,
+  ShieldCheck,
+  Sparkles,
+  User,
+  XCircle,
+  Zap,
 } from "lucide-react";
-import { SSEMessage } from "@/hooks/useAgentSSE";
+import type React from "react";
+import { useEffect, useRef, useState } from "react";
+import type { SSEMessage } from "@/hooks/useAgentSSE";
 
 interface AgentChartPanelProps {
   messages: SSEMessage[];

@@ -290,7 +290,7 @@ const getRequiredCssForCode = (code: string) => {
   // Parse out custom page-specific keyframes and animations inside style tags
   if (code.includes("<style>{`")) {
     const styleMatches = code.match(/<style>\{`([\s\S]*?)`\}<\/style>/);
-    if (styleMatches && styleMatches[1]) {
+    if (styleMatches?.[1]) {
       cssBlocks.push(`/* Custom Inline CSS */\n${styleMatches[1].trim()}`);
     }
   }
@@ -622,7 +622,7 @@ function renderMarkdown(
                   {(["npm", "pnpm", "yarn", "bun"] as const).map((pm) => (
                     <button
                       key={pm}
-                      onClick={() => setPkgManager && setPkgManager(pm)}
+                      onClick={() => setPkgManager?.(pm)}
                       className={`px-1.5 md:px-2 py-0.5 rounded text-[8px] md:text-[10px] font-bold uppercase transition-none cursor-pointer ${
                         pkgManager === pm
                           ? "bg-wtf-orange text-white"
@@ -676,7 +676,7 @@ function renderMarkdown(
                 {(["npm", "pnpm", "yarn", "bun"] as const).map((pm) => (
                   <button
                     key={pm}
-                    onClick={() => setPkgManager && setPkgManager(pm)}
+                    onClick={() => setPkgManager?.(pm)}
                     className={`px-1.5 md:px-2 py-0.5 rounded text-[8px] md:text-[10px] font-bold uppercase transition-none cursor-pointer ${
                       pkgManager === pm
                         ? "bg-wtf-orange text-white"

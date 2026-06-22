@@ -20,11 +20,17 @@ To get started, follow these instructions to set up the codebase on your local m
    ```bash
    pnpm install
    ```
-4. **Run the Development Server**:
+4. **Set Up Environment Variables**:
+   Copy the example environment file and configure your credentials:
+   ```bash
+   cp .env.example .env.local
+   ```
+   *(Note: Running `pnpm convex dev` for the first time will automatically generate your Convex variables).*
+5. **Run the Development Server**:
    ```bash
    pnpm dev
    ```
-5. **Open the App**: Navigate to [http://localhost:3000](http://localhost:3000) in your browser.
+6. **Open the App**: Navigate to [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
 
@@ -48,7 +54,7 @@ After creating your `page.tsx`, register the component in `src/data/components.t
 
 ```ts
 {
-  id: "23",                          // next sequential number
+  id: "your-animation",              // Unique slug ID (kebab-case, e.g. "your-animation")
   name: "Your Animation",            // display name
   componentName: "YourAnimation",    // PascalCase — matches folder name
   route: "/components/YourAnimation",
@@ -56,8 +62,12 @@ After creating your `page.tsx`, register the component in `src/data/components.t
   textColor: "text-white",
   description: "One sentence describing what this animation does.",
   tiltClass: "tilt-left",            // tilt-left | tilt-right | tilt-left-lg | tilt-right-lg
+  type: ["card", "scroll"],          // Array of categories: text | scroll | card | interactive (supports multiple categories)
 }
 ```
+
+> [!NOTE]
+> Always set the `id` field to a unique slug string (e.g., `"your-animation"`), **not** a sequential number. This prevents merge conflicts from multiple contributors submitting PRs at the same time. The visual serial numbers (`[01]`, `[02]`, etc.) are calculated dynamically by the application.
 
 **Available palette colors:** `bg-wtf-green`, `bg-wtf-orange`, `bg-wtf-purple`, `bg-wtf-blue`, `bg-wtf-yellow`, `bg-wtf-red`
 

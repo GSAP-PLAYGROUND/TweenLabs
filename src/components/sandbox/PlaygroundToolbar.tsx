@@ -1,7 +1,6 @@
 "use client";
 
-import React from "react";
-import { RotateCcw, Code, Eye, MessageSquare, Monitor } from "lucide-react";
+import { Code, Eye, MessageSquare, Monitor, RotateCcw } from "lucide-react";
 
 type ThemeType = "default" | "white" | "dark";
 type MobileTab = "chat" | "preview";

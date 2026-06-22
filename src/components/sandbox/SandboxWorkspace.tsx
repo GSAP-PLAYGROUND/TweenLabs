@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
 import { Allotment } from "allotment";
+import { useEffect, useState } from "react";
 import "allotment/dist/style.css";
 
-import AgentChartPanel from "./AgentChartPanel";
-import PreviewPanel from "./PreviewPanel";
-import PlaygroundToolbar from "./PlaygroundToolbar";
 import { useAgentSSE } from "@/hooks/useAgentSSE";
+import AgentChartPanel from "./AgentChartPanel";
+import PlaygroundToolbar from "./PlaygroundToolbar";
+import PreviewPanel from "./PreviewPanel";
 
 type ThemeType = "default" | "white" | "dark";
 

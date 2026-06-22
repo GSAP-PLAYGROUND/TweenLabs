@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import { useAuthModal } from "@/provider/AuthModalProvider";
 
@@ -19,7 +19,7 @@ export default function AuthModal() {
     } else {
       // User is on a protected route (e.g. /code/...) — navigate away
       closeModal(true);
-      if (callbackUrl && callbackUrl.startsWith("/code/")) {
+      if (callbackUrl?.startsWith("/code/")) {
         router.push(callbackUrl.replace("/code/", "/components/"));
       } else {
         router.push("/");

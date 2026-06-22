@@ -2,10 +2,9 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { type AnimationItem, animations } from "@/data/components";
 import { useAuthModal } from "@/provider/AuthModalProvider";
 import { useSession } from "@/provider/SessionProvider";
-
-import type { AnimationItem } from "@/data/components";
 
 interface AnimationCardProps {
   anim: AnimationItem;
@@ -25,6 +24,11 @@ export default function AnimationCard({ anim }: AnimationCardProps) {
   const { session } = useSession();
   const { openModal } = useAuthModal();
 
+  const originalIndex = animations.findIndex((a) => a.id === anim.id);
+  const displayId = String(
+    originalIndex !== -1 ? originalIndex + 1 : 0,
+  ).padStart(2, "0");
+
   const handleGetCode = (e: React.MouseEvent) => {
     e.preventDefault();
     const targetUrl = `/code/${anim.componentName}`;
@@ -40,7 +44,7 @@ export default function AnimationCard({ anim }: AnimationCardProps) {
       <div className="flex flex-col gap-4 min-w-0">
         <div className="flex items-center justify-between">
           <span className="font-mono font-bold text-sm lg:text-base text-zinc-500">
-            [{anim.id}]
+            [{displayId}]
           </span>
           <span
             className={`inline-flex items-center gap-2 border-2 border-[#2a2a2a] px-3 py-0.5 rounded-full text-[9px] font-mono font-bold uppercase ${anim.bgColor} ${anim.textColor} shadow-[1.5px_1.5px_0px_#2a2a2a] ${anim.tiltClass}`}

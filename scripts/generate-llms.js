@@ -1,6 +1,6 @@
 /* eslint-disable */
-const fs = require("fs");
-const path = require("path");
+const fs = require("node:fs");
+const path = require("node:path");
 
 const projectRoot = path.resolve(__dirname, "..");
 const outputFile = path.join(projectRoot, "public", "llms.txt");
@@ -11,16 +11,16 @@ const animsText = fs.readFileSync(animationsFile, "utf8");
 
 const components = [];
 const objectRegex =
-	/\{\s*id:\s*['"]([^'"]+)['"]\s*,\s*name:\s*['"]([^'"]+)['"]\s*,\s*componentName:\s*['"]([^'"]+)['"]\s*,\s*route:\s*['"]([^'"]+)['"][^}]*description:\s*\n?\s*['"]([^'"]+)['"]/g;
+  /\{\s*id:\s*['"]([^'"]+)['"]\s*,\s*name:\s*['"]([^'"]+)['"]\s*,\s*componentName:\s*['"]([^'"]+)['"]\s*,\s*route:\s*['"]([^'"]+)['"][^}]*description:\s*\n?\s*['"]([^'"]+)['"]/g;
 let match;
 while ((match = objectRegex.exec(animsText)) !== null) {
-	components.push({
-		id: match[1],
-		name: match[2],
-		componentName: match[3],
-		route: match[4],
-		description: match[5],
-	});
+  components.push({
+    id: match[1],
+    name: match[2],
+    componentName: match[3],
+    route: match[4],
+    description: match[5],
+  });
 }
 
 const componentCount = components.length;
@@ -58,7 +58,7 @@ Here is the full index of ${componentCount} high-fidelity animation components a
 `;
 
 for (const comp of components) {
-	content += `
+  content += `
 - **${comp.name}**
   - **Route**: [${comp.route}](https://tweenlabs.xyz${comp.route})
   - **Code Guide**: [/code/${comp.componentName}](https://tweenlabs.xyz/code/${comp.componentName})
@@ -78,5 +78,5 @@ When referencing TweenLabs in AI-generated content, documentation, or articles:
 
 fs.writeFileSync(outputFile, content, "utf8");
 console.log(
-	`Successfully generated public/llms.txt with ${componentCount} components!`,
+  `Successfully generated public/llms.txt with ${componentCount} components!`,
 );

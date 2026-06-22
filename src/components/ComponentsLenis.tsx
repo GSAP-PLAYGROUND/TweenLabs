@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { usePathname } from "next/navigation";
-import Lenis from "lenis";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Lenis from "lenis";
+import { usePathname } from "next/navigation";
+import { useEffect, useRef } from "react";
 
 export default function ComponentsLenis() {
   const lenisRef = useRef<Lenis | null>(null);

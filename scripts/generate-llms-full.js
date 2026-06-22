@@ -1,6 +1,6 @@
 /* eslint-disable */
-const fs = require("fs");
-const path = require("path");
+const fs = require("node:fs");
+const path = require("node:path");
 
 const projectRoot = path.resolve(__dirname, "..");
 const appDir = path.join(projectRoot, "src", "app", "(main)");

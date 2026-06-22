@@ -2,12 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useSession } from "@/provider/SessionProvider";
-import { useAuthModal } from "@/provider/AuthModalProvider";
-import { authClient } from "@/lib/auth-client";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { animations } from "@/data/components";
+import { authClient } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
+import { useAuthModal } from "@/provider/AuthModalProvider";
+import { useSession } from "@/provider/SessionProvider";
 
 // Map pathnames to breadcrumb labels
 const BREADCRUMB_LABELS: Record<
@@ -111,19 +111,19 @@ export default function ComponentsHeader() {
 
         {user ? (
           <div className="flex items-center gap-2">
-            <div className="flex items-center gap-2 bg-white border-2 border-[#2a2a2a] rounded-lg px-2.5 py-1.5 shadow-[2px_2px_0px_#2a2a2a] select-none">
+            <div className="h-[30px] flex items-center gap-2 bg-white border-2 border-[#2a2a2a] rounded-lg px-2.5 shadow-[2px_2px_0px_#2a2a2a] select-none">
               {user.image ? (
                 <img
                   src={user.image}
                   alt={user.name || "User"}
-                  className="w-5 h-5 rounded-full border border-[#2a2a2a]/15 object-cover"
+                  className="w-4 h-4 rounded-full border border-[#2a2a2a]/15 object-cover shrink-0"
                 />
               ) : (
-                <div className="w-5 h-5 rounded-full bg-[#e55b3c] flex items-center justify-center text-[9px] font-bold text-white">
+                <div className="w-4 h-4 rounded-full bg-[#e55b3c] flex items-center justify-center text-[8px] font-bold text-white shrink-0">
                   {(user.name || "U").charAt(0).toUpperCase()}
                 </div>
               )}
-              <span className="font-mono text-[10px] font-bold text-[#2a2a2a] truncate max-w-[80px] hidden sm:inline">
+              <span className="font-mono text-[10px] font-bold text-[#2a2a2a] truncate max-w-[80px] hidden sm:inline leading-none">
                 {user.name || "User"}
               </span>
             </div>

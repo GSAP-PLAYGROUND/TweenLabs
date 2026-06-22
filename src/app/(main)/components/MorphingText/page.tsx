@@ -77,7 +77,7 @@ export default function MorphingTextPage() {
       const t =
         fraction < 0.5
           ? 2 * fraction * fraction
-          : 1 - Math.pow(-2 * fraction + 2, 2) / 2;
+          : 1 - (-2 * fraction + 2) ** 2 / 2;
 
       // Single interpolated color — never two colors at once
       const blendedColor = lerpColor(fromColor, toColor, t);
@@ -89,11 +89,11 @@ export default function MorphingTextPage() {
 
         // Text 1 dissolves out
         text1Ref.current.style.filter = `blur(${t * 8}px)`;
-        text1Ref.current.style.opacity = `${Math.pow(1 - t, 0.4)}`;
+        text1Ref.current.style.opacity = `${(1 - t) ** 0.4}`;
 
         // Text 2 dissolves in
         text2Ref.current.style.filter = `blur(${(1 - t) * 8}px)`;
-        text2Ref.current.style.opacity = `${Math.pow(t, 0.4)}`;
+        text2Ref.current.style.opacity = `${t ** 0.4}`;
       }
 
       if (fraction < 1) {

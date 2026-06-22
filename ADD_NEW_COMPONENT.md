@@ -142,7 +142,7 @@ Open `src/data/components.ts` and add to the array:
 
 ```ts
 {
-  id: "23",
+  id: "new-component",                    // Unique slug ID (kebab-case, e.g. "new-component")
   name: "New Component",                  // Display name on homepage cards
   componentName: "NewComponent",           // Must match folder name exactly
   route: "/components/NewComponent",       // /components/ + componentName
@@ -150,8 +150,12 @@ Open `src/data/components.ts` and add to the array:
   textColor: "text-white",                // Card text color
   description: "Description of the animation.",
   tiltClass: "tilt-left",                 // Card tilt effect
+  type: ["card", "scroll"],               // Categories: "text" | "scroll" | "card" | "interactive" (can list multiple for hybrid effects)
 },
 ```
+
+> [!NOTE]
+> Always use a unique kebab-case slug (e.g., `"new-component"`) for the `id` field. Do **NOT** use sequential numbers (like `"23"`). This prevents merge conflicts when multiple contributors submit PRs at the same time. The visual serial numbers (`[01]`, `[02]`, etc.) are computed dynamically by the UI.
 
 **That's it. No other files to touch.**
 

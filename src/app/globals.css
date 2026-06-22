@@ -257,11 +257,11 @@ body::-webkit-scrollbar {
 
 /* Scrollbar none utility */
 .scrollbar-none {
-  scrollbar-width: none !important;
-  -ms-overflow-style: none !important;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 .scrollbar-none::-webkit-scrollbar {
-  display: none !important;
+  display: none;
 }
 
 /* Panel 3D animation optimization */
@@ -279,7 +279,7 @@ body::-webkit-scrollbar {
 /* Hide floating back buttons on component pages since they are now in the header */
 .demo-page-container div.fixed.left-6.top-6,
 .demo-page-container div.fixed.top-6.left-6 {
-  display: none !important;
+  display: none;
 }
 
 /* 3D Card Flip Utilities */

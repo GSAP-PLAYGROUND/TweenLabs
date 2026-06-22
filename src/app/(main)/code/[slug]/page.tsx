@@ -1,6 +1,6 @@
-import fs from "fs";
+import fs from "node:fs";
+import path from "node:path";
 import { notFound } from "next/navigation";
-import path from "path";
 import CodePageClient from "@/components/CodePageClient";
 import { animations } from "@/data/components";
 import { isAuthenticated } from "@/lib/auth-server";

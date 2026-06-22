@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import { Fraunces, Geist, Space_Mono, Inter } from "next/font/google";
+import { Fraunces, Geist, Inter, Space_Mono } from "next/font/google";
 import "./globals.css";
 import PageWrapper from "@/components/PageWrapper";
+import { animations } from "@/data/components";
 import { fetchAuthQuery, getToken } from "@/lib/auth-server";
+import { cn } from "@/lib/utils";
 import { ConvexClientProvider } from "@/provider/ConvexClientProvider";
 import { api } from "../../convex/_generated/api";
-import { cn } from "@/lib/utils";
-import { animations } from "@/data/components";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 

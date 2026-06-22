@@ -1,7 +1,7 @@
-import fs from "fs";
+import fs from "node:fs";
+import path from "node:path";
 import type { Metadata } from "next";
 import Link from "next/link";
-import path from "path";
 
 export const metadata: Metadata = {
   title: "AI Specifications & Prompt Context | TweenLabs",

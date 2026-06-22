@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
 import { Loader2 } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
 interface LiveRunnerProps {
   code: string;

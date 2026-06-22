@@ -1,9 +1,9 @@
 import type React from "react";
 import { AppSidebar } from "@/components/app-sidebar";
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import ComponentsHeader from "@/components/ComponentsHeader";
 import ComponentsLenis from "@/components/ComponentsLenis";
 import GetCodeButton from "@/components/GetCodeButton";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
 export default function ComponentsLayout({
   children,

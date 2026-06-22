@@ -58,8 +58,8 @@ export default function CategoryPage({ params }: { params: { slug: string } }) {
       itemListElement: matchedComponents.map((anim, i) => ({
         "@type": "ListItem",
         position: i + 1,
-        name: anim!.name,
-        url: `https://tweenlabs.xyz${anim!.route}`,
+        name: anim?.name,
+        url: `https://tweenlabs.xyz${anim?.route}`,
       })),
     },
   };

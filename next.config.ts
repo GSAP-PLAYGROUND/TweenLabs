@@ -1,5 +1,5 @@
+import path from "node:path";
 import type { NextConfig } from "next";
-import path from "path";
 
 // Old slug → new route mapping for SEO redirects (one-time, won't grow)
 const oldToNew: Record<string, string> = {
@@ -35,11 +35,19 @@ const nextConfig: NextConfig = {
     "/code/[slug]": ["./src/app/**/*"],
   },
   async redirects() {
-    const redirects: { source: string; destination: string; permanent: boolean }[] = [
+    const redirects: {
+      source: string;
+      destination: string;
+      permanent: boolean;
+    }[] = [
       // Redirect bare /animations to homepage
       { source: "/animations", destination: "/", permanent: false },
       // Redirect old /animations/:name to new /components/:name
-      { source: "/animations/:slug", destination: "/components/:slug", permanent: true },
+      {
+        source: "/animations/:slug",
+        destination: "/components/:slug",
+        permanent: true,
+      },
     ];
     // 301 redirects from old URLs to preserve SEO rankings
     for (const [oldSlug, componentName] of Object.entries(oldToNew)) {

@@ -7,11 +7,12 @@ export interface AnimationItem {
   textColor: string;
   description: string;
   tiltClass: string;
+  type: ("text" | "scroll" | "card" | "interactive")[];
 }
 
 export const animations: AnimationItem[] = [
   {
-    id: "01",
+    id: "flip-cards",
     name: "Flip Cards",
     componentName: "FlipCards",
     route: "/components/FlipCards",
@@ -20,9 +21,10 @@ export const animations: AnimationItem[] = [
     description:
       "Interactive fanning cards and scroll-pinned cards flipping in 3D perspective space.",
     tiltClass: "tilt-left",
+    type: ["card", "scroll"],
   },
   {
-    id: "02",
+    id: "carousel-3d",
     name: "3D Carousel",
     componentName: "Carousel3D",
     route: "/components/Carousel3D",
@@ -31,9 +33,10 @@ export const animations: AnimationItem[] = [
     description:
       "Interactive 3D mathematical wheel rotation with pointer drag inertia, keyboard navigation, and GSAP details panel expansion.",
     tiltClass: "tilt-left-lg",
+    type: ["interactive", "card"],
   },
   {
-    id: "03",
+    id: "skill-fit",
     name: "Skill Fit",
     componentName: "SkillFit",
     route: "/components/SkillFit",
@@ -42,9 +45,10 @@ export const animations: AnimationItem[] = [
     description:
       "Premium candidate profile showcase animation with vertical ScrollTrigger pinning and technology staggers.",
     tiltClass: "tilt-left",
+    type: ["scroll"],
   },
   {
-    id: "04",
+    id: "page-transition",
     name: "Page Transition",
     componentName: "PageTransition",
     route: "/components/PageTransition",
@@ -53,9 +57,10 @@ export const animations: AnimationItem[] = [
     description:
       "Premium stacked page-peel scroll animation where color-themed sections slide up and overlap with dynamic skewing.",
     tiltClass: "tilt-right",
+    type: ["scroll"],
   },
   {
-    id: "05",
+    id: "horizontal-cards",
     name: "Horizontal Cards",
     componentName: "HorizontalCards",
     route: "/components/HorizontalCards",
@@ -64,9 +69,10 @@ export const animations: AnimationItem[] = [
     description:
       "Premium horizontal scroll layout where colorful Neo-Brutalist cards slide, float, enter from the bottom, and exit off the top of the viewport.",
     tiltClass: "tilt-left-lg",
+    type: ["card", "scroll"],
   },
   {
-    id: "06",
+    id: "circular-scatter",
     name: "Circular Scatter",
     componentName: "CircularScatter",
     route: "/components/CircularScatter",
@@ -75,9 +81,10 @@ export const animations: AnimationItem[] = [
     description:
       "Circular loop scatter animation where cards stack one-by-one at screen center, then scatter to the outer edges with hero text centered.",
     tiltClass: "tilt-right",
+    type: ["card", "scroll"],
   },
   {
-    id: "07",
+    id: "fluid-cursor",
     name: "Fluid Cursor",
     componentName: "FluidCursor",
     route: "/components/FluidCursor",
@@ -86,9 +93,10 @@ export const animations: AnimationItem[] = [
     description:
       "Custom elastic lagging cursor reticle that snaps, morphs, and hugs button boundaries.",
     tiltClass: "tilt-left",
+    type: ["interactive"],
   },
   {
-    id: "08",
+    id: "blueprint",
     name: "Blueprint",
     componentName: "Blueprint",
     route: "/components/Blueprint",
@@ -97,9 +105,10 @@ export const animations: AnimationItem[] = [
     description:
       "Premium page-load exploding cards and text scramble animation matching the layout of blueprintapps.io.",
     tiltClass: "tilt-left",
+    type: ["text", "card"],
   },
   {
-    id: "09",
+    id: "scroll-cards",
     name: "Scroll Cards",
     componentName: "ScrollCards",
     route: "/components/ScrollCards",
@@ -108,9 +117,10 @@ export const animations: AnimationItem[] = [
     description:
       "Vertical scroll-pinned stacked cards container utilizing y-transform parallax staggers.",
     tiltClass: "tilt-right",
+    type: ["scroll", "card"],
   },
   {
-    id: "10",
+    id: "scroll-tags",
     name: "Scroll Tags",
     componentName: "ScrollTags",
     route: "/components/ScrollTags",
@@ -119,9 +129,10 @@ export const animations: AnimationItem[] = [
     description:
       "Interactive scroll-triggered tags that fly into a grid board container from all offscreen directions.",
     tiltClass: "tilt-left",
+    type: ["scroll"],
   },
   {
-    id: "11",
+    id: "orbit-gallery",
     name: "Orbit Gallery",
     componentName: "OrbitGallery",
     route: "/components/OrbitGallery",
@@ -130,9 +141,10 @@ export const animations: AnimationItem[] = [
     description:
       "Premium scroll-driven layout where orbiting abstract cards converge into a sleek horizontal timeline.",
     tiltClass: "tilt-right",
+    type: ["card", "scroll"],
   },
   {
-    id: "12",
+    id: "gravity-drop",
     name: "Gravity Drop",
     componentName: "GravityDrop",
     route: "/components/GravityDrop",
@@ -141,9 +153,10 @@ export const animations: AnimationItem[] = [
     description:
       "Staggered letters falling down onto a shelf collider with realistic physics bounce.",
     tiltClass: "tilt-right",
+    type: ["text", "interactive"],
   },
   {
-    id: "13",
+    id: "string-line",
     name: "String Line",
     componentName: "StringLine",
     route: "/components/StringLine",
@@ -152,9 +165,10 @@ export const animations: AnimationItem[] = [
     description:
       "ScrollTriggered SVG network line drawing tracking node proximity scale offsets.",
     tiltClass: "tilt-right",
+    type: ["interactive"],
   },
   {
-    id: "14",
+    id: "border-reveal",
     name: "Border Reveal",
     componentName: "BorderReveal",
     route: "/components/BorderReveal",
@@ -163,9 +177,10 @@ export const animations: AnimationItem[] = [
     description:
       "Premium horizontal text scroll where letters fly in and out from top/bottom screen borders.",
     tiltClass: "tilt-right-lg",
+    type: ["text", "scroll"],
   },
   {
-    id: "15",
+    id: "kinetic-text",
     name: "Kinetic Text",
     componentName: "KineticText",
     route: "/components/KineticText",
@@ -174,9 +189,10 @@ export const animations: AnimationItem[] = [
     description:
       "Interactive kinetic text sandbox showcasing liquid wave, character scramble, and magnetic motion.",
     tiltClass: "tilt-left",
+    type: ["text", "interactive"],
   },
   {
-    id: "16",
+    id: "magnetic-dock",
     name: "Magnetic Dock",
     componentName: "MagneticDock",
     route: "/components/MagneticDock",
@@ -185,9 +201,10 @@ export const animations: AnimationItem[] = [
     description:
       "Premium floating menu bar where buttons pull dynamically toward the user's cursor.",
     tiltClass: "tilt-right",
+    type: ["interactive"],
   },
   {
-    id: "17",
+    id: "bento-grid",
     name: "Bento Grid",
     componentName: "BentoGrid",
     route: "/components/BentoGrid",
@@ -196,9 +213,10 @@ export const animations: AnimationItem[] = [
     description:
       "Neo-Brutalist bento box card grid with 3D perspective mouse tilt, spring physics recovery, and vector crosshairs.",
     tiltClass: "tilt-right-lg",
+    type: ["card", "interactive"],
   },
   {
-    id: "18",
+    id: "accordion",
     name: "Accordion",
     componentName: "Accordion",
     route: "/components/Accordion",
@@ -207,9 +225,10 @@ export const animations: AnimationItem[] = [
     description:
       "Vertical accordion showcase where selection morphs page background color and staggers content.",
     tiltClass: "tilt-right",
+    type: ["interactive"],
   },
   {
-    id: "19",
+    id: "reveal-text",
     name: "Reveal Text",
     componentName: "RevealText",
     route: "/components/RevealText",
@@ -218,10 +237,10 @@ export const animations: AnimationItem[] = [
     description:
       "Premium line-by-line text reveal using SplitText masks with staggered choreography.",
     tiltClass: "tilt-left",
+    type: ["text"],
   },
-
   {
-    id: "20",
+    id: "tabs-motion",
     name: "Tabs Motion",
     componentName: "TabsMotion",
     route: "/components/TabsMotion",
@@ -230,10 +249,10 @@ export const animations: AnimationItem[] = [
     description:
       "Animated tab navigation with sliding indicator pill and directional content crossfade transitions.",
     tiltClass: "tilt-left",
+    type: ["interactive"],
   },
-
   {
-    id: "21",
+    id: "parallax-hero",
     name: "Parallax Hero",
     componentName: "ParallaxHero",
     route: "/components/ParallaxHero",
@@ -242,10 +261,10 @@ export const animations: AnimationItem[] = [
     description:
       "Multi-layer parallax hero with SplitText character scatter entrance and scroll-driven depth motion.",
     tiltClass: "tilt-left",
+    type: ["scroll", "text"],
   },
-
   {
-    id: "22",
+    id: "morphing-text",
     name: "Morphing Text",
     componentName: "MorphingText",
     route: "/components/MorphingText",
@@ -254,5 +273,6 @@ export const animations: AnimationItem[] = [
     description:
       "Smooth auto-cycling text morphing animation with SVG threshold filter and color-coded word transitions.",
     tiltClass: "tilt-right",
+    type: ["text"],
   },
 ];

@@ -11,45 +11,12 @@ import { useSession } from "@/provider/SessionProvider";
 
 gsap.registerPlugin(useGSAP);
 
-// Color categories derived from component bgColor
-const CATEGORIES = [
-  { label: "All", filter: null, color: "bg-[#2a2a2a]", text: "text-white" },
-  {
-    label: "Green",
-    filter: "bg-wtf-green",
-    color: "bg-wtf-green",
-    text: "text-white",
-  },
-  {
-    label: "Orange",
-    filter: "bg-wtf-orange",
-    color: "bg-wtf-orange",
-    text: "text-white",
-  },
-  {
-    label: "Purple",
-    filter: "bg-wtf-purple",
-    color: "bg-wtf-purple",
-    text: "text-white",
-  },
-  {
-    label: "Blue",
-    filter: "bg-wtf-blue",
-    color: "bg-wtf-blue",
-    text: "text-white",
-  },
-  {
-    label: "Yellow",
-    filter: "bg-wtf-yellow",
-    color: "bg-wtf-yellow",
-    text: "text-black",
-  },
-  {
-    label: "Red",
-    filter: "bg-wtf-red",
-    color: "bg-wtf-red",
-    text: "text-white",
-  },
+const TYPES = [
+  { label: "All", filter: null },
+  { label: "Text Effects", filter: "text" },
+  { label: "Scroll Controls", filter: "scroll" },
+  { label: "Cards & Grids", filter: "card" },
+  { label: "Interactive Elements", filter: "interactive" },
 ] as const;
 
 interface Props {
@@ -59,7 +26,7 @@ interface Props {
 export default function ComponentsPageClient({ animations }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
-  const [activeFilter, setActiveFilter] = useState<string | null>(null);
+  const [activeType, setActiveType] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
   const { session } = useSession();
@@ -100,12 +67,12 @@ export default function ComponentsPageClient({ animations }: Props) {
 
   // Filter + search
   const filtered = animations.filter((a) => {
-    const matchesFilter = !activeFilter || a.bgColor === activeFilter;
+    const matchesType = !activeType || a.type.includes(activeType as any);
     const matchesSearch =
       !searchQuery ||
       a.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       a.description.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesFilter && matchesSearch;
+    return matchesType && matchesSearch;
   });
 
   const handleGetCode = (anim: AnimationItem) => {
@@ -113,8 +80,8 @@ export default function ComponentsPageClient({ animations }: Props) {
     session ? router.push(url) : openModal(url, true);
   };
 
-  const handleFilterChange = (filter: string | null) => {
-    setActiveFilter(filter);
+  const handleTypeChange = (type: string | null) => {
+    setActiveType(type);
     // Animate cards on filter change
     if (gridRef.current) {
       const cards = gridRef.current.querySelectorAll(".comp-card");
@@ -192,6 +159,31 @@ export default function ComponentsPageClient({ animations }: Props) {
           </div>
         </div>
 
+        {/* Type Filter Bar */}
+        <div className="comp-sidebar flex flex-col md:flex-row md:items-center gap-3 mb-8 bg-white border-2 border-[#2a2a2a] p-4 rounded-xl shadow-[3px_3px_0px_#2a2a2a] select-none">
+          <span className="font-mono text-[10px] md:text-xs font-black uppercase tracking-wider text-[#2a2a2a] shrink-0">
+            Filter by Type:
+          </span>
+          <div className="flex flex-wrap gap-2">
+            {TYPES.map((type) => {
+              const isActive = activeType === type.filter;
+              return (
+                <button
+                  key={type.label || "all"}
+                  onClick={() => handleTypeChange(type.filter)}
+                  className={`brutalist-btn text-[9px] md:text-[10px] font-mono font-bold py-1.5 px-3 md:py-2 md:px-4 rounded-lg uppercase tracking-wider cursor-pointer transition-all duration-150 ${
+                    isActive
+                      ? "bg-wtf-orange text-white border-[#2a2a2a] shadow-[1px_1px_0px_#2a2a2a] translate-x-[1px] translate-y-[1px]"
+                      : "bg-white text-[#2a2a2a] border-[#2a2a2a] hover:bg-zinc-50 shadow-[2.5px_2.5px_0px_#2a2a2a]"
+                  }`}
+                >
+                  {type.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
         <div className="w-full">
           {/* ── Component Grid ── */}
           <div className="w-full">
@@ -203,7 +195,7 @@ export default function ComponentsPageClient({ animations }: Props) {
                 </p>
                 <button
                   onClick={() => {
-                    setActiveFilter(null);
+                    setActiveType(null);
                     setSearchQuery("");
                   }}
                   className="brutalist-btn bg-wtf-orange text-white font-mono font-bold text-xs py-2 px-5 rounded-lg uppercase tracking-wider cursor-pointer transition-colors duration-150 mt-2"
@@ -216,46 +208,54 @@ export default function ComponentsPageClient({ animations }: Props) {
                 ref={gridRef}
                 className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-5 xl:gap-6"
               >
-                {filtered.map((anim) => (
-                  <div
-                    key={anim.id}
-                    className={`comp-card brutalist-card p-5 md:p-6 bg-white flex flex-col justify-between gap-5 md:gap-6 border-2 border-[#2a2a2a] transition-all duration-150 overflow-hidden ${hoverMap[anim.bgColor] || ""}`}
-                  >
-                    <div className="flex flex-col gap-3 min-w-0">
-                      <div className="flex items-center justify-between">
-                        <span className="font-mono font-bold text-[11px] text-zinc-400">
-                          [{anim.id}]
-                        </span>
-                        <span
-                          className={`inline-flex items-center border-2 border-[#2a2a2a] px-2 py-0.5 rounded-full text-[7px] md:text-[8px] font-mono font-bold uppercase ${anim.bgColor} ${anim.textColor} shadow-[1px_1px_0px_#2a2a2a]`}
-                        >
-                          {anim.bgColor.replace("bg-wtf-", "")}
-                        </span>
+                {filtered.map((anim) => {
+                  const originalIndex = animations.findIndex(
+                    (a) => a.id === anim.id,
+                  );
+                  const displayId = String(
+                    originalIndex !== -1 ? originalIndex + 1 : 0,
+                  ).padStart(2, "0");
+                  return (
+                    <div
+                      key={anim.id}
+                      className={`comp-card brutalist-card p-5 md:p-6 bg-white flex flex-col justify-between gap-5 md:gap-6 border-2 border-[#2a2a2a] transition-all duration-150 overflow-hidden ${hoverMap[anim.bgColor] || ""}`}
+                    >
+                      <div className="flex flex-col gap-3 min-w-0">
+                        <div className="flex items-center justify-between">
+                          <span className="font-mono font-bold text-[11px] text-zinc-400">
+                            [{displayId}]
+                          </span>
+                          <span
+                            className={`inline-flex items-center border-2 border-[#2a2a2a] px-2 py-0.5 rounded-full text-[7px] md:text-[8px] font-mono font-bold uppercase ${anim.bgColor} ${anim.textColor} shadow-[1px_1px_0px_#2a2a2a]`}
+                          >
+                            {anim.bgColor.replace("bg-wtf-", "")}
+                          </span>
+                        </div>
+                        <h2 className="font-sans font-black text-base md:text-lg uppercase tracking-tight text-[#2a2a2a] leading-tight break-words">
+                          {anim.name}
+                        </h2>
+                        <p className="text-xs md:text-[13px] font-sans font-medium text-zinc-650 leading-relaxed line-clamp-3">
+                          {anim.description}
+                        </p>
                       </div>
-                      <h2 className="font-sans font-black text-base md:text-lg uppercase tracking-tight text-[#2a2a2a] leading-tight break-words">
-                        {anim.name}
-                      </h2>
-                      <p className="text-xs md:text-[13px] font-sans font-medium text-zinc-650 leading-relaxed line-clamp-3">
-                        {anim.description}
-                      </p>
-                    </div>
-                    <div className="flex gap-2 min-w-0">
-                      <Link href={anim.route} className="flex-1 min-w-0">
+                      <div className="flex gap-2 min-w-0">
+                        <Link href={anim.route} className="flex-1 min-w-0">
+                          <button
+                            className={`w-full brutalist-btn bg-white ${hoverColorsMap[anim.bgColor] || ""} border-[#2a2a2a] text-[#2a2a2a] font-mono font-bold text-[10px] md:text-xs py-2.5 md:py-3 px-3 rounded-lg uppercase tracking-wider cursor-pointer transition-colors duration-150 whitespace-nowrap`}
+                          >
+                            View →
+                          </button>
+                        </Link>
                         <button
-                          className={`w-full brutalist-btn bg-white ${hoverColorsMap[anim.bgColor] || ""} border-[#2a2a2a] text-[#2a2a2a] font-mono font-bold text-[10px] md:text-xs py-2.5 md:py-3 px-3 rounded-lg uppercase tracking-wider cursor-pointer transition-colors duration-150 whitespace-nowrap`}
+                          onClick={() => handleGetCode(anim)}
+                          className={`flex-1 min-w-0 brutalist-btn bg-white ${hoverColorsMap[anim.bgColor] || ""} border-[#2a2a2a] text-[#2a2a2a] font-mono font-bold text-[10px] md:text-xs py-2.5 md:py-3 px-3 rounded-lg uppercase tracking-wider cursor-pointer transition-colors duration-150 whitespace-nowrap`}
                         >
-                          View →
+                          Get Code
                         </button>
-                      </Link>
-                      <button
-                        onClick={() => handleGetCode(anim)}
-                        className={`flex-1 min-w-0 brutalist-btn bg-white ${hoverColorsMap[anim.bgColor] || ""} border-[#2a2a2a] text-[#2a2a2a] font-mono font-bold text-[10px] md:text-xs py-2.5 md:py-3 px-3 rounded-lg uppercase tracking-wider cursor-pointer transition-colors duration-150 whitespace-nowrap`}
-                      >
-                        Get Code
-                      </button>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>

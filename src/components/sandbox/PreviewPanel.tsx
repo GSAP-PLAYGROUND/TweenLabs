@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import LiveRunner from "./LiveRunner";
 
 interface PreviewPanelProps {
@@ -30,7 +29,6 @@ export default function PreviewPanel({
         return "bg-white text-black";
       case "dark":
         return "bg-[#121212] text-white";
-      case "default":
       default:
         return "bg-[#f0eadf] text-[#2a2a2a]";
     }

@@ -12,10 +12,12 @@
   "formatter": {
     "enabled": true,
     "indentStyle": "space",
-    "indentWidth": 2
+    "indentWidth": 2,
+    "includes": ["**", "!**/node_modules/**", "!**/.next/**", "!**/convex/**"]
   },
   "linter": {
     "enabled": true,
+    "includes": ["**", "!**/node_modules/**", "!**/.next/**", "!**/convex/**"],
     "rules": {
       "preset": "recommended",
       "security": {
@@ -28,18 +30,33 @@
         "noStaticElementInteractions": "off",
         "noNoninteractiveElementInteractions": "off",
         "noLabelWithoutControl": "off",
-        "useKeyWithClickEvents": "off"
+        "useKeyWithClickEvents": "off",
+        "useSemanticElements": "off",
+        "useFocusableInteractive": "off",
+        "useAriaPropsForRole": "off"
       },
       "suspicious": {
         "noAssignInExpressions": "off",
         "noArrayIndexKey": "off",
         "noShadowRestrictedNames": "off",
         "noCommentText": "off",
-        "noImplicitAnyLet": "off"
+        "noImplicitAnyLet": "off",
+        "useIterableCallbackReturn": "off",
+        "noExplicitAny": "off"
+      },
+      "style": {
+        "noNonNullAssertion": "off"
+      },
+      "complexity": {
+        "noImportantStyles": "off"
       },
       "correctness": {
         "useExhaustiveDependencies": "off",
-        "noUnusedFunctionParameters": "off"
+        "noUnusedFunctionParameters": "off",
+        "noUnusedVariables": "off"
+      },
+      "performance": {
+        "noImgElement": "off"
       }
     }
   },

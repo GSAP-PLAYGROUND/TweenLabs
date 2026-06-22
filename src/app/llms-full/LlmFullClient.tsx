@@ -34,6 +34,11 @@ export default function LlmFullClient({
   const activeComp =
     components.find((c) => c.slug === activeSlug) || components[0];
 
+  const activeIndex = components.findIndex((c) => c.slug === activeSlug);
+  const activeDisplayId = String(
+    activeIndex !== -1 ? activeIndex + 1 : 1,
+  ).padStart(2, "0");
+
   // Helper function to update active slug and hash
   const handleSelect = (slug: string) => {
     setActiveSlug(slug);
@@ -153,9 +158,9 @@ export default function LlmFullClient({
             onChange={(e) => handleSelect(e.target.value)}
             className="w-full border-3 border-[#2a2a2a] px-3 py-2 font-mono font-bold rounded-lg focus:outline-none focus:bg-[#fafaf9] shadow-[3px_3px_0px_#2a2a2a] text-xs bg-white cursor-pointer"
           >
-            {components.map((comp) => (
+            {components.map((comp, idx) => (
               <option key={comp.id} value={comp.slug}>
-                {comp.id} {"//"} {comp.name}
+                {String(idx + 1).padStart(2, "0")} {"//"} {comp.name}
               </option>
             ))}
           </select>
@@ -169,8 +174,9 @@ export default function LlmFullClient({
               Component Index
             </h3>
             <nav className="flex flex-col gap-2">
-              {components.map((comp) => {
+              {components.map((comp, idx) => {
                 const isActive = comp.slug === activeSlug;
+                const displayId = String(idx + 1).padStart(2, "0");
                 return (
                   <button
                     key={comp.id}
@@ -181,7 +187,7 @@ export default function LlmFullClient({
                         : "text-zinc-500 hover:text-wtf-purple hover:translate-x-1 border-2 border-transparent"
                     }`}
                   >
-                    {comp.id} {"//"} {comp.name}
+                    {displayId} {"//"} {comp.name}
                   </button>
                 );
               })}
@@ -193,7 +199,7 @@ export default function LlmFullClient({
             <article className="brutalist-card bg-white p-6 md:p-8 shadow-[6px_6px_0px_#2a2a2a] flex flex-col gap-6 relative">
               {/* ID Badge */}
               <div className="absolute top-4 right-4 font-mono font-bold text-xs text-zinc-400">
-                [ COMPONENT {activeComp.id} ]
+                [ COMPONENT {activeDisplayId} ]
               </div>
 
               {/* Title */}

@@ -220,6 +220,9 @@ cd TweenLabs
 # Install dependencies
 pnpm install
 
+# Set up environment variables
+cp .env.example .env.local
+
 # Start the dev server
 pnpm dev
 ```
@@ -249,8 +252,10 @@ git clone https://github.com/YOUR_USERNAME/TweenLabs.git
 # 2. Create a branch
 git checkout -b feat/your-animation-name
 
-# 3. Install & run
-pnpm install && pnpm dev
+# 3. Install, set up environment, & run
+pnpm install
+cp .env.example .env.local
+pnpm dev
 
 # 4. Make changes, then commit
 git commit -m "feat: add [animation name]"
@@ -263,7 +268,7 @@ git push origin feat/your-animation-name
 
 - Create a folder: `src/app/(main)/components/YourComponent/`
 - Add `page.tsx` with your animation
-- Register it in `src/data/components.ts` with `id`, `name`, `componentName`, `route`, `bgColor`, `textColor`, `description`, and `tiltClass`
+- Register it in `src/data/components.ts` with a unique kebab-case `id` slug (e.g. `"your-animation"`), `name`, `componentName`, `route`, `bgColor`, `textColor`, `description`, `tiltClass`, and `type` (an array of categories, avoid using numbers for `id` to prevent Git conflicts)
 - Add inline comments explaining the GSAP logic
 
 ### Good First Contributions

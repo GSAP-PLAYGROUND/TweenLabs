@@ -41,7 +41,7 @@ function Code({ children }: { children: string }) {
   );
 }
 
-/* ── VS Code One Dark Pro syntax highlighter ── */
+/* ── VS Code / GitHub syntax highlighter ── */
 function highlight(raw: string): React.ReactNode[] {
   const lines = raw.split("\n");
   return lines.map((line, li) => {
@@ -50,77 +50,107 @@ function highlight(raw: string): React.ReactNode[] {
     const rest = line;
     let key = 0;
 
-    // comment at end of line or full-line comment
-    const commentIdx = rest.indexOf("//");
+    // comment at end of line or full-line comment (supporting // and #)
+    let commentIdx = rest.indexOf("//");
+    if (commentIdx === -1) {
+      commentIdx = rest.indexOf("#");
+    }
     const beforeComment = commentIdx !== -1 ? rest.slice(0, commentIdx) : rest;
     const commentPart = commentIdx !== -1 ? rest.slice(commentIdx) : null;
 
-    // tokenise beforeComment into: strings, numbers, keywords, properties, punctuation, plain
-    const tokenRe =
-      /("[^"]*"|'[^']*'|\b(id|name|route|bgColor|textColor|description|tiltClass|componentName)\b(?=\s*:)|\b(git|pnpm|npm|npx|yarn|bun|cd|feat|fix|docs|chore|origin|checkout|push|commit|install|dev|lint|build|master|bash)\b|\b\d+\b|[{}()\[\],:;])/g;
-    let lastIndex = 0;
-    let m: RegExpExecArray | null;
-    // eslint-disable-next-line no-cond-assign
-    while ((m = tokenRe.exec(beforeComment)) !== null) {
-      // plain text before match
-      if (m.index > lastIndex) {
-        segments.push(
-          <span key={key++} className="text-[#abb2bf]">
-            {beforeComment.slice(lastIndex, m.index)}
-          </span>,
-        );
-      }
-      const tok = m[0];
-      if (tok.startsWith('"') || tok.startsWith("'")) {
-        // string — green
-        segments.push(
-          <span key={key++} className="text-[#98c379]">
-            {tok}
-          </span>,
-        );
-      } else if (m[2]) {
-        // object property name — blue
-        segments.push(
-          <span key={key++} className="text-[#9cdcfe]">
-            {tok}
-          </span>,
-        );
-      } else if (m[3]) {
-        // shell / git keyword — purple
-        segments.push(
-          <span key={key++} className="text-[#c678dd] font-semibold">
-            {tok}
-          </span>,
-        );
-      } else if (/^\d+$/.test(tok)) {
-        // number — orange
-        segments.push(
-          <span key={key++} className="text-[#d19a66]">
-            {tok}
-          </span>,
-        );
-      } else {
-        // punctuation — light gray
-        segments.push(
-          <span key={key++} className="text-[#abb2bf]">
-            {tok}
-          </span>,
-        );
-      }
-      lastIndex = m.index + tok.length;
-    }
-    // remaining plain text
-    if (lastIndex < beforeComment.length) {
+    // Highlight environment variables (KEY=value)
+    const eqIdx = beforeComment.indexOf("=");
+    if (
+      eqIdx !== -1 &&
+      !beforeComment.includes(" ") &&
+      !beforeComment.includes("(")
+    ) {
+      const envKey = beforeComment.slice(0, eqIdx);
+      const envVal = beforeComment.slice(eqIdx + 1);
       segments.push(
-        <span key={key++} className="text-[#abb2bf]">
-          {beforeComment.slice(lastIndex)}
+        <span key={key++} className="text-[#9cdcfe] font-semibold">
+          {envKey}
         </span>,
       );
+      segments.push(
+        <span key={key++} className="text-[#d4d4d4] mx-0.5">
+          =
+        </span>,
+      );
+      segments.push(
+        <span key={key++} className="text-[#d4d4d4]">
+          {envVal}
+        </span>,
+      );
+    } else {
+      // tokenise beforeComment into: strings, numbers, keywords, properties, punctuation, plain
+      const tokenRe =
+        /("[^"]*"|'[^']*'|\b(id|name|route|bgColor|textColor|description|tiltClass|componentName|type)\b(?=\s*:)|\b(git|pnpm|npm|npx|yarn|bun|cd|feat|fix|docs|chore|origin|checkout|push|commit|install|dev|lint|build|master|bash)\b|\b\d+\b|[{}()[\],:;])/g;
+      let lastIndex = 0;
+      let m: RegExpExecArray | null;
+      // eslint-disable-next-line no-cond-assign
+      while ((m = tokenRe.exec(beforeComment)) !== null) {
+        // plain text before match
+        if (m.index > lastIndex) {
+          segments.push(
+            <span key={key++} className="text-[#d4d4d4]">
+              {beforeComment.slice(lastIndex, m.index)}
+            </span>,
+          );
+        }
+        const tok = m[0];
+        if (tok.startsWith('"') || tok.startsWith("'")) {
+          // string — light blue (GitHub)
+          segments.push(
+            <span key={key++} className="text-[#a5d6ff]">
+              {tok}
+            </span>,
+          );
+        } else if (m[2]) {
+          // property — light blue (GitHub)
+          segments.push(
+            <span key={key++} className="text-[#9cdcfe]">
+              {tok}
+            </span>,
+          );
+        } else if (m[3]) {
+          // shell / git keyword — red/orange (GitHub)
+          segments.push(
+            <span key={key++} className="text-[#ff7b72] font-semibold">
+              {tok}
+            </span>,
+          );
+        } else if (/^\d+$/.test(tok)) {
+          // number — light blue (GitHub)
+          segments.push(
+            <span key={key++} className="text-[#79c0ff]">
+              {tok}
+            </span>,
+          );
+        } else {
+          // punctuation — light gray
+          segments.push(
+            <span key={key++} className="text-[#abb2bf]">
+              {tok}
+            </span>,
+          );
+        }
+        lastIndex = m.index + tok.length;
+      }
+      // remaining plain text
+      if (lastIndex < beforeComment.length) {
+        segments.push(
+          <span key={key++} className="text-[#d4d4d4]">
+            {beforeComment.slice(lastIndex)}
+          </span>,
+        );
+      }
     }
-    // comment — white
+
+    // comment — GitHub / VS Code green comment style
     if (commentPart) {
       segments.push(
-        <span key={key++} className="text-white/70 italic">
+        <span key={key++} className="text-[#6a9955] italic">
           {commentPart}
         </span>,
       );
@@ -156,8 +186,8 @@ function Callout({
 function Terminal({ children }: { children: string }) {
   const [copied, setCopied] = useState(false);
   return (
-    <div className="border-2 border-[#2a2a2a] rounded-xl overflow-hidden bg-[#111111] shadow-[2.5px_2.5px_0px_#2a2a2a] w-fit max-w-full my-3">
-      <div className="flex items-center justify-between bg-[#1a1a1a] border-b border-white/8 px-3.5 py-2">
+    <div className="border-2 border-[#2a2a2a] rounded-xl overflow-hidden bg-[#0d1117] shadow-[2.5px_2.5px_0px_#2a2a2a] w-fit max-w-full my-3">
+      <div className="flex items-center justify-between bg-[#161b22] border-b border-white/8 px-3.5 py-2">
         <div className="flex items-center gap-1.5">
           <span className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]" />
           <span className="w-2.5 h-2.5 rounded-full bg-[#febc2e]" />
@@ -262,7 +292,7 @@ function Card({
     <section className="rounded-2xl border-2 border-[#2a2a2a] bg-white overflow-hidden shadow-[4px_4px_0px_#2a2a2a]">
       <div
         className="flex items-center gap-3 px-5 py-3.5 border-b-2 border-[#2a2a2a]"
-        style={{ backgroundColor: accent + "18" }}
+        style={{ backgroundColor: `${accent}18` }}
       >
         <span className="text-xl leading-none">{emoji}</span>
         <h2 className="font-mono font-black text-[11px] sm:text-[12px] uppercase tracking-widest text-[#2a2a2a]">
@@ -302,20 +332,12 @@ export default function ContributePageClient() {
               </div>
 
               {/* headline */}
-              <h1 className="font-serif font-black uppercase leading-[0.88] tracking-tight text-[#2a2a2a] mb-6">
-                <span className="block text-[clamp(2.2rem,5vw,3.8rem)]">
-                  Contribution
-                </span>
-                <span className="block text-[clamp(2.2rem,5vw,3.8rem)] text-[#e55b3c]">
-                  Guidelines
-                </span>
+              <h1 className="font-serif font-black uppercase leading-[0.9] tracking-tight text-[#2a2a2a] mb-6 text-[clamp(1.8rem,4.8vw,3.8rem)] whitespace-nowrap">
+                Contribution <span className="text-[#e55b3c]">Guidelines</span>
               </h1>
 
               {/* description */}
-              <p
-                className="font-sans text-[14px] sm:text-[15px] lg:text-base text-zinc-600 leading-[1.7] mb-8"
-                style={{ maxWidth: "42ch" }}
-              >
+              <p className="font-sans text-[14px] sm:text-[15px] lg:text-base text-zinc-600 leading-[1.7] mb-8">
                 TweenLabs is a community-driven, open-source GSAP component
                 library. Whether you&apos;re adding a new animation, fixing a
                 bug, or improving docs — every contribution makes this library
@@ -429,7 +451,32 @@ export default function ContributePageClient() {
                 </Callout>
               </Step>
 
-              <Step num="4" accent="#0c9367" title="Start the Dev Server">
+              <Step
+                num="4"
+                accent="#0c9367"
+                title="Configure Environment Variables"
+              >
+                Create a <Code>.env.local</Code> file in the root directory and
+                add the required environment variables:
+                <Terminal>{`# Deployment used by \`npx convex dev\`
+CONVEX_DEPLOYMENT=your_convex_deployment_name
+
+# Convex DB Configuration
+NEXT_PUBLIC_CONVEX_URL=your_convex_url
+NEXT_PUBLIC_CONVEX_SITE_URL=your_convex_site_url
+
+# Better Auth Configuration
+BETTER_AUTH_SECRET=your_32_character_secret
+SITE_URL=http://localhost:3000
+
+# OAuth Credentials (Optional for local play)
+GITHUB_CLIENT_ID=your_github_client_id
+GITHUB_CLIENT_SECRET=your_github_client_secret
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret`}</Terminal>
+              </Step>
+
+              <Step num="5" accent="#0c9367" title="Start the Dev Server">
                 <Terminal>{`pnpm dev`}</Terminal>
                 Open{" "}
                 <a
@@ -481,7 +528,7 @@ export default function ContributePageClient() {
               <Step num="2" accent="#e55b3c" title="Register in components.ts">
                 Add your entry to <Code>src/data/components.ts</Code>:
                 <Terminal>{`{
-  id: "23",                           // next sequential number
+  id: "your-animation",               // Unique slug ID (kebab-case, e.g. "your-animation")
   name: "Your Animation",             // display name
   componentName: "YourAnimation",     // PascalCase — must match folder
   route: "/components/YourAnimation",
@@ -489,7 +536,15 @@ export default function ContributePageClient() {
   textColor: "text-white",
   description: "One sentence describing what this animation does.",
   tiltClass: "tilt-left",
+  type: ["card", "scroll"],           // text | scroll | card | interactive (supports multiple)
 }`}</Terminal>
+                <Callout icon="⚡">
+                  Always use a unique kebab-case slug (e.g.{" "}
+                  <Code>your-animation</Code>) for the <Code>id</Code> field. Do{" "}
+                  <strong>not</strong> use sequential numbers to avoid Git merge
+                  conflicts. Visual numbers are calculated dynamically by the
+                  application.
+                </Callout>
                 <Callout icon="⚡">
                   <Code>componentName</Code> must match your folder name exactly
                   (case-sensitive). A mismatch causes a 404 and breaks the

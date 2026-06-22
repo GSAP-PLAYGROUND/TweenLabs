@@ -1,6 +1,6 @@
-import fs from "fs";
+import fs from "node:fs";
+import path from "node:path";
 import type { Metadata } from "next";
-import path from "path";
 import LlmFullClient from "./LlmFullClient";
 
 export const metadata: Metadata = {

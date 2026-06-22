@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 import AnimationCard from "@/components/AnimationCard";
 import type { AnimationItem } from "@/data/components";
 
