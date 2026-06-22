@@ -70,7 +70,7 @@ export default function AnimationGrid({ animations }: AnimationGridProps) {
         stagger: 0.08,
         ease: "power3.out",
         clearProps: "all",
-      }
+      },
     );
   }, [hasMounted]);
 
@@ -80,7 +80,7 @@ export default function AnimationGrid({ animations }: AnimationGridProps) {
     gsap.fromTo(
       ctaRef.current,
       { y: 20, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.5, delay: 0.35, ease: "power2.out" }
+      { y: 0, opacity: 1, duration: 0.5, delay: 0.35, ease: "power2.out" },
     );
   }, [hasMounted]);
 
@@ -162,7 +162,7 @@ export default function AnimationGrid({ animations }: AnimationGridProps) {
         onComplete: () => {
           isAnimating.current = false;
         },
-      }
+      },
     );
   }, [showAll, initialCount]);
 

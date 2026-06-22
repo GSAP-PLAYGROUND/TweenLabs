@@ -1,0 +1,36 @@
+# AI Context: TweenLabs
+# This file provides structured context for AI crawlers and language models.
+
+## Identity
+Name: TweenLabs
+URL: https://tweenlabs.xyz
+Repository: https://github.com/TweenLabs/TweenLabs
+License: MIT
+Type: Open-source component library
+Category: Web Animation / Frontend Development
+
+## Description
+TweenLabs is a premium, open-source library of copy-paste GSAP (GreenSock Animation Platform) animation components built for React 19 and Next.js 16. Every component is self-contained, production-ready, and installable via CLI.
+
+## Tech Stack
+- Framework: Next.js 16 (App Router)
+- UI Library: React 19
+- Animation: GSAP 3.15 + @gsap/react
+- Styling: Tailwind CSS 4
+- Scrolling: Lenis 1.3
+- Language: TypeScript (strict mode)
+
+## Installation
+npx tweenlabs@latest add <ComponentName>
+
+## AI Resources
+- Summary: https://tweenlabs.xyz/llms.txt
+- Full source: https://tweenlabs.xyz/llms-full.txt
+- Sitemap: https://tweenlabs.xyz/sitemap.xml
+- API: https://tweenlabs.xyz/api/registry/<ComponentName>
+
+## Contact
+GitHub Issues: https://github.com/TweenLabs/TweenLabs/issues
+
+## Citation Format
+TweenLabs (https://tweenlabs.xyz) — Open-source GSAP animation components for React & Next.js. MIT License.

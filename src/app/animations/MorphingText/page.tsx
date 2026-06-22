@@ -146,7 +146,7 @@ export default function MorphingTextPage() {
         delay: 0.6,
       });
     },
-    { scope: containerRef }
+    { scope: containerRef },
   );
 
   return (
@@ -179,11 +179,7 @@ export default function MorphingTextPage() {
       >
         <defs>
           <filter id="text-morph">
-            <feGaussianBlur
-              in="SourceGraphic"
-              stdDeviation="4"
-              result="blur"
-            />
+            <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur" />
             <feColorMatrix
               in="blur"
               mode="matrix"

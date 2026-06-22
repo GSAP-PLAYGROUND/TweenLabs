@@ -1,14 +1,14 @@
-import { AppSidebar } from "@/components/app-sidebar"
+import { AppSidebar } from "@/components/app-sidebar";
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
 
 export default function MainLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <SidebarProvider className="h-svh overflow-hidden">
@@ -17,10 +17,8 @@ export default function MainLayout({
         {/* <header className="flex shrink-0 items-center gap-2 px-4">
           <SidebarTrigger />
         </header> */}
-        <main className="flex-1 h-full overflow-hidden">
-          {children}
-        </main>
+        <main className="flex-1 h-full overflow-hidden">{children}</main>
       </SidebarInset>
     </SidebarProvider>
-  )
+  );
 }

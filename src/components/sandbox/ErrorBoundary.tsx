@@ -57,15 +57,19 @@ export class SandboxErrorBoundary extends Component<Props, State> {
             <h3 className="font-bold text-lg text-white">
               {this.state.error?.name || "Error"}: {this.state.error?.message}
             </h3>
-            
+
             {this.state.error?.stack && (
               <pre className="mt-4 p-4 bg-black/60 border border-zinc-800 text-xs leading-relaxed overflow-x-auto text-red-300/90 whitespace-pre-wrap max-h-[300px]">
                 {this.state.error.stack}
               </pre>
             )}
-            
+
             <div className="mt-6 text-xs text-zinc-500 border-t border-zinc-800 pt-4">
-              <p>💡 Tip: Verify your GSAP selectors match the elements in your component, and ensure React hooks (useRef, useState) are used correctly.</p>
+              <p>
+                💡 Tip: Verify your GSAP selectors match the elements in your
+                component, and ensure React hooks (useRef, useState) are used
+                correctly.
+              </p>
             </div>
           </div>
         </div>

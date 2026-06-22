@@ -18,8 +18,6 @@ interface CodePageClientProps {
   customization: string | null;
 }
 
-
-
 // File Icon helper to render icons like in real VS Code
 const getFileIcon = (fileName: string) => {
   if (fileName.endsWith(".tsx")) {
@@ -474,11 +472,10 @@ function renderMarkdown(md: string) {
 
     if (
       line.startsWith("# ") ||
-      (line.startsWith("## ") && (
-        line.toLowerCase().includes("customization") ||
-        line.toLowerCase().includes("properties") ||
-        line.toLowerCase().includes("props")
-      )) ||
+      (line.startsWith("## ") &&
+        (line.toLowerCase().includes("customization") ||
+          line.toLowerCase().includes("properties") ||
+          line.toLowerCase().includes("props"))) ||
       line.toLowerCase().includes("setup &amp; dependencies") ||
       line.toLowerCase().includes("setup & dependencies")
     ) {
@@ -527,12 +524,14 @@ function renderMarkdown(md: string) {
       inBlockquote = false;
 
       const firstLine = contentLines[0].trim();
-      const alertMatch = firstLine.match(/^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]$/i);
+      const alertMatch = firstLine.match(
+        /^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]$/i,
+      );
 
       if (alertMatch) {
         const alertType = alertMatch[1].toUpperCase();
         const alertBodyLines = contentLines.slice(1);
-        
+
         let bgColor = "bg-blue-50/70";
         const borderColor = "border-[#2a2a2a]";
         let textColor = "text-blue-900";
@@ -579,7 +578,7 @@ function renderMarkdown(md: string) {
                 ))}
               </div>
             </div>
-          </div>
+          </div>,
         );
       } else {
         elements.push(
@@ -592,7 +591,7 @@ function renderMarkdown(md: string) {
                 {parseInlineMarkdown(l)}
               </p>
             ))}
-          </blockquote>
+          </blockquote>,
         );
       }
     }
@@ -1042,7 +1041,9 @@ export default function CodePageClient({
 
             {/* Right side */}
             <div className="flex items-center gap-2 md:gap-4">
-              <span className="hidden sm:inline">Ln {activeTab.code.split("\n").length}, Col 1</span>
+              <span className="hidden sm:inline">
+                Ln {activeTab.code.split("\n").length}, Col 1
+              </span>
               <span className="hidden md:inline">Spaces: 2</span>
               <span className="hidden sm:inline">UTF-8</span>
               <span className="hover:bg-[#008be6] px-1 md:px-1.5 py-0.5 rounded cursor-pointer">
@@ -1168,7 +1169,7 @@ export default function CodePageClient({
 
             {/* Step 2: Add Required CSS */}
             {cssCode && (
-            <div className="flex gap-3 md:gap-4 items-start">
+              <div className="flex gap-3 md:gap-4 items-start">
                 <div className="flex-shrink-0 w-7 h-7 md:w-8 md:h-8 rounded-full bg-wtf-purple border-2 border-[#2a2a2a] text-white font-mono font-bold text-[10px] md:text-xs flex items-center justify-center shadow-[1.5px_1.5px_0px_#2a2a2a] mt-1">
                   2
                 </div>

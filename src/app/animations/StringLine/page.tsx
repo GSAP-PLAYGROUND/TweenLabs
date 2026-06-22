@@ -187,7 +187,9 @@ export default function StringLinePage() {
             const progress = self.progress;
             progressRef.current = Math.round(progress * 100);
             if (progressDisplayRef.current) {
-              progressDisplayRef.current.textContent = String(progressRef.current);
+              progressDisplayRef.current.textContent = String(
+                progressRef.current,
+              );
             }
 
             const pastelColors = [
@@ -301,7 +303,9 @@ export default function StringLinePage() {
         {/* Console readout display (Top center/right) */}
         <div className="absolute top-6 right-6 z-30 font-mono text-[9px] md:text-[10px] font-bold text-zinc-500 text-right flex flex-col gap-1">
           <span>[ SYSTEM: TRACKING ]</span>
-          <span>PATH PROGRESS: <span ref={progressDisplayRef}>0</span>%</span>
+          <span>
+            PATH PROGRESS: <span ref={progressDisplayRef}>0</span>%
+          </span>
         </div>
 
         {/* Decorative typography background */}

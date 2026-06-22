@@ -18,7 +18,7 @@ export default function KineticTypographyPage() {
     if (!el) return;
     const observer = new IntersectionObserver(
       ([entry]) => setIsInView(entry.isIntersecting),
-      { threshold: 0.1 }
+      { threshold: 0.1 },
     );
     observer.observe(el);
     return () => observer.disconnect();

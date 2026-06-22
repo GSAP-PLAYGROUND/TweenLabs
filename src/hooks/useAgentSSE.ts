@@ -26,7 +26,9 @@ const BACKEND_URL = "http://localhost:8000";
 
 export function useAgentSSE(onCodeGenerated?: (code: string) => void) {
   const [threadId, setThreadId] = useState<string | null>(null);
-  const [status, setStatus] = useState<"idle" | "running" | "paused" | "completed" | "error">("idle");
+  const [status, setStatus] = useState<
+    "idle" | "running" | "paused" | "completed" | "error"
+  >("idle");
   const [messages, setMessages] = useState<SSEMessage[]>([]);
   const [activeNode, setActiveNode] = useState<string | null>(null);
   const [currentPlan, setCurrentPlan] = useState<string | null>(null);
@@ -76,7 +78,7 @@ export function useAgentSSE(onCodeGenerated?: (code: string) => void) {
 
   const runAgent = async (
     action: "start" | "approve",
-    payload: { userQuery?: string; plan?: string; skills?: string[] } = {}
+    payload: { userQuery?: string; plan?: string; skills?: string[] } = {},
   ) => {
     // Determine active thread
     let activeThread = threadId;
@@ -110,7 +112,10 @@ export function useAgentSSE(onCodeGenerated?: (code: string) => void) {
           id: Date.now().toString(),
           sender: "user",
           text: payload.userQuery,
-          timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+          timestamp: new Date().toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
         };
         setMessages([userMsg]);
       }
@@ -186,7 +191,10 @@ export function useAgentSSE(onCodeGenerated?: (code: string) => void) {
             id: `error-${Date.now()}`,
             sender: "system",
             text: `Connection error: ${error.message || String(err)}`,
-            timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+            timestamp: new Date().toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            }),
           },
         ]);
       }
@@ -195,7 +203,10 @@ export function useAgentSSE(onCodeGenerated?: (code: string) => void) {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleSSEEvent = (event: string, data: any) => {
-    const timestamp = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    const timestamp = new Date().toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
 
     switch (event) {
       case "node_status": {
@@ -223,7 +234,7 @@ export function useAgentSSE(onCodeGenerated?: (code: string) => void) {
         if (Array.isArray(data)) {
           const planApproval = data.find(
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (item: any) => item?.value?.type === "plan_approval"
+            (item: any) => item?.value?.type === "plan_approval",
           );
           if (planApproval) {
             const { plan, skills } = planApproval.value;

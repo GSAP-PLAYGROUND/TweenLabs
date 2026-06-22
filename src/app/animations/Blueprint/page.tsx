@@ -165,11 +165,20 @@ export default function BlueprintScatterPage() {
     () => {
       let idleTweens: gsap.core.Tween[] = [];
 
-      const scrollerEl = containerRef.current?.closest("#main-scroller") || null;
+      const scrollerEl =
+        containerRef.current?.closest("#main-scroller") || null;
       const scroller = scrollerEl || undefined;
-      const scrollerRect = scrollerEl ? scrollerEl.getBoundingClientRect() : { left: 0, top: 0 };
-      const screenCenterX = (scrollerEl ? (scrollerEl as HTMLElement).clientWidth : window.innerWidth) / 2;
-      const screenCenterY = (scrollerEl ? (scrollerEl as HTMLElement).clientHeight : window.innerHeight) / 2;
+      const scrollerRect = scrollerEl
+        ? scrollerEl.getBoundingClientRect()
+        : { left: 0, top: 0 };
+      const screenCenterX =
+        (scrollerEl
+          ? (scrollerEl as HTMLElement).clientWidth
+          : window.innerWidth) / 2;
+      const screenCenterY =
+        (scrollerEl
+          ? (scrollerEl as HTMLElement).clientHeight
+          : window.innerHeight) / 2;
 
       // 1. Page Load Intro Animation Sequence
       const introTl = gsap.timeline({
@@ -217,7 +226,8 @@ export default function BlueprintScatterPage() {
         {
           x: (i, target) => {
             const rect = target.getBoundingClientRect();
-            const targetCenterX = rect.left + rect.width / 2 - scrollerRect.left;
+            const targetCenterX =
+              rect.left + rect.width / 2 - scrollerRect.left;
             return screenCenterX - targetCenterX;
           },
           y: (i, target) => {
@@ -251,7 +261,9 @@ export default function BlueprintScatterPage() {
         killFloatingIdle();
 
         const cards = Array.from(
-          pinnedSectionRef.current?.querySelectorAll<HTMLElement>(".bp-scatter-card") ?? []
+          pinnedSectionRef.current?.querySelectorAll<HTMLElement>(
+            ".bp-scatter-card",
+          ) ?? [],
         );
         cards.forEach((card, idx) => {
           const offset = idx % 2 === 0 ? 1 : -1;
@@ -279,7 +291,7 @@ export default function BlueprintScatterPage() {
         killFloatingIdle();
       };
     },
-    { scope: containerRef }
+    { scope: containerRef },
   );
 
   // Custom mouse-move/hover functions for cards
@@ -346,10 +358,15 @@ export default function BlueprintScatterPage() {
               [ Blueprint Physics System ]
             </span>
             <h1 className="bp-hero-title-scramble font-serif font-black text-4xl md:text-6xl text-[#2a2a2a] leading-[1.05] tracking-tighter uppercase mb-4">
-              <ScrambleText text="Exploding Blueprints" delay={600} isActive={animStarted} />
+              <ScrambleText
+                text="Exploding Blueprints"
+                delay={600}
+                isActive={animStarted}
+              />
             </h1>
             <p className="bp-hero-subtitle font-mono text-[11px] md:text-xs text-[#2a2a2a]/70 max-w-lg mx-auto leading-relaxed mb-8 pointer-events-auto">
-              Observe architectural card elements transition from a stacked singularity to their designated grid coordinates on scroll.
+              Observe architectural card elements transition from a stacked
+              singularity to their designated grid coordinates on scroll.
             </p>
           </div>
 

@@ -65,7 +65,8 @@ export default function RevealTextPage() {
       });
 
       // ── Demo Section title: line-by-line reveal ──
-      const sectionTitle = containerRef.current?.querySelector(".reveal-line-title");
+      const sectionTitle =
+        containerRef.current?.querySelector(".reveal-line-title");
       if (sectionTitle) {
         SplitText.create(sectionTitle, {
           type: "lines",
@@ -90,7 +91,8 @@ export default function RevealTextPage() {
       }
 
       // ── Demo Section description: word-by-word ──
-      const sectionDesc = containerRef.current?.querySelector(".reveal-word-desc");
+      const sectionDesc =
+        containerRef.current?.querySelector(".reveal-word-desc");
       if (sectionDesc) {
         SplitText.create(sectionDesc, {
           type: "words",
@@ -116,7 +118,9 @@ export default function RevealTextPage() {
       }
 
       // ── Demo Section closing: random char scatter ──
-      const closingEl = containerRef.current?.querySelector(".reveal-char-closing");
+      const closingEl = containerRef.current?.querySelector(
+        ".reveal-char-closing",
+      );
       if (closingEl) {
         SplitText.create(closingEl, {
           type: "chars",
@@ -198,7 +202,8 @@ export default function RevealTextPage() {
               [ Reveal Effect 01 · Line by Line ]
             </span>
             <h2 className="reveal-line-title font-serif font-black text-3xl md:text-5xl text-[#1c1714] leading-[1.1] tracking-tight">
-              Text reveals that feel like they belong to the page — not bolted on.
+              Text reveals that feel like they belong to the page — not bolted
+              on.
             </h2>
           </div>
 

@@ -19,7 +19,10 @@ export async function GET(
 
   if (!authenticated && !isCli) {
     return NextResponse.json(
-      { error: "Unauthorized. Please sign in to view this component's registry code." },
+      {
+        error:
+          "Unauthorized. Please sign in to view this component's registry code.",
+      },
       { status: 401 },
     );
   }

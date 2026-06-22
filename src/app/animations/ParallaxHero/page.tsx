@@ -15,10 +15,12 @@ export default function ParallaxHeroPage() {
     () => {
       if (!containerRef.current) return;
 
-      const scroller = containerRef.current.closest("#main-scroller") || undefined;
+      const scroller =
+        containerRef.current.closest("#main-scroller") || undefined;
 
       // SplitText headline entrance
-      const headingEl = containerRef.current.querySelector(".parallax-headline");
+      const headingEl =
+        containerRef.current.querySelector(".parallax-headline");
       if (headingEl) {
         SplitText.create(headingEl, {
           type: "chars",
@@ -72,7 +74,7 @@ export default function ParallaxHeroPage() {
         },
       });
     },
-    { scope: containerRef }
+    { scope: containerRef },
   );
 
   return (
@@ -101,7 +103,8 @@ export default function ParallaxHeroPage() {
         {/* Subheadline */}
         <p className="parallax-sub z-20 mt-6 max-w-lg text-center text-sm md:text-base font-sans font-medium text-zinc-550 leading-relaxed">
           Multi-layer parallax hero with SplitText character scatter entrance
-          and scroll-driven depth motion. Every layer moves at a different speed.
+          and scroll-driven depth motion. Every layer moves at a different
+          speed.
         </p>
       </section>
     </div>

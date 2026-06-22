@@ -72,7 +72,10 @@ export default function AnimationTwoPage() {
 
   useGSAP(
     () => {
-      const tags = Array.from(containerRef.current?.querySelectorAll<HTMLElement>(".assembler-tag") ?? []);
+      const tags = Array.from(
+        containerRef.current?.querySelectorAll<HTMLElement>(".assembler-tag") ??
+          [],
+      );
 
       const scroller =
         containerRef.current?.closest("#main-scroller") || undefined;

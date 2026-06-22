@@ -16,7 +16,10 @@ export default function AnimationThreePage() {
     () => {
       const scroller =
         containerRef.current?.closest("#main-scroller") || undefined;
-      const chars = Array.from(containerRef.current?.querySelectorAll<HTMLElement>(".reveal-char") ?? []);
+      const chars = Array.from(
+        containerRef.current?.querySelectorAll<HTMLElement>(".reveal-char") ??
+          [],
+      );
 
       // 1. Create the main horizontal translation tween
       const horizontalTween = gsap.to(textTrackRef.current, {

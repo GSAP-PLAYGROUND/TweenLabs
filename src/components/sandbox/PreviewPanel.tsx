@@ -85,7 +85,9 @@ export default function PreviewPanel({
               key={t}
               onClick={() => setTheme(t)}
               className={`px-3 py-1 text-[10px] uppercase transition-colors cursor-pointer ${
-                theme === t ? "bg-black text-white" : "hover:bg-zinc-100 text-black"
+                theme === t
+                  ? "bg-black text-white"
+                  : "hover:bg-zinc-100 text-black"
               }`}
             >
               {t}
@@ -95,7 +97,9 @@ export default function PreviewPanel({
       </div>
 
       {/* Main Container Area */}
-      <div className={`flex-1 relative overflow-auto ${getThemeBg()} transition-colors duration-500`}>
+      <div
+        className={`flex-1 relative overflow-auto ${getThemeBg()} transition-colors duration-500`}
+      >
         {showCode ? (
           /* Inline Code Editor */
           <div className="w-full h-full flex flex-col bg-[#1e1e1e] relative text-zinc-300">
@@ -109,8 +113,12 @@ export default function PreviewPanel({
             <div className="flex-1 relative flex overflow-hidden">
               {/* Simulated Line Numbers */}
               <div className="w-10 bg-[#121212] text-zinc-600 font-mono text-xs text-right py-4 pr-2 select-none border-r border-zinc-800">
-                {Array.from({ length: Math.max(code.split("\n").length, 1) }).map((_, i) => (
-                  <div key={i} className="leading-5 h-5">{i + 1}</div>
+                {Array.from({
+                  length: Math.max(code.split("\n").length, 1),
+                }).map((_, i) => (
+                  <div key={i} className="leading-5 h-5">
+                    {i + 1}
+                  </div>
                 ))}
               </div>
 
@@ -123,7 +131,7 @@ export default function PreviewPanel({
                 spellCheck={false}
               />
             </div>
-            
+
             {/* Warning footer */}
             <div className="p-2.5 bg-zinc-900 border-t border-black text-[9px] font-mono text-zinc-500">
               💡 Editing compiles your GSAP changes automatically in real-time.

@@ -134,8 +134,8 @@ export default function PageWrapper({
           isDemoPage
             ? "flex-grow w-full relative overflow-y-auto overflow-x-hidden mt-[53px] md:mt-16 demo-page-container"
             : isPlayground
-            ? "flex-1 flex flex-col w-full relative pt-[59px] md:pt-[67px]"
-            : "flex-1 flex flex-col w-full relative pt-[69px] md:pt-24"
+              ? "flex-1 flex flex-col w-full relative pt-[59px] md:pt-[67px]"
+              : "flex-1 flex flex-col w-full relative pt-[69px] md:pt-24"
         }
         style={isDemoPage ? { height: "calc(100dvh - 53px)" } : undefined}
       >

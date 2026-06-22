@@ -118,7 +118,11 @@ export default async function CodePage({ params }: PageProps) {
 
   const animationsDir = path.join(process.cwd(), "src", "app", "animations");
   const pagePath = path.join(animationsDir, anim.componentName, "page.tsx");
-  const howToUsePath = path.join(animationsDir, anim.componentName, "HOW_TO_USE.md");
+  const howToUsePath = path.join(
+    animationsDir,
+    anim.componentName,
+    "HOW_TO_USE.md",
+  );
 
   let pageCode = "";
   let standaloneCode: string | null = null;

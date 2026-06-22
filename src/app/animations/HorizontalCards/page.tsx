@@ -68,7 +68,11 @@ export default function AnimationFourPage() {
 
         // Start floating animation when entering viewport
         if (entry.isIntersecting && !wasInView) {
-          const cardInners = Array.from(containerRef.current?.querySelectorAll<HTMLElement>(".card-inner") ?? []);
+          const cardInners = Array.from(
+            containerRef.current?.querySelectorAll<HTMLElement>(
+              ".card-inner",
+            ) ?? [],
+          );
           if (cardInners.length > 0) {
             floatTweenRef.current = gsap.to(cardInners, {
               y: "-10px",
@@ -91,7 +95,7 @@ export default function AnimationFourPage() {
           }
         }
       },
-      { threshold: 0.1 }
+      { threshold: 0.1 },
     );
     observer.observe(el);
     return () => {
@@ -122,7 +126,9 @@ export default function AnimationFourPage() {
         },
       });
 
-      const cards = Array.from(containerRef.current?.querySelectorAll<HTMLElement>(".card-item") ?? []);
+      const cards = Array.from(
+        containerRef.current?.querySelectorAll<HTMLElement>(".card-item") ?? [],
+      );
 
       // Timeline Sequence:
       // 1. Staggered Entry: Cards enter from bottom one by one.

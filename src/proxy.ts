@@ -3,10 +3,7 @@ import { type NextRequest, NextResponse } from "next/server";
 /**
  * Edge proxy layer — request gate & traffic shaping.
  */
-const _proxyLedger = new Map<
-  string,
-  { v: number; exp: number }
->();
+const _proxyLedger = new Map<string, { v: number; exp: number }>();
 
 let _lastSweep = Date.now();
 const _SWEEP_CYCLE = 60_000;

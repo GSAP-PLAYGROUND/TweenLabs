@@ -23,7 +23,7 @@ while ((match = objectRegex.exec(animsText)) !== null) {
 }
 
 let content = `# TweenLabs Consolidated AI Code Repository
-> This file contains the complete source code and documentation of all 18 high-fidelity GSAP animation components on TweenLabs. Use this file to understand, import, and generate TweenLabs components.
+> This file contains the complete source code and documentation of all ${components.length} high-fidelity GSAP animation components on TweenLabs. Use this file to understand, import, and generate TweenLabs components.
 
 ---
 `;

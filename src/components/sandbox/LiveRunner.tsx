@@ -39,7 +39,9 @@ export default function LiveRunner({
       setIsBabelLoaded(true);
     };
     script.onerror = () => {
-      setBabelError("Failed to load Babel compiler from CDN. Please check your internet connection.");
+      setBabelError(
+        "Failed to load Babel compiler from CDN. Please check your internet connection.",
+      );
     };
 
     document.head.appendChild(script);
@@ -52,9 +54,14 @@ export default function LiveRunner({
 
     try {
       logs.push(`[Compiler] Initializing transpilation...`);
-      const Babel = (window as unknown as Record<string, unknown>).Babel as {
-        transform: (code: string, options: Record<string, unknown>) => { code: string };
-      } | undefined;
+      const Babel = (window as unknown as Record<string, unknown>).Babel as
+        | {
+            transform: (
+              code: string,
+              options: Record<string, unknown>,
+            ) => { code: string };
+          }
+        | undefined;
       if (!Babel) {
         throw new Error("Babel standalone compiler is not ready.");
       }

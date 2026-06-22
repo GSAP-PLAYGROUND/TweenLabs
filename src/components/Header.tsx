@@ -77,7 +77,10 @@ export default function Header() {
           {currentAnim && (
             <button
               onClick={() => {
-                if (typeof window !== "undefined" && window.history.length > 1) {
+                if (
+                  typeof window !== "undefined" &&
+                  window.history.length > 1
+                ) {
                   router.back();
                 } else {
                   router.push("/");
@@ -224,89 +227,89 @@ export default function Header() {
             }`}
             aria-hidden={!mobileMenuOpen}
           >
-        <div className="flex flex-col gap-3 p-5">
-          {currentAnim && (
-            <button
-              onClick={() => {
-                setMobileMenuOpen(false);
-                handleGetCode();
-              }}
-              className="brutalist-btn bg-wtf-yellow hover:bg-[#e5a420] text-[#2a2a2a] font-mono font-bold text-[11px] py-2.5 px-4 rounded-lg uppercase tracking-wider cursor-pointer transition-colors duration-150 text-center w-full"
-              aria-label={`Get source code for ${currentAnim.name}`}
-            >
-              Get Code
-            </button>
-          )}
+            <div className="flex flex-col gap-3 p-5">
+              {currentAnim && (
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    handleGetCode();
+                  }}
+                  className="brutalist-btn bg-wtf-yellow hover:bg-[#e5a420] text-[#2a2a2a] font-mono font-bold text-[11px] py-2.5 px-4 rounded-lg uppercase tracking-wider cursor-pointer transition-colors duration-150 text-center w-full"
+                  aria-label={`Get source code for ${currentAnim.name}`}
+                >
+                  Get Code
+                </button>
+              )}
 
-          {codeAnim && (
-            <Link
-              href={codeAnim.route}
-              className="brutalist-btn bg-wtf-yellow hover:bg-[#e5a420] text-[#2a2a2a] font-mono font-bold text-[11px] py-2.5 px-4 rounded-lg uppercase tracking-wider cursor-pointer transition-colors duration-150 text-center"
-              aria-label={`View live sandbox demo for ${codeAnim.name}`}
-            >
-              View Demo
-            </Link>
-          )}
+              {codeAnim && (
+                <Link
+                  href={codeAnim.route}
+                  className="brutalist-btn bg-wtf-yellow hover:bg-[#e5a420] text-[#2a2a2a] font-mono font-bold text-[11px] py-2.5 px-4 rounded-lg uppercase tracking-wider cursor-pointer transition-colors duration-150 text-center"
+                  aria-label={`View live sandbox demo for ${codeAnim.name}`}
+                >
+                  View Demo
+                </Link>
+              )}
 
-          <a
-            href="https://github.com/TweenLabs/TweenLabs"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="brutalist-btn bg-white hover:bg-wtf-orange hover:text-white text-[#2a2a2a] font-mono font-bold text-[11px] py-2.5 px-4 rounded-lg uppercase tracking-wider cursor-pointer transition-colors duration-150 text-center"
-            aria-label="Star TweenLabs repository on GitHub"
-          >
-            Star us on GitHub ↗
-          </a>
-
-          <div className="border-t-2 border-[#2a2a2a]/15 my-2" />
-
-          {!mounted || isPending ? (
-            <span className="font-mono text-xs font-bold text-zinc-400 uppercase tracking-wider text-center py-2">
-              Loading...
-            </span>
-          ) : session ? (
-            <div className="flex flex-col gap-3">
-              <div className="flex items-center gap-3 px-1">
-                {session.user.image && !avatarError ? (
-                  <Image
-                    src={session.user.image}
-                    alt={session.user.name || "User Avatar"}
-                    width={32}
-                    height={32}
-                    onError={() => setAvatarError(true)}
-                    className="w-8 h-8 rounded-full border-2 border-[#2a2a2a] object-cover"
-                  />
-                ) : (
-                  <div className="w-8 h-8 rounded-full border-2 border-[#2a2a2a] bg-wtf-purple text-white flex items-center justify-center font-mono font-bold text-xs">
-                    {session.user.name?.charAt(0).toUpperCase() || "U"}
-                  </div>
-                )}
-                <span className="font-mono font-bold text-xs text-[#2a2a2a] truncate">
-                  {session.user.name || "User"}
-                </span>
-              </div>
-              <button
-                onClick={async () => {
-                  await authClient.signOut();
-                  window.location.reload();
-                }}
-                className="brutalist-btn bg-wtf-red hover:bg-[#a82a29] text-white font-mono font-bold text-[11px] py-2.5 px-4 rounded-lg uppercase tracking-wider cursor-pointer transition-colors duration-150 w-full text-center"
+              <a
+                href="https://github.com/TweenLabs/TweenLabs"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="brutalist-btn bg-white hover:bg-wtf-orange hover:text-white text-[#2a2a2a] font-mono font-bold text-[11px] py-2.5 px-4 rounded-lg uppercase tracking-wider cursor-pointer transition-colors duration-150 text-center"
+                aria-label="Star TweenLabs repository on GitHub"
               >
-                Sign Out
-              </button>
+                Star us on GitHub ↗
+              </a>
+
+              <div className="border-t-2 border-[#2a2a2a]/15 my-2" />
+
+              {!mounted || isPending ? (
+                <span className="font-mono text-xs font-bold text-zinc-400 uppercase tracking-wider text-center py-2">
+                  Loading...
+                </span>
+              ) : session ? (
+                <div className="flex flex-col gap-3">
+                  <div className="flex items-center gap-3 px-1">
+                    {session.user.image && !avatarError ? (
+                      <Image
+                        src={session.user.image}
+                        alt={session.user.name || "User Avatar"}
+                        width={32}
+                        height={32}
+                        onError={() => setAvatarError(true)}
+                        className="w-8 h-8 rounded-full border-2 border-[#2a2a2a] object-cover"
+                      />
+                    ) : (
+                      <div className="w-8 h-8 rounded-full border-2 border-[#2a2a2a] bg-wtf-purple text-white flex items-center justify-center font-mono font-bold text-xs">
+                        {session.user.name?.charAt(0).toUpperCase() || "U"}
+                      </div>
+                    )}
+                    <span className="font-mono font-bold text-xs text-[#2a2a2a] truncate">
+                      {session.user.name || "User"}
+                    </span>
+                  </div>
+                  <button
+                    onClick={async () => {
+                      await authClient.signOut();
+                      window.location.reload();
+                    }}
+                    className="brutalist-btn bg-wtf-red hover:bg-[#a82a29] text-white font-mono font-bold text-[11px] py-2.5 px-4 rounded-lg uppercase tracking-wider cursor-pointer transition-colors duration-150 w-full text-center"
+                  >
+                    Sign Out
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    openModal();
+                  }}
+                  className="brutalist-btn bg-wtf-green hover:bg-[#09734f] text-white font-mono font-bold text-[11px] py-2.5 px-4 rounded-lg uppercase tracking-wider cursor-pointer transition-colors duration-150 w-full text-center"
+                >
+                  Sign In
+                </button>
+              )}
             </div>
-          ) : (
-            <button
-              onClick={() => {
-                setMobileMenuOpen(false);
-                openModal();
-              }}
-              className="brutalist-btn bg-wtf-green hover:bg-[#09734f] text-white font-mono font-bold text-[11px] py-2.5 px-4 rounded-lg uppercase tracking-wider cursor-pointer transition-colors duration-150 w-full text-center"
-            >
-              Sign In
-            </button>
-          )}
-        </div>
           </div>
         </>
       )}

@@ -60,10 +60,13 @@ const cardsData: CardItem[] = [
 export default function ScrollCardsPage() {
   const containerRef = useRef<HTMLDivElement>(null);
 
-
   useGSAP(
     () => {
-      const cardEls = Array.from(containerRef.current?.querySelectorAll<HTMLElement>(".scroll-card-item") ?? []);
+      const cardEls = Array.from(
+        containerRef.current?.querySelectorAll<HTMLElement>(
+          ".scroll-card-item",
+        ) ?? [],
+      );
       if (cardEls.length === 0) return;
 
       const scroller =
@@ -84,13 +87,11 @@ export default function ScrollCardsPage() {
           end: `+=${pinDuration}`,
           pin: true,
           pinSpacing: false,
-
         });
       });
     },
     { scope: containerRef },
   );
-
 
   return (
     <div
@@ -113,8 +114,6 @@ export default function ScrollCardsPage() {
         }}
       />
 
-
-
       {/* Cards List Section directly (no intro or outro sections) */}
       <section className="relative w-full flex flex-col z-20 pt-28 pb-48">
         {cardsData.map((card, index) => (
@@ -129,7 +128,6 @@ export default function ScrollCardsPage() {
                 top: `${index * 44}px`,
               }}
             >
-
               {/* Step info on left */}
               <div className="flex-1 flex flex-col gap-3 relative z-10">
                 <div className="flex items-center gap-2">
@@ -166,9 +164,7 @@ export default function ScrollCardsPage() {
               </div>
 
               {/* Framed Image on right */}
-              <div
-                className="inner-img-frame w-full md:w-80 h-48 md:h-56 relative rounded-xl border-3 border-[#2a2a2a] overflow-hidden shadow-[4px_4px_0px_#2a2a2a] flex-shrink-0 z-10"
-              >
+              <div className="inner-img-frame w-full md:w-80 h-48 md:h-56 relative rounded-xl border-3 border-[#2a2a2a] overflow-hidden shadow-[4px_4px_0px_#2a2a2a] flex-shrink-0 z-10">
                 <img
                   src={card.imgUrl}
                   alt={card.title}

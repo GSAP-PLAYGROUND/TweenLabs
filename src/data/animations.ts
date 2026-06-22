@@ -232,7 +232,6 @@ export const animations: AnimationItem[] = [
     tiltClass: "tilt-left",
   },
 
-
   {
     id: "21",
     name: "Parallax Hero",
@@ -256,5 +255,4 @@ export const animations: AnimationItem[] = [
       "Smooth auto-cycling text morphing animation with SVG threshold filter and color-coded word transitions.",
     tiltClass: "tilt-right",
   },
-
 ];

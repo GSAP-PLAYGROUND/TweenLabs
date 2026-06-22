@@ -143,7 +143,9 @@ export default function ThreeDCarouselPage() {
           const isActive = index === 0;
           gsap.set(cardInner, {
             borderColor: isActive ? "#f1b333" : "#2a2a2a",
-            boxShadow: isActive ? "12px 12px 0px #2a2a2a" : "6px 6px 0px #2a2a2a",
+            boxShadow: isActive
+              ? "12px 12px 0px #2a2a2a"
+              : "6px 6px 0px #2a2a2a",
           });
           const glow = cardInner.querySelector(".card-glow");
           if (glow) {
@@ -177,7 +179,7 @@ export default function ThreeDCarouselPage() {
             const smoothRotation = self.progress * (numCards - 1);
             const currentActive = Math.max(
               0,
-              Math.min(numCards - 1, Math.round(smoothRotation))
+              Math.min(numCards - 1, Math.round(smoothRotation)),
             );
             setActiveIdx(currentActive);
           },
@@ -219,7 +221,7 @@ export default function ThreeDCarouselPage() {
               duration: 1,
               ease: "none",
             },
-            startTime
+            startTime,
           );
 
           // Animate card borders, shadows, and glow opacities directly in timeline
@@ -236,7 +238,7 @@ export default function ThreeDCarouselPage() {
                 duration: 1,
                 ease: "none",
               },
-              startTime
+              startTime,
             );
 
             const glow = cardInner.querySelector(".card-glow");
@@ -248,7 +250,7 @@ export default function ThreeDCarouselPage() {
                   duration: 1,
                   ease: "none",
                 },
-                startTime
+                startTime,
               );
             }
           }
@@ -261,17 +263,17 @@ export default function ThreeDCarouselPage() {
             {
               backgroundColor: getHexWithOpacity(
                 items[targetCard].bgColor,
-                0.12
+                0.12,
               ),
               duration: 1,
               ease: "none",
             },
-            startTime
+            startTime,
           );
         }
       }
     },
-    { scope: containerRef }
+    { scope: containerRef },
   );
 
   // Card Mouse Hover 3D Tilt Effect
@@ -310,7 +312,8 @@ export default function ThreeDCarouselPage() {
       rotationY: 0,
       rotationX: 0,
       scale: 1,
-      boxShadow: index === activeIdx ? "12px 12px 0px #2a2a2a" : "6px 6px 0px #2a2a2a",
+      boxShadow:
+        index === activeIdx ? "12px 12px 0px #2a2a2a" : "6px 6px 0px #2a2a2a",
       duration: 0.5,
       ease: "power3.out",
     });
@@ -389,88 +392,91 @@ export default function ThreeDCarouselPage() {
   }, [detailIdx]);
 
   // Detail Panel Reveal Transition
-  const openDetail = useCallback((index: number) => {
-    if (index !== activeIdx) return;
+  const openDetail = useCallback(
+    (index: number) => {
+      if (index !== activeIdx) return;
 
-    setDetailIdx(index);
-    const card = cardsRef.current[index];
-    const activeItem = items[index];
+      setDetailIdx(index);
+      const card = cardsRef.current[index];
+      const activeItem = items[index];
 
-    if (!card) return;
+      if (!card) return;
 
-    // Lock page scrolling to prevent carousel from shifting while detail panel is open
-    document.body.style.overflow = "hidden";
-    const scroller = containerRef.current?.closest("#main-scroller");
-    if (scroller instanceof HTMLElement) {
-      scroller.style.overflow = "hidden";
-    }
+      // Lock page scrolling to prevent carousel from shifting while detail panel is open
+      document.body.style.overflow = "hidden";
+      const scroller = containerRef.current?.closest("#main-scroller");
+      if (scroller instanceof HTMLElement) {
+        scroller.style.overflow = "hidden";
+      }
 
-    // Shift wrapper background to solid active color
-    if (wrapperBgRef.current) {
-      gsap.to(wrapperBgRef.current, {
-        backgroundColor: activeItem.bgColor,
-        duration: 0.6,
-        ease: "power3.out",
-      });
-    }
+      // Shift wrapper background to solid active color
+      if (wrapperBgRef.current) {
+        gsap.to(wrapperBgRef.current, {
+          backgroundColor: activeItem.bgColor,
+          duration: 0.6,
+          ease: "power3.out",
+        });
+      }
 
-    // Animate active card straight to the viewport left side
-    gsap.to(card, {
-      x: "-25vw",
-      y: 0,
-      z: 0,
-      scale: 1,
-      rotationY: 0,
-      opacity: 1,
-      duration: 0.7,
-      ease: "power3.inOut",
-      overwrite: "auto",
-    });
-
-    // Hide other cards
-    cardsRef.current.forEach((otherCard, idx) => {
-      if (!otherCard || idx === index) return;
-      gsap.to(otherCard, {
-        opacity: 0,
-        scale: 0.5,
-        z: -400,
-        x: idx < index ? -600 : 600,
-        rotationY: idx < index ? -60 : 60,
-        pointerEvents: "none",
-        duration: 0.6,
+      // Animate active card straight to the viewport left side
+      gsap.to(card, {
+        x: "-25vw",
+        y: 0,
+        z: 0,
+        scale: 1,
+        rotationY: 0,
+        opacity: 1,
+        duration: 0.7,
+        ease: "power3.inOut",
         overwrite: "auto",
       });
-    });
 
-    // Stagger in elements inside the detail panel
-    if (detailPanelRef.current) {
-      gsap.fromTo(
-        detailPanelRef.current,
-        { x: "100%", opacity: 0 },
-        {
-          x: "0%",
-          opacity: 1,
-          duration: 0.7,
-          ease: "power3.inOut",
+      // Hide other cards
+      cardsRef.current.forEach((otherCard, idx) => {
+        if (!otherCard || idx === index) return;
+        gsap.to(otherCard, {
+          opacity: 0,
+          scale: 0.5,
+          z: -400,
+          x: idx < index ? -600 : 600,
+          rotationY: idx < index ? -60 : 60,
+          pointerEvents: "none",
+          duration: 0.6,
           overwrite: "auto",
-        }
-      );
+        });
+      });
 
-      gsap.fromTo(
-        detailPanelRef.current.querySelectorAll(".stagger-in"),
-        { y: 30, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.5,
-          stagger: 0.08,
-          ease: "power2.out",
-          delay: 0.3,
-          overwrite: "auto",
-        }
-      );
-    }
-  }, [activeIdx]);
+      // Stagger in elements inside the detail panel
+      if (detailPanelRef.current) {
+        gsap.fromTo(
+          detailPanelRef.current,
+          { x: "100%", opacity: 0 },
+          {
+            x: "0%",
+            opacity: 1,
+            duration: 0.7,
+            ease: "power3.inOut",
+            overwrite: "auto",
+          },
+        );
+
+        gsap.fromTo(
+          detailPanelRef.current.querySelectorAll(".stagger-in"),
+          { y: 30, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.5,
+            stagger: 0.08,
+            ease: "power2.out",
+            delay: 0.3,
+            overwrite: "auto",
+          },
+        );
+      }
+    },
+    [activeIdx],
+  );
 
   return (
     <div

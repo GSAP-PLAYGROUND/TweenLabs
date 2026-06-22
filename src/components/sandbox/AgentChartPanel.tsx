@@ -2,8 +2,17 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import {
-  Send, Bot, User, CornerDownLeft, Loader2, CheckCircle2,
-  AlertTriangle, XCircle, Code, ShieldCheck, RefreshCw
+  Send,
+  Bot,
+  User,
+  CornerDownLeft,
+  Loader2,
+  CheckCircle2,
+  AlertTriangle,
+  XCircle,
+  Code,
+  ShieldCheck,
+  RefreshCw,
 } from "lucide-react";
 import { SSEMessage } from "@/hooks/useAgentSSE";
 
@@ -13,7 +22,7 @@ interface AgentChartPanelProps {
   activeNode: string | null;
   runAgent: (
     action: "start" | "approve",
-    payload?: { userQuery?: string; plan?: string; skills?: string[] }
+    payload?: { userQuery?: string; plan?: string; skills?: string[] },
   ) => void;
   stopExecution: () => void;
 }
@@ -50,7 +59,9 @@ export default function AgentChartPanel({
   const handleScrollToBottom = (force = false) => {
     const container = chatEndRef.current?.parentElement;
     if (!container) return;
-    const isNearBottom = container.scrollHeight - container.scrollTop - container.clientHeight < 120;
+    const isNearBottom =
+      container.scrollHeight - container.scrollTop - container.clientHeight <
+      120;
     if (force || isNearBottom) {
       container.scrollTo({
         top: container.scrollHeight,
@@ -88,7 +99,7 @@ export default function AgentChartPanel({
 
   const handleSkillToggle = (skill: string) => {
     setSelectedSkills((prev) =>
-      prev.includes(skill) ? prev.filter((s) => s !== skill) : [...prev, skill]
+      prev.includes(skill) ? prev.filter((s) => s !== skill) : [...prev, skill],
     );
   };
 
@@ -105,36 +116,59 @@ export default function AgentChartPanel({
   const hasStartedPipeline = nodeMsgs.length > 0;
 
   const linterMsgs = nodeMsgs.filter((m) => m.node === "linter");
-  const failedLinterRuns = linterMsgs.filter((m) => m.details?.lint_passed === false);
+  const failedLinterRuns = linterMsgs.filter(
+    (m) => m.details?.lint_passed === false,
+  );
 
+  const isPipelineComplete =
+    status === "completed" || messages.some((m) => m.finalCode !== undefined);
 
-  const isPipelineComplete = status === "completed" || messages.some(m => m.finalCode !== undefined);
-
-  const getStepState = (stepName: "retriever" | "coder" | "critic" | "linter") => {
+  const getStepState = (
+    stepName: "retriever" | "coder" | "critic" | "linter",
+  ) => {
     if (isPipelineComplete) return "completed";
 
     if (stepName === "retriever") {
-      if (nodeMsgs.some(m => m.node === "retriever")) return "completed";
-      if (activeNode === "retriever" || (status === "running" && !nodeMsgs.some(m => m.node === "retriever"))) return "active";
+      if (nodeMsgs.some((m) => m.node === "retriever")) return "completed";
+      if (
+        activeNode === "retriever" ||
+        (status === "running" && !nodeMsgs.some((m) => m.node === "retriever"))
+      )
+        return "active";
       return "pending";
     }
 
     if (stepName === "coder") {
       if (activeNode === "coder") return "active";
-      if (nodeMsgs.some(m => m.node === "coder") && activeNode !== "retriever") return "completed";
+      if (
+        nodeMsgs.some((m) => m.node === "coder") &&
+        activeNode !== "retriever"
+      )
+        return "completed";
       return "pending";
     }
 
     if (stepName === "critic") {
       if (activeNode === "critic") return "active";
-      if (nodeMsgs.some(m => m.node === "critic") && activeNode !== "coder" && activeNode !== "retriever") return "completed";
+      if (
+        nodeMsgs.some((m) => m.node === "critic") &&
+        activeNode !== "coder" &&
+        activeNode !== "retriever"
+      )
+        return "completed";
       return "pending";
     }
 
     if (stepName === "linter") {
       if (activeNode === "linter") return "active";
-      if (failedLinterRuns.length > 0 && activeNode !== "linter") return "failed";
-      if (nodeMsgs.some(m => m.node === "linter" && m.details?.lint_passed === true)) return "completed";
+      if (failedLinterRuns.length > 0 && activeNode !== "linter")
+        return "failed";
+      if (
+        nodeMsgs.some(
+          (m) => m.node === "linter" && m.details?.lint_passed === true,
+        )
+      )
+        return "completed";
       return "pending";
     }
 
@@ -145,46 +179,72 @@ export default function AgentChartPanel({
     title: string,
     desc: string,
     stepName: "retriever" | "coder" | "critic" | "linter",
-    isLast = false
+    isLast = false,
   ) => {
     const state = getStepState(stepName);
 
     let icon = <Bot className="w-3.5 h-3.5" />;
     if (stepName === "retriever") icon = <RefreshCw className="w-3.5 h-3.5" />;
     else if (stepName === "coder") icon = <Code className="w-3.5 h-3.5" />;
-    else if (stepName === "critic") icon = <ShieldCheck className="w-3.5 h-3.5" />;
-    else if (stepName === "linter") icon = <AlertTriangle className="w-3.5 h-3.5" />;
+    else if (stepName === "critic")
+      icon = <ShieldCheck className="w-3.5 h-3.5" />;
+    else if (stepName === "linter")
+      icon = <AlertTriangle className="w-3.5 h-3.5" />;
 
     return (
       <div className="relative pl-9 pb-5 last:pb-0">
         {/* Vertical SVG connection line */}
         {!isLast && (
-          <div className={`absolute left-[13px] top-6 bottom-0 w-0.5 ${state === "completed" ? "bg-[#0c9367]" :
-              state === "failed" ? "bg-rose-500 border-l border-rose-500" :
-                "border-l-2 border-dashed border-zinc-400"
-            }`} />
+          <div
+            className={`absolute left-[13px] top-6 bottom-0 w-0.5 ${
+              state === "completed"
+                ? "bg-[#0c9367]"
+                : state === "failed"
+                  ? "bg-rose-500 border-l border-rose-500"
+                  : "border-l-2 border-dashed border-zinc-400"
+            }`}
+          />
         )}
 
         {/* Bullet circle */}
-        <div className={`absolute left-0 top-1 w-[28px] h-[28px] rounded-full border-2 border-black flex items-center justify-center shadow-[1.5px_1.5px_0px_rgba(0,0,0,1)] z-10 ${state === "completed" ? "bg-[#effdf5] text-[#0c9367] border-[#0c9367]" :
-            state === "active" ? "bg-amber-100 text-amber-700 border-amber-500 animate-pulse" :
-              state === "failed" ? "bg-[#fef2f2] text-rose-600 border-rose-500 animate-bounce" :
-                "bg-zinc-100 text-zinc-400 border-zinc-200"
-          }`}>
-          {state === "completed" ? <CheckCircle2 className="w-3.5 h-3.5" /> :
-            state === "active" ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> :
-              state === "failed" ? <AlertTriangle className="w-3.5 h-3.5" /> :
-                icon}
+        <div
+          className={`absolute left-0 top-1 w-[28px] h-[28px] rounded-full border-2 border-black flex items-center justify-center shadow-[1.5px_1.5px_0px_rgba(0,0,0,1)] z-10 ${
+            state === "completed"
+              ? "bg-[#effdf5] text-[#0c9367] border-[#0c9367]"
+              : state === "active"
+                ? "bg-amber-100 text-amber-700 border-amber-500 animate-pulse"
+                : state === "failed"
+                  ? "bg-[#fef2f2] text-rose-600 border-rose-500 animate-bounce"
+                  : "bg-zinc-100 text-zinc-400 border-zinc-200"
+          }`}
+        >
+          {state === "completed" ? (
+            <CheckCircle2 className="w-3.5 h-3.5" />
+          ) : state === "active" ? (
+            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+          ) : state === "failed" ? (
+            <AlertTriangle className="w-3.5 h-3.5" />
+          ) : (
+            icon
+          )}
         </div>
 
         {/* Step details */}
         <div className="flex flex-col gap-0.5">
           <div className="font-mono text-[11px] font-black uppercase flex items-center gap-2">
-            <span className={
-              state === "completed" ? "text-[#0c9367]" :
-                state === "failed" ? "text-rose-600" :
-                  state === "active" ? "text-amber-700 font-bold" : "text-zinc-500"
-            }>{title}</span>
+            <span
+              className={
+                state === "completed"
+                  ? "text-[#0c9367]"
+                  : state === "failed"
+                    ? "text-rose-600"
+                    : state === "active"
+                      ? "text-amber-700 font-bold"
+                      : "text-zinc-500"
+              }
+            >
+              {title}
+            </span>
 
             {state === "active" && (
               <span className="text-[8px] px-1 py-0.2 bg-amber-200 text-amber-800 border border-amber-400 font-bold rounded uppercase animate-pulse">
@@ -202,7 +262,9 @@ export default function AgentChartPanel({
               </span>
             )}
           </div>
-          <div className="text-[10px] text-zinc-500 font-mono leading-relaxed">{desc}</div>
+          <div className="text-[10px] text-zinc-500 font-mono leading-relaxed">
+            {desc}
+          </div>
 
           {/* Collapsible compiler errors for Linter */}
           {stepName === "linter" && failedLinterRuns.length > 0 && (
@@ -214,19 +276,28 @@ export default function AgentChartPanel({
               >
                 <div className="flex items-center gap-1.5">
                   <AlertTriangle className="w-3 h-3 text-rose-500 animate-pulse" />
-                  <span>Compiler Warnings / Errors ({failedLinterRuns.length} attempts)</span>
+                  <span>
+                    Compiler Warnings / Errors ({failedLinterRuns.length}{" "}
+                    attempts)
+                  </span>
                 </div>
-                <span className="text-zinc-400">{isLinterOpen ? "▲ Hide" : "▼ Show"}</span>
+                <span className="text-zinc-400">
+                  {isLinterOpen ? "▲ Hide" : "▼ Show"}
+                </span>
               </button>
 
               {isLinterOpen && (
                 <div className="border-t border-black p-3 bg-zinc-950 text-[9px] font-mono whitespace-pre-wrap max-h-48 overflow-y-auto text-rose-400 leading-normal select-text">
                   {failedLinterRuns.map((run, idx) => (
-                    <div key={idx} className="mb-3 last:mb-0 pb-3 border-b border-zinc-800 last:border-0 last:pb-0">
+                    <div
+                      key={idx}
+                      className="mb-3 last:mb-0 pb-3 border-b border-zinc-800 last:border-0 last:pb-0"
+                    >
                       <div className="text-zinc-400 font-black mb-1 uppercase tracking-tight">
                         Attempt {idx + 1}:
                       </div>
-                      {run.details?.lint_errors || "Unknown compiler check warning."}
+                      {run.details?.lint_errors ||
+                        "Unknown compiler check warning."}
                     </div>
                   ))}
                 </div>
@@ -243,10 +314,17 @@ export default function AgentChartPanel({
       {/* Workspace Header */}
       <div className="p-4 border-b-3 border-black bg-white flex items-center justify-between shrink-0">
         <div className="flex items-center gap-2">
-          <span className={`w-3.5 h-3.5 rounded-full border-2 border-black ${status === "running" ? "bg-[#e55b3c] animate-pulse" :
-              status === "paused" ? "bg-[#f1b333] animate-pulse" :
-                status === "completed" ? "bg-[#0c9367]" : "bg-zinc-400"
-            }`} />
+          <span
+            className={`w-3.5 h-3.5 rounded-full border-2 border-black ${
+              status === "running"
+                ? "bg-[#e55b3c] animate-pulse"
+                : status === "paused"
+                  ? "bg-[#f1b333] animate-pulse"
+                  : status === "completed"
+                    ? "bg-[#0c9367]"
+                    : "bg-zinc-400"
+            }`}
+          />
           <h1 className="font-mono text-sm font-black uppercase tracking-tight">
             TWEENBOT // {status.toUpperCase()}
           </h1>
@@ -277,7 +355,10 @@ export default function AgentChartPanel({
 
           if (isSystem) {
             return (
-              <div key={msg.id} className="flex flex-col max-w-[90%] self-center items-center justify-center p-3 border-3 border-dashed border-red-500 rounded bg-red-50 text-red-700 font-mono text-xs shadow-[2px_2px_0px_rgba(239,68,68,1)]">
+              <div
+                key={msg.id}
+                className="flex flex-col max-w-[90%] self-center items-center justify-center p-3 border-3 border-dashed border-red-500 rounded bg-red-50 text-red-700 font-mono text-xs shadow-[2px_2px_0px_rgba(239,68,68,1)]"
+              >
                 <div className="flex items-center gap-1.5 font-bold mb-1">
                   <XCircle className="w-4 h-4" />
                   <span>SYSTEM NOTIFICATION</span>
@@ -290,7 +371,10 @@ export default function AgentChartPanel({
           // Special rendering for HILT approval cards
           if (isAgent && msg.isApprovalCard) {
             return (
-              <div key={msg.id} className="flex flex-col max-w-[85%] self-start w-full gap-1">
+              <div
+                key={msg.id}
+                className="flex flex-col max-w-[85%] self-start w-full gap-1"
+              >
                 <div className="flex items-center gap-1.5 font-mono text-[10px] font-bold text-zinc-500 mb-1 px-1">
                   <Bot className="w-3.5 h-3.5 text-[#6758a5]" />
                   <span>TWEENBOT // SUPERVISOR PROPOSAL</span>
@@ -306,10 +390,15 @@ export default function AgentChartPanel({
                       </p>
 
                       <div className="flex items-center gap-2 border-t border-black/10 pt-2.5">
-                        <span className="font-bold text-[10px] text-zinc-500 uppercase">Skills:</span>
+                        <span className="font-bold text-[10px] text-zinc-500 uppercase">
+                          Skills:
+                        </span>
                         <div className="flex flex-wrap gap-1.5">
                           {msg.skills?.map((skill) => (
-                            <span key={skill} className="px-2 py-0.5 bg-[#fdf6e8] border-2 border-black text-black font-bold text-[9px] rounded">
+                            <span
+                              key={skill}
+                              className="px-2 py-0.5 bg-[#fdf6e8] border-2 border-black text-black font-bold text-[9px] rounded"
+                            >
                               {skill}
                             </span>
                           ))}
@@ -324,7 +413,12 @@ export default function AgentChartPanel({
                           Approve Plan & Run
                         </button>
                         <button
-                          onClick={() => handleStartEditPlan(msg.plan || "", msg.skills || [])}
+                          onClick={() =>
+                            handleStartEditPlan(
+                              msg.plan || "",
+                              msg.skills || [],
+                            )
+                          }
                           className="px-3 py-1.5 bg-white text-zinc-700 border-2 border-black rounded font-bold shadow-[2px_2px_0px_#000] active:translate-y-[1px] active:shadow-[1px_1px_0px_#000] cursor-pointer hover:bg-zinc-50"
                         >
                           Modify Plan
@@ -341,7 +435,9 @@ export default function AgentChartPanel({
                         />
                       </div>
                       <div className="space-y-1.5">
-                        <span className="font-bold text-[10px] text-zinc-500 uppercase">Toggle loaded skills:</span>
+                        <span className="font-bold text-[10px] text-zinc-500 uppercase">
+                          Toggle loaded skills:
+                        </span>
                         <div className="flex flex-wrap gap-1.5">
                           {AVAILABLE_SKILLS.map((skill) => {
                             const isSelected = selectedSkills.includes(skill);
@@ -349,10 +445,11 @@ export default function AgentChartPanel({
                               <button
                                 key={skill}
                                 onClick={() => handleSkillToggle(skill)}
-                                className={`px-2 py-0.5 border-2 border-black font-bold text-[9px] rounded cursor-pointer transition-colors ${isSelected
+                                className={`px-2 py-0.5 border-2 border-black font-bold text-[9px] rounded cursor-pointer transition-colors ${
+                                  isSelected
                                     ? "bg-blue-600 text-white"
                                     : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200"
-                                  }`}
+                                }`}
                               >
                                 {skill}
                               </button>
@@ -390,13 +487,15 @@ export default function AgentChartPanel({
           return (
             <div
               key={msg.id}
-              className={`flex flex-col max-w-[85%] ${isAgent ? "self-start" : "self-end"
-                }`}
+              className={`flex flex-col max-w-[85%] ${
+                isAgent ? "self-start" : "self-end"
+              }`}
             >
               {/* Message Header */}
               <div
-                className={`flex items-center gap-1.5 font-mono text-[10px] font-bold text-zinc-500 mb-1 px-1 ${isAgent ? "justify-start" : "justify-end"
-                  }`}
+                className={`flex items-center gap-1.5 font-mono text-[10px] font-bold text-zinc-500 mb-1 px-1 ${
+                  isAgent ? "justify-start" : "justify-end"
+                }`}
               >
                 {isAgent ? (
                   <>
@@ -415,8 +514,9 @@ export default function AgentChartPanel({
 
               {/* Message Content Bubble */}
               <div
-                className={`p-3 border-3 border-black rounded-lg shadow-[3px_3px_0px_rgba(0,0,0,1)] text-xs font-mono leading-relaxed select-text ${isAgent ? "bg-white text-black" : "bg-[#6758a5] text-white"
-                  }`}
+                className={`p-3 border-3 border-black rounded-lg shadow-[3px_3px_0px_rgba(0,0,0,1)] text-xs font-mono leading-relaxed select-text ${
+                  isAgent ? "bg-white text-black" : "bg-[#6758a5] text-white"
+                }`}
               >
                 {msg.text}
               </div>
@@ -434,10 +534,27 @@ export default function AgentChartPanel({
 
             <div className="p-4 border-3 border-black rounded-lg shadow-[3px_3px_0px_rgba(0,0,0,1)] bg-white text-xs font-mono leading-relaxed text-black">
               <div className="flex flex-col">
-                {renderPipelineStep("Skill Retriever", "Loads GSAP skills reference guidelines from disk.", "retriever")}
-                {renderPipelineStep("GSAP Coder", "Translates plan and rules to clean TSX animation code.", "coder")}
-                {renderPipelineStep("Critic Auditor", "Audits code for GSAP anti-patterns and performance tricks.", "critic")}
-                {renderPipelineStep("Linter Compiler", "Runs compiler checks (tsc) and React rules verification (ESLint).", "linter", true)}
+                {renderPipelineStep(
+                  "Skill Retriever",
+                  "Loads GSAP skills reference guidelines from disk.",
+                  "retriever",
+                )}
+                {renderPipelineStep(
+                  "GSAP Coder",
+                  "Translates plan and rules to clean TSX animation code.",
+                  "coder",
+                )}
+                {renderPipelineStep(
+                  "Critic Auditor",
+                  "Audits code for GSAP anti-patterns and performance tricks.",
+                  "critic",
+                )}
+                {renderPipelineStep(
+                  "Linter Compiler",
+                  "Runs compiler checks (tsc) and React rules verification (ESLint).",
+                  "linter",
+                  true,
+                )}
               </div>
             </div>
           </div>
@@ -454,7 +571,11 @@ export default function AgentChartPanel({
             onChange={(e) => setInputValue(e.target.value)}
             onKeyDown={handleKeyDown}
             disabled={status === "running"}
-            placeholder={status === "running" ? "TweenBot is thinking..." : "Type a message or request an animation change..."}
+            placeholder={
+              status === "running"
+                ? "TweenBot is thinking..."
+                : "Type a message or request an animation change..."
+            }
             className="flex-1 bg-transparent px-4 py-3 font-mono text-xs focus:outline-none resize-none h-16 max-h-16 text-black disabled:opacity-55"
           />
           <div className="flex flex-col justify-end p-2 bg-white">
@@ -478,9 +599,14 @@ export default function AgentChartPanel({
           </div>
         </div>
         <div className="mt-2 flex items-center justify-between text-[9px] font-mono text-zinc-400 select-none px-1">
-          <span>{status === "running" ? "Running node stream..." : "Press Enter to send"}</span>
+          <span>
+            {status === "running"
+              ? "Running node stream..."
+              : "Press Enter to send"}
+          </span>
           <span className="flex items-center gap-0.5">
-            Shift + Enter for new line <CornerDownLeft className="w-2.5 h-2.5" />
+            Shift + Enter for new line{" "}
+            <CornerDownLeft className="w-2.5 h-2.5" />
           </span>
         </div>
       </div>

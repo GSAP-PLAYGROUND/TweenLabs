@@ -3,7 +3,13 @@
 import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
 import type React from "react";
-import { createContext, useCallback, useContext, useRef, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useRef,
+  useState,
+} from "react";
 
 // Lazy-load: only needed when user clicks Sign In
 const AuthModal = dynamic(() => import("../components/AuthModal"), {
@@ -39,7 +45,9 @@ export function AuthModalProvider({ children }: { children: React.ReactNode }) {
   const closeModal = useCallback((force = false) => {
     if (force) {
       dismissedRef.current = true;
-      setTimeout(() => { dismissedRef.current = false; }, 1500);
+      setTimeout(() => {
+        dismissedRef.current = false;
+      }, 1500);
       setIsOpen(false);
       return;
     }
@@ -65,7 +73,13 @@ export function AuthModalProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <AuthModalContext.Provider
-      value={{ isOpen: shouldShow, isClosable, callbackUrl, openModal, closeModal }}
+      value={{
+        isOpen: shouldShow,
+        isClosable,
+        callbackUrl,
+        openModal,
+        closeModal,
+      }}
     >
       {children}
       {shouldShow && <AuthModal />}

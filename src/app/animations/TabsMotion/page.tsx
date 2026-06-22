@@ -55,7 +55,8 @@ export default function TabsMotionPage() {
     if (index === activeIndex) return;
 
     const direction = index > activeIndex ? 1 : -1;
-    const tabButtons = containerRef.current?.querySelectorAll<HTMLElement>(".tab-btn");
+    const tabButtons =
+      containerRef.current?.querySelectorAll<HTMLElement>(".tab-btn");
     const target = tabButtons?.[index];
 
     if (target && pillRef.current) {
@@ -88,7 +89,8 @@ export default function TabsMotionPage() {
 
   useGSAP(
     () => {
-      const tabButtons = containerRef.current?.querySelectorAll<HTMLElement>(".tab-btn");
+      const tabButtons =
+        containerRef.current?.querySelectorAll<HTMLElement>(".tab-btn");
       const firstTab = tabButtons?.[0];
       if (firstTab && pillRef.current) {
         gsap.set(pillRef.current, {
@@ -137,7 +139,8 @@ export default function TabsMotionPage() {
             Tabs Motion
           </h1>
           <p className="max-w-md mx-auto text-xs md:text-sm font-sans font-medium text-zinc-550 leading-relaxed">
-            Animated tab navigation with a sliding indicator pill and directional content crossfade transitions.
+            Animated tab navigation with a sliding indicator pill and
+            directional content crossfade transitions.
           </p>
         </div>
 

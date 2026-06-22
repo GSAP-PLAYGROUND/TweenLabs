@@ -64,7 +64,7 @@ export default function ShowUpCardsPage() {
     if (!el) return;
     const observer = new IntersectionObserver(
       ([entry]) => setIsInView(entry.isIntersecting),
-      { threshold: 0.1 }
+      { threshold: 0.1 },
     );
     observer.observe(el);
     return () => observer.disconnect();
@@ -257,7 +257,10 @@ export default function ShowUpCardsPage() {
       />
 
       {/* Interactive Cards Overlay (Pins on scroll) */}
-      <section ref={showupSectionRef} className="showup-cards-sec relative w-full h-screen flex flex-col justify-center items-center bg-[#f8f5ee] border-b-3 border-[#2a2a2a] overflow-hidden">
+      <section
+        ref={showupSectionRef}
+        className="showup-cards-sec relative w-full h-screen flex flex-col justify-center items-center bg-[#f8f5ee] border-b-3 border-[#2a2a2a] overflow-hidden"
+      >
         <div
           className="absolute inset-0 opacity-15"
           style={{
@@ -280,7 +283,7 @@ export default function ShowUpCardsPage() {
               }}
             >
               <div
-                className={`card-wrapper w-full h-full ${isInView ? 'animate-[floating_2.5s_infinite_ease-in-out]' : ''} transform-gpu`}
+                className={`card-wrapper w-full h-full ${isInView ? "animate-[floating_2.5s_infinite_ease-in-out]" : ""} transform-gpu`}
                 style={{ animationDelay: `${(stage.id - 1) * 0.25}s` }}
               >
                 <div

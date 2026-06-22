@@ -49,16 +49,12 @@ export default function SandboxWorkspace() {
   }, []);
 
   // Instantiate SSE Agent Hook
-  const {
-    messages,
-    status,
-    activeNode,
-    runAgent,
-    stopExecution,
-  } = useAgentSSE((generatedCode) => {
-    console.log("Successfully received new generated code from agent!");
-    setCode(generatedCode);
-  });
+  const { messages, status, activeNode, runAgent, stopExecution } = useAgentSSE(
+    (generatedCode) => {
+      console.log("Successfully received new generated code from agent!");
+      setCode(generatedCode);
+    },
+  );
 
   const handleCompileStart = () => {
     setIsCompiling(true);

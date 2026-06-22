@@ -161,14 +161,25 @@ export default function CircularScatterPage() {
 
       let idleTweens: gsap.core.Tween[] = [];
 
-      const scrollerEl = containerRef.current?.closest("#main-scroller") || null;
+      const scrollerEl =
+        containerRef.current?.closest("#main-scroller") || null;
       const scroller = scrollerEl || undefined;
-      const scrollerRect = scrollerEl ? scrollerEl.getBoundingClientRect() : { left: 0, top: 0 };
-      const screenCenterX = (scrollerEl ? (scrollerEl as HTMLElement).clientWidth : window.innerWidth) / 2;
-      const screenCenterY = (scrollerEl ? (scrollerEl as HTMLElement).clientHeight : window.innerHeight) / 2;
+      const scrollerRect = scrollerEl
+        ? scrollerEl.getBoundingClientRect()
+        : { left: 0, top: 0 };
+      const screenCenterX =
+        (scrollerEl
+          ? (scrollerEl as HTMLElement).clientWidth
+          : window.innerWidth) / 2;
+      const screenCenterY =
+        (scrollerEl
+          ? (scrollerEl as HTMLElement).clientHeight
+          : window.innerHeight) / 2;
 
       const cards = Array.from(
-        pinnedSectionRef.current?.querySelectorAll<HTMLElement>(".cs-scatter-card") ?? []
+        pinnedSectionRef.current?.querySelectorAll<HTMLElement>(
+          ".cs-scatter-card",
+        ) ?? [],
       );
 
       // Compute all coordinates relative to screen center while cards are in their initial CSS positions
@@ -332,7 +343,7 @@ export default function CircularScatterPage() {
         killFloatingIdle();
       };
     },
-    { scope: containerRef }
+    { scope: containerRef },
   );
 
   // Custom mouse-move/hover functions for cards
@@ -396,10 +407,15 @@ export default function CircularScatterPage() {
               [ Circular Orbit Physics ]
             </span>
             <h1 className="cs-hero-title-scramble font-serif font-black text-4xl md:text-6xl text-[#2a2a2a] leading-[1.05] tracking-tighter uppercase mb-4">
-              <ScrambleText text="Orbital Equilibrium" delay={2800} isActive={animStarted} />
+              <ScrambleText
+                text="Orbital Equilibrium"
+                delay={2800}
+                isActive={animStarted}
+              />
             </h1>
             <p className="cs-hero-subtitle font-mono text-[11px] md:text-xs text-[#2a2a2a]/70 max-w-lg mx-auto leading-relaxed mb-8 pointer-events-auto">
-              Watch cards dynamically calculate their angular trajectories and spiral outward into an elegant circular geometry on scroll.
+              Watch cards dynamically calculate their angular trajectories and
+              spiral outward into an elegant circular geometry on scroll.
             </p>
           </div>
 

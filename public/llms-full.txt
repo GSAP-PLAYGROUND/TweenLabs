@@ -1,4 +1,4 @@
 # TweenLabs Consolidated AI Code Repository
-> This file contains the complete source code and documentation of all 18 high-fidelity GSAP animation components on TweenLabs. Use this file to understand, import, and generate TweenLabs components.
+> This file contains the complete source code and documentation of all 0 high-fidelity GSAP animation components on TweenLabs. Use this file to understand, import, and generate TweenLabs components.
 
 ---
