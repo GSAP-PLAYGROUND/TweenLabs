@@ -23,7 +23,7 @@ export default function Error({
       />
 
       {/* Centered Brutalist Error Card */}
-      <div className="z-10 w-full max-w-md brutalist-card p-8 md:p-10 bg-white flex flex-col items-center gap-6 text-center relative overflow-hidden">
+      <div className="z-10 w-full max-w-md lg:max-w-lg brutalist-card p-8 md:p-10 lg:p-12 bg-white flex flex-col items-center gap-6 text-center relative overflow-hidden">
         {/* Error Badge */}
         <div className="inline-flex items-center gap-2 bg-wtf-red border-2 border-[#2a2a2a] px-4 py-1.5 rounded-full text-[10px] font-mono font-bold text-white uppercase tracking-widest shadow-[3px_3px_0px_#2a2a2a] tilt-right">
           <span>Application Error</span>
@@ -31,7 +31,7 @@ export default function Error({
 
         {/* Title */}
         <h1
-          className="text-4xl md:text-5xl font-serif font-black tracking-tight text-[#2a2a2a] leading-none uppercase"
+          className="text-4xl md:text-5xl lg:text-6xl font-serif font-black tracking-tight text-[#2a2a2a] leading-none uppercase"
           style={{ textShadow: "3px 3px 0px #c53b3a" }}
         >
           Something Went Wrong
@@ -39,7 +39,7 @@ export default function Error({
 
         {/* Message and Debug details */}
         <div className="flex flex-col gap-3 w-full">
-          <p className="text-sm font-sans font-medium text-zinc-600 leading-relaxed">
+          <p className="text-sm lg:text-base font-sans font-medium text-zinc-600 leading-relaxed">
             An unexpected error occurred during rendering. This might be due to
             web animation compatibility or canvas context loss.
           </p>

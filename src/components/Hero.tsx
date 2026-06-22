@@ -133,25 +133,25 @@ export default function Hero() {
   return (
     <section
       ref={sectionRef}
-      className="relative w-full max-w-7xl px-4 md:px-8 flex flex-col items-center justify-center text-center gap-4 md:gap-6 z-10 min-h-[70dvh] md:min-h-[calc(100vh-4rem)]"
+      className="relative w-full max-w-7xl px-4 md:px-8 lg:px-12 xl:px-16 flex flex-col items-center justify-center text-center gap-4 md:gap-6 lg:gap-8 z-10 min-h-[70dvh] md:min-h-[calc(100vh-4rem)]"
     >
-      <div className="flex flex-col items-center gap-4 md:gap-6 py-8 md:py-12">
-        <div className="hero-badge inline-flex items-center gap-2 bg-wtf-purple border-2 border-[#2a2a2a] px-3 md:px-4 py-1 md:py-1.5 rounded-full text-[9px] md:text-[10px] font-mono font-bold text-white uppercase tracking-widest shadow-[3px_3px_0px_#2a2a2a] tilt-right will-change-transform">
+      <div className="flex flex-col items-center gap-4 md:gap-6 lg:gap-8 py-8 md:py-12 lg:py-16">
+        <div className="hero-badge inline-flex items-center gap-2 bg-wtf-purple border-2 border-[#2a2a2a] px-3 md:px-4 py-1 md:py-1.5 rounded-full text-[9px] md:text-[10px] lg:text-[11px] font-mono font-bold text-white uppercase tracking-widest shadow-[3px_3px_0px_#2a2a2a] tilt-right will-change-transform">
           <span>TweenLabs Animation Hub</span>
         </div>
 
         <div className="hero-headline-wrap will-change-transform">
-          <h1 className="hero-headline text-3xl sm:text-4xl md:text-7xl font-serif font-black tracking-tight text-[#2a2a2a] max-w-4xl leading-[1.05]">
+          <h1 className="hero-headline text-3xl sm:text-4xl md:text-7xl lg:text-8xl xl:text-9xl font-serif font-black tracking-tight text-[#2a2a2a] max-w-4xl xl:max-w-5xl leading-[1.05]">
             TweenLabs
           </h1>
         </div>
 
         <div className="hero-sub-wrap will-change-transform">
-          <span className="hero-subtitle block text-3xl sm:text-4xl md:text-7xl font-serif font-black tracking-tight text-wtf-orange uppercase leading-[1.05]">
+          <span className="hero-subtitle block text-3xl sm:text-4xl md:text-7xl lg:text-8xl xl:text-9xl font-serif font-black tracking-tight text-wtf-orange uppercase leading-[1.05]">
             GSAP Components
           </span>
 
-          <p className="hero-desc max-w-xl text-zinc-700 text-xs sm:text-sm md:text-base leading-relaxed font-sans font-medium px-2 mt-4 md:mt-6 mx-auto">
+          <p className="hero-desc max-w-xl lg:max-w-2xl text-zinc-700 text-xs sm:text-sm md:text-base lg:text-lg leading-relaxed font-sans font-medium px-2 mt-4 md:mt-6 lg:mt-8 mx-auto">
             A high-fidelity collection of the best GSAP components, interactive
             React templates, and ScrollTrigger animations. Free, production-ready,
             and copy-paste friendly.
@@ -160,9 +160,9 @@ export default function Hero() {
       </div>
 
       {/* Scroll Down Indicator HUD */}
-      <div className="hero-scroll-indicator absolute bottom-4 md:bottom-8 inset-x-0 mx-auto w-fit flex flex-col items-center gap-1 animate-bounce pointer-events-none text-zinc-500 font-mono text-[8px] md:text-[9px] tracking-widest uppercase">
+      <div className="hero-scroll-indicator absolute bottom-4 md:bottom-8 lg:bottom-12 inset-x-0 mx-auto w-fit flex flex-col items-center gap-1 animate-bounce pointer-events-none text-zinc-500 font-mono text-[8px] md:text-[9px] lg:text-[10px] tracking-widest uppercase">
         <span>Scroll to Explore</span>
-        <span className="text-wtf-orange font-bold text-xs md:text-sm">↓</span>
+        <span className="text-wtf-orange font-bold text-xs md:text-sm lg:text-base">↓</span>
       </div>
     </section>
   );

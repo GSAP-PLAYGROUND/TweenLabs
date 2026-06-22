@@ -107,7 +107,7 @@ export default function Header() {
 
   return (
     <header ref={headerRef} className="fixed top-0 left-0 w-full z-50 bg-[#fafaf9] border-b-3 border-[#2a2a2a]">
-      <div className="w-full px-4 md:px-8 h-14 md:h-16 flex items-center justify-between">
+      <div className="w-full px-4 md:px-8 lg:px-12 xl:px-16 h-14 md:h-16 flex items-center justify-between">
         {/* Left: Back + Logo */}
         <div className="flex items-center gap-2 md:gap-4">
           {currentAnim && (
@@ -120,14 +120,14 @@ export default function Header() {
           )}
           <Link href="/" className="flex items-center gap-2 md:gap-3 cursor-pointer group" aria-label="TweenLabs Home">
             <Image src="/logo.svg" alt="TweenLabs Logo" width={28} height={28} priority className="object-contain transition-transform duration-200 group-hover:scale-105 w-7 h-7 md:w-8 md:h-8" />
-            <span className="font-serif font-black text-lg md:text-2xl tracking-tight text-[#2a2a2a] group-hover:text-wtf-orange transition-colors duration-150">
+            <span className="font-serif font-black text-lg md:text-2xl lg:text-[1.65rem] tracking-tight text-[#2a2a2a] group-hover:text-wtf-orange transition-colors duration-150">
               TweenLabs
             </span>
           </Link>
         </div>
 
         {/* Right: Desktop Nav */}
-        <div className="hidden md:flex items-center gap-3">
+        <div className="hidden md:flex items-center gap-3 lg:gap-4">
           {currentAnim && (
             <button
               onClick={handleGetCode}

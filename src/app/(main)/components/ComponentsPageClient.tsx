@@ -113,6 +113,15 @@ export default function ComponentsPageClient({ animations }: Props) {
     "bg-wtf-purple": "hover:border-[#8b5cf6]",
   };
 
+  const hoverColorsMap: Record<string, string> = {
+    "bg-wtf-orange": "hover:bg-wtf-orange hover:text-white",
+    "bg-wtf-green": "hover:bg-wtf-green hover:text-white",
+    "bg-wtf-red": "hover:bg-wtf-red hover:text-white",
+    "bg-wtf-blue": "hover:bg-wtf-blue hover:text-white",
+    "bg-wtf-yellow": "hover:bg-wtf-yellow hover:text-black",
+    "bg-wtf-purple": "hover:bg-wtf-purple hover:text-white",
+  };
+
   return (
     <div
       ref={containerRef}
@@ -121,12 +130,12 @@ export default function ComponentsPageClient({ animations }: Props) {
       {/* Dot Grid Background */}
       <div className="absolute inset-0 dot-grid pointer-events-none z-0" />
 
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 md:px-8 pt-20 md:pt-24 pb-16">
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 md:px-8 lg:px-10 pt-20 md:pt-24 pb-16 lg:pb-20">
         {/* Page Header */}
-        <div className="comp-page-title flex flex-col gap-2 border-b-3 border-[#2a2a2a] pb-6 mb-8">
-          <div className="flex items-center justify-between flex-wrap gap-3">
-            <div>
-              <h1 className="text-2xl md:text-4xl font-serif font-black uppercase tracking-tight text-[#2a2a2a]">
+        <div className="comp-page-title border-b-3 border-[#2a2a2a] pb-6 mb-8">
+          <div className="flex items-end justify-between gap-4">
+            <div className="shrink-0">
+              <h1 className="text-2xl md:text-3xl font-serif font-black uppercase tracking-tight text-[#2a2a2a]">
                 All Components
               </h1>
               <p className="text-xs font-mono font-bold text-wtf-orange uppercase tracking-wider mt-1">
@@ -134,20 +143,20 @@ export default function ComponentsPageClient({ animations }: Props) {
               </p>
             </div>
             
-            {/* Inline search bar and back link */}
-            <div className="flex items-center gap-3 w-full sm:w-auto">
+            {/* Search bar and back link — always right */}
+            <div className="flex items-center gap-2 shrink-0">
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search components..."
-                className="w-full sm:w-64 bg-white border-2 border-[#2a2a2a] rounded-lg px-3.5 py-1.5 font-mono text-xs font-bold text-[#2a2a2a] placeholder:text-zinc-450 outline-none focus:border-wtf-orange transition-colors duration-150 shadow-[2px_2px_0px_#2a2a2a]"
+                placeholder="Search..."
+                className="w-36 md:w-52 lg:w-64 bg-white border-2 border-[#2a2a2a] rounded-lg px-3 py-1.5 font-mono text-[10px] md:text-xs font-bold text-[#2a2a2a] placeholder:text-zinc-450 outline-none focus:border-wtf-orange transition-colors duration-150 shadow-[2px_2px_0px_#2a2a2a]"
               />
               <Link
                 href="/"
-                className="brutalist-btn bg-white hover:bg-wtf-orange hover:text-white text-[#2a2a2a] font-mono font-bold text-[10px] md:text-xs py-2 px-3.5 rounded-lg uppercase tracking-wider cursor-pointer transition-colors duration-150 whitespace-nowrap"
+                className="brutalist-btn bg-white hover:bg-wtf-orange hover:text-white text-[#2a2a2a] font-mono font-bold text-[9px] md:text-[10px] py-2 px-3 rounded-lg uppercase tracking-wider cursor-pointer transition-colors duration-150 whitespace-nowrap"
               >
-                ← Back to Home
+                ← Back
               </Link>
             </div>
           </div>
@@ -175,40 +184,42 @@ export default function ComponentsPageClient({ animations }: Props) {
             ) : (
               <div
                 ref={gridRef}
-                className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+                className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-5 xl:gap-6"
               >
                 {filtered.map((anim) => (
                   <div
                     key={anim.id}
-                    className={`comp-card brutalist-card p-5 bg-white flex flex-col justify-between gap-4 border-2 border-[#2a2a2a] transition-all duration-150 ${hoverMap[anim.bgColor] || ""}`}
+                    className={`comp-card brutalist-card p-5 md:p-6 bg-white flex flex-col justify-between gap-5 md:gap-6 border-2 border-[#2a2a2a] transition-all duration-150 overflow-hidden ${hoverMap[anim.bgColor] || ""}`}
                   >
-                    <div className="flex flex-col gap-3">
+                    <div className="flex flex-col gap-3 min-w-0">
                       <div className="flex items-center justify-between">
-                        <span className="font-mono font-bold text-xs text-zinc-400">
+                        <span className="font-mono font-bold text-[11px] text-zinc-400">
                           [{anim.id}]
                         </span>
                         <span
-                          className={`inline-flex items-center border-2 border-[#2a2a2a] px-2.5 py-0.5 rounded-full text-[8px] font-mono font-bold uppercase ${anim.bgColor} ${anim.textColor} shadow-[1px_1px_0px_#2a2a2a]`}
+                          className={`inline-flex items-center border-2 border-[#2a2a2a] px-2 py-0.5 rounded-full text-[7px] md:text-[8px] font-mono font-bold uppercase ${anim.bgColor} ${anim.textColor} shadow-[1px_1px_0px_#2a2a2a]`}
                         >
                           {anim.bgColor.replace("bg-wtf-", "")}
                         </span>
                       </div>
-                      <h2 className="text-lg font-sans font-black uppercase tracking-tight text-[#2a2a2a]">
+                      <h2 className="font-sans font-black text-base md:text-lg uppercase tracking-tight text-[#2a2a2a] leading-tight break-words">
                         {anim.name}
                       </h2>
-                      <p className="text-xs font-sans font-medium text-zinc-650 leading-relaxed line-clamp-2">
+                      <p className="text-xs md:text-[13px] font-sans font-medium text-zinc-650 leading-relaxed line-clamp-3">
                         {anim.description}
                       </p>
                     </div>
-                    <div className="flex gap-2">
-                      <Link href={anim.route} className="flex-1">
-                        <button className="w-full brutalist-btn bg-white hover:bg-[#2a2a2a] hover:text-white border-[#2a2a2a] text-[#2a2a2a] font-mono font-bold text-[10px] py-2.5 px-3 rounded-lg uppercase tracking-wider cursor-pointer transition-colors duration-150">
+                    <div className="flex gap-2 min-w-0">
+                      <Link href={anim.route} className="flex-1 min-w-0">
+                        <button
+                          className={`w-full brutalist-btn bg-white ${hoverColorsMap[anim.bgColor] || ""} border-[#2a2a2a] text-[#2a2a2a] font-mono font-bold text-[10px] md:text-xs py-2.5 md:py-3 px-3 rounded-lg uppercase tracking-wider cursor-pointer transition-colors duration-150 whitespace-nowrap`}
+                        >
                           View →
                         </button>
                       </Link>
                       <button
                         onClick={() => handleGetCode(anim)}
-                        className="flex-1 brutalist-btn bg-white hover:bg-[#2a2a2a] hover:text-white border-[#2a2a2a] text-[#2a2a2a] font-mono font-bold text-[10px] py-2.5 px-3 rounded-lg uppercase tracking-wider cursor-pointer transition-colors duration-150"
+                        className={`flex-1 min-w-0 brutalist-btn bg-white ${hoverColorsMap[anim.bgColor] || ""} border-[#2a2a2a] text-[#2a2a2a] font-mono font-bold text-[10px] md:text-xs py-2.5 md:py-3 px-3 rounded-lg uppercase tracking-wider cursor-pointer transition-colors duration-150 whitespace-nowrap`}
                       >
                         Get Code
                       </button>

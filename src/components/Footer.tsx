@@ -17,8 +17,8 @@ export default function Footer() {
   };
 
   return (
-    <footer className="w-full border-t-3 border-[#2a2a2a] bg-[#f8f5ee] py-10 md:py-16 px-4 md:px-8 mt-auto relative z-10 font-sans">
-      <div className="max-w-7xl mx-auto flex flex-col gap-10 md:gap-16">
+    <footer className="w-full border-t-3 border-[#2a2a2a] bg-[#f8f5ee] py-10 md:py-16 lg:py-20 px-4 md:px-8 lg:px-12 xl:px-16 mt-auto relative z-10 font-sans">
+      <div className="max-w-7xl mx-auto flex flex-col gap-10 md:gap-16 lg:gap-20">
         {/* Main Footer Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-12">
           {/* Column 1: Brand & Status (Span 4) */}
@@ -31,11 +31,11 @@ export default function Footer() {
                 height={32}
                 className="object-contain transition-transform duration-200 group-hover:scale-105"
               />
-              <span className="font-serif font-black text-2xl tracking-tight text-[#2a2a2a] group-hover:text-wtf-orange transition-colors duration-150">
+              <span className="font-serif font-black text-2xl lg:text-3xl tracking-tight text-[#2a2a2a] group-hover:text-wtf-orange transition-colors duration-150">
                 TweenLabs
               </span>
             </Link>
-            <p className="text-sm font-medium text-zinc-600 leading-relaxed max-w-sm">
+            <p className="text-sm lg:text-base font-medium text-zinc-600 leading-relaxed max-w-sm">
               An open laboratory of copy-paste GreenSock (GSAP) UI components,
               ScrollTrigger timelines, and Next.js templates engineered for
               high-performance, interactive web experiences.
@@ -52,10 +52,10 @@ export default function Footer() {
 
           {/* Column 2: Explore Navigation (Span 2) */}
           <div className="lg:col-span-2 flex flex-col gap-4">
-            <h4 className="font-mono font-bold text-xs uppercase tracking-wider text-wtf-orange">
+            <h4 className="font-mono font-bold text-xs lg:text-sm uppercase tracking-wider text-wtf-orange">
               Explore
             </h4>
-            <ul className="flex flex-col gap-2.5 text-sm font-medium">
+            <ul className="flex flex-col gap-2.5 text-sm lg:text-base font-medium">
               <li>
                 <Link
                   href="/"
@@ -93,10 +93,10 @@ export default function Footer() {
 
           {/* Column 3: Open Source / Legal (Span 2) */}
           <div className="lg:col-span-2 flex flex-col gap-4">
-            <h4 className="font-mono font-bold text-xs uppercase tracking-wider text-wtf-purple">
+            <h4 className="font-mono font-bold text-xs lg:text-sm uppercase tracking-wider text-wtf-purple">
               Repository
             </h4>
-            <ul className="flex flex-col gap-2.5 text-sm font-medium">
+            <ul className="flex flex-col gap-2.5 text-sm lg:text-base font-medium">
               <li>
                 <a
                   href="https://github.com/TweenLabs/TweenLabs"
@@ -137,10 +137,10 @@ export default function Footer() {
 
           {/* Column 4: Newsletter Subscription (Span 4) */}
           <div className="lg:col-span-4 flex flex-col gap-4">
-            <h4 className="font-mono font-bold text-xs uppercase tracking-wider text-wtf-blue">
+            <h4 className="font-mono font-bold text-xs lg:text-sm uppercase tracking-wider text-wtf-blue">
               Lab Newsletter
             </h4>
-            <p className="text-sm font-medium text-zinc-600 leading-relaxed">
+            <p className="text-sm lg:text-base font-medium text-zinc-600 leading-relaxed">
               Get notified when we publish new physics-based interactive layout
               modules and hooks.
             </p>

@@ -1031,7 +1031,7 @@ export default function CodePageClient({
       <div className="absolute inset-0 dot-grid pointer-events-none z-0" />
 
       {/* Navigation Breadcrumb / Header */}
-      <header className="w-full max-w-6xl px-4 md:px-8 z-10 flex flex-col md:flex-row md:items-end justify-between gap-4 md:gap-6 mb-6 md:mb-8">
+      <header className="w-full max-w-6xl px-4 md:px-8 lg:px-12 z-10 flex flex-col md:flex-row md:items-end justify-between gap-4 md:gap-6 mb-6 md:mb-8 lg:mb-10">
         <div className="flex flex-col gap-1.5 md:gap-2.5">
           <div className="flex items-center gap-1.5 md:gap-2 text-[10px] md:text-xs font-mono font-bold text-zinc-500 uppercase tracking-widest">
             <Link href="/" className="hover:text-wtf-orange transition-colors">
@@ -1047,7 +1047,7 @@ export default function CodePageClient({
             <span>/</span>
             <span className="text-wtf-orange font-black">Source Code</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl md:text-5xl font-serif font-black uppercase tracking-tight text-[#2a2a2a] leading-none">
+          <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-serif font-black uppercase tracking-tight text-[#2a2a2a] leading-none">
             {name} Code
           </h1>
         </div>
@@ -1067,7 +1067,7 @@ export default function CodePageClient({
       </header>
 
       {/* Info Card */}
-      <section className="w-full max-w-6xl px-4 md:px-8 z-10 mb-6 md:mb-8">
+      <section className="w-full max-w-6xl px-4 md:px-8 lg:px-12 z-10 mb-6 md:mb-8 lg:mb-10">
         <div className="brutalist-card p-4 md:p-6 bg-white flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-6 border-3 border-[#2a2a2a] shadow-[4px_4px_0px_#2a2a2a] md:shadow-[6px_6px_0px_#2a2a2a]">
           <div className="flex-1 flex flex-col gap-3">
             <div className="inline-flex self-start items-center gap-2 border-2 border-[#2a2a2a] px-3.5 py-0.5 rounded-full text-[9px] font-mono font-bold uppercase bg-wtf-orange text-white shadow-[1.5px_1.5px_0px_#2a2a2a] tilt-right">
@@ -1089,7 +1089,7 @@ export default function CodePageClient({
       </section>
 
       {/* Main Content Layout */}
-      <main className="w-full max-w-6xl px-4 md:px-8 z-10 flex flex-col gap-8">
+      <main className="w-full max-w-6xl px-4 md:px-8 lg:px-12 z-10 flex flex-col gap-8 lg:gap-10">
         {/* VS Code Style Editor Container */}
         <div className="brutalist-card bg-[#121212] overflow-hidden flex flex-col border-3 border-[#2a2a2a] shadow-[4px_4px_0px_#2a2a2a] md:shadow-[6px_6px_0px_#2a2a2a]">
           {/* Top Bar: macOS circles & Actions */}
@@ -1152,7 +1152,7 @@ export default function CodePageClient({
 
           {/* Code Body */}
           <div
-            className={`relative font-mono text-[10px] md:text-[13px] bg-[#121212] py-3 md:py-5 px-2 md:px-4 flex items-start transition-all duration-300 ${isExpanded ? "" : "max-h-[300px] md:max-h-[380px] overflow-hidden"} ${blurClass}`}
+            className={`relative font-mono text-[10px] md:text-[13px] lg:text-sm bg-[#121212] py-3 md:py-5 px-2 md:px-4 flex items-start transition-all duration-300 ${isExpanded ? "" : "max-h-[300px] md:max-h-[380px] lg:max-h-[450px] overflow-hidden"} ${blurClass}`}
           >
             {/* Line Numbers */}
             <pre className="select-none text-right pr-2 md:pr-4 border-r border-zinc-800 text-zinc-650 min-w-[2.5rem] md:min-w-[3.5rem] whitespace-pre scrollbar-none">
@@ -1237,7 +1237,7 @@ export default function CodePageClient({
           className={`brutalist-card p-4 md:p-8 bg-white flex flex-col gap-6 md:gap-8 border-3 border-[#2a2a2a] shadow-[4px_4px_0px_#2a2a2a] md:shadow-[6px_6px_0px_#2a2a2a] ${blurClass}`}
         >
           <div className="border-b-3 border-[#2a2a2a] pb-3 md:pb-4">
-            <h2 className="text-xl md:text-3xl font-serif font-black uppercase tracking-tight text-[#2a2a2a]">
+            <h2 className="text-xl md:text-3xl lg:text-4xl font-serif font-black uppercase tracking-tight text-[#2a2a2a]">
               ⚙️ Setup & Integration
             </h2>
             <div className="flex flex-wrap items-center gap-2 mt-1">

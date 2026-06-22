@@ -83,7 +83,7 @@ export default function AuthModal() {
 
       {/* Auth Card Modal Container */}
       <div
-        className={`w-full max-w-md brutalist-card bg-white relative z-10 p-8 flex flex-col gap-6 select-none animate-in fade-in zoom-in-95 duration-200 ${
+        className={`w-full max-w-md lg:max-w-lg brutalist-card bg-white relative z-10 p-8 lg:p-10 flex flex-col gap-6 select-none animate-in fade-in zoom-in-95 duration-200 ${
           isShaking ? "animate-brutalist-shake" : ""
         }`}
       >
@@ -111,10 +111,10 @@ export default function AuthModal() {
           <span className="text-[10px] font-mono font-bold text-wtf-orange uppercase tracking-wider">
             TweenLabs Authentication
           </span>
-          <h2 className="text-2xl font-serif font-black uppercase tracking-tight text-[#2a2a2a]">
+          <h2 className="text-2xl lg:text-3xl font-serif font-black uppercase tracking-tight text-[#2a2a2a]">
             Join the Lab
           </h2>
-          <p className="text-xs font-sans font-medium text-zinc-500 mt-1 leading-relaxed">
+          <p className="text-xs lg:text-sm font-sans font-medium text-zinc-500 mt-1 leading-relaxed">
             Please sign in to your developer account using Google or GitHub to
             view source codes and integration instructions.
           </p>

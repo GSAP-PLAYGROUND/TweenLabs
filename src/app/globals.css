@@ -105,6 +105,10 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+
+  /* Custom breakpoints for ultrawide desktop */
+  --breakpoint-3xl: 1920px;
+  --breakpoint-4xl: 2560px;
 }
 
 html,
@@ -336,6 +340,42 @@ body {
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+}
+
+/* ── Fluid Desktop Scaling Utilities ── */
+
+/* Fluid typography — clamp prevents jarring breakpoint jumps */
+.text-fluid-base {
+  font-size: clamp(0.875rem, 0.8rem + 0.25vw, 1.125rem);
+}
+.text-fluid-lg {
+  font-size: clamp(1.125rem, 1rem + 0.5vw, 1.5rem);
+}
+.text-fluid-xl {
+  font-size: clamp(1.5rem, 1.2rem + 1vw, 2.25rem);
+}
+.text-fluid-2xl {
+  font-size: clamp(1.875rem, 1.5rem + 1.5vw, 3rem);
+}
+.text-fluid-hero {
+  font-size: clamp(2rem, 1.5rem + 2.5vw, 4.5rem);
+}
+
+/* Desktop-only responsive gap scaling */
+@media (min-width: 1920px) {
+  .brutalist-card {
+    box-shadow: 8px 8px 0px var(--shadow-color);
+  }
+  .brutalist-card-interactive:hover {
+    transform: translate(-5px, -5px);
+    box-shadow: 13px 13px 0px var(--shadow-color);
+  }
+  .brutalist-btn {
+    box-shadow: 5px 5px 0px var(--shadow-color);
+  }
+  .brutalist-btn:hover {
+    box-shadow: 7px 7px 0px var(--shadow-color);
+  }
 }
 
 @layer base {

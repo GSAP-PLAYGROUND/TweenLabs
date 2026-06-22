@@ -152,7 +152,7 @@ export default function InstallationPageClient() {
     <div className="relative min-h-screen bg-[#f0eadf] text-[#2a2a2a] selection:bg-[#f1b333] selection:text-black">
       <div className="absolute inset-0 dot-grid pointer-events-none z-0" />
 
-      <div className="relative z-10 w-full px-4 sm:px-6 md:px-8 pt-12 sm:pt-16 pb-24">
+      <div className="relative z-10 w-full max-w-5xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 pt-12 sm:pt-16 lg:pt-20 pb-24">
 
         {/* ── PAGE TITLE ── */}
         <div className="mb-10">
@@ -163,7 +163,7 @@ export default function InstallationPageClient() {
           <h1 className="font-serif font-black text-[clamp(2.2rem,5vw,3.8rem)] leading-[0.9] tracking-tight text-[#2a2a2a] mb-4">
             Installation <span className="text-[#0c9367]">&amp; Setup</span>
           </h1>
-          <p className="font-sans text-[13px] sm:text-[14px] text-zinc-500 leading-relaxed max-w-[52ch]">
+          <p className="font-sans text-[13px] sm:text-[14px] lg:text-base text-zinc-500 leading-relaxed max-w-[52ch]">
             Pick any animation from the gallery. Install it in seconds via the CLI, or copy-paste it manually — no build step, no config.
           </p>
         </div>
@@ -243,7 +243,7 @@ export default function InstallationPageClient() {
     
             <Divider label="Examples &amp; Requirements" />
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-7 items-start">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6 mb-7 items-start">
 
               {/* Examples column */}
               <div>
@@ -385,7 +385,7 @@ export default function InstallationPageClient() {
         <Divider label="Verify &amp; Troubleshoot" />
 
         {/* ── Verify + Common Issues ── */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6 mb-4">
 
           <div className="bg-white border-2 border-[#2a2a2a] rounded-xl overflow-hidden shadow-[3px_3px_0px_#2a2a2a]">
             <div className="flex items-center gap-2.5 px-4 py-3 border-b-2 border-[#2a2a2a] bg-[#0c9367]/10">
@@ -441,7 +441,7 @@ export default function InstallationPageClient() {
             <span className="text-base">📖</span>
             <span className="font-mono font-black text-[10px] uppercase tracking-widest">GSAP Quick Reference</span>
           </div>
-          <div className="p-4 sm:p-5 grid grid-cols-1 sm:grid-cols-2 gap-5">
+          <div className="p-4 sm:p-5 lg:p-6 grid grid-cols-1 sm:grid-cols-2 gap-5 lg:gap-6">
             <div>
               <p className="font-mono font-black text-[9px] uppercase tracking-widest text-zinc-400 mb-2">Basic Tween</p>
               <div className="border-2 border-[#2a2a2a] rounded-lg overflow-hidden bg-[#121212] shadow-[2.5px_2.5px_0px_#2a2a2a]">
@@ -514,7 +514,7 @@ useGSAP(() => {
           <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: "radial-gradient(circle, white 1px, transparent 1px)", backgroundSize: "20px 20px" }} />
           <div className="relative">
             <p className="font-mono font-black text-[9px] uppercase tracking-widest text-[#f1b333] mb-1">ready?</p>
-            <p className="font-serif font-black text-[1.4rem] text-white leading-tight">Browse the components →</p>
+            <p className="font-serif font-black text-[1.4rem] lg:text-[1.6rem] text-white leading-tight">Browse the components →</p>
           </div>
           <div className="relative flex gap-3 flex-wrap">
             <a href="/components" className="font-mono text-[11px] font-black text-[#2a2a2a] bg-white border-2 border-white rounded-xl px-5 py-2.5 hover:bg-[#0c9367] hover:border-[#0c9367] hover:text-white transition-all duration-150">

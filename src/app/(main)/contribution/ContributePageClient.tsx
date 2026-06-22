@@ -192,7 +192,7 @@ export default function ContributePageClient() {
     <div className="relative min-h-screen bg-[#f0eadf] text-[#2a2a2a] selection:bg-[#f1b333] selection:text-black">
       <div className="absolute inset-0 dot-grid pointer-events-none z-0" />
 
-      <div className="relative z-10 w-full px-4 sm:px-6 md:px-8 pt-14 sm:pt-18 md:pt-20 pb-24">
+      <div className="relative z-10 w-full max-w-5xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 pt-14 sm:pt-18 md:pt-20 lg:pt-24 pb-24">
 
         {/* ── HERO ── */}
         <div className="mb-12 sm:mb-16">
@@ -212,12 +212,12 @@ export default function ContributePageClient() {
 
               {/* headline */}
               <h1 className="font-serif font-black uppercase leading-[0.88] tracking-tight text-[#2a2a2a] mb-6">
-                <span className="block text-[clamp(2.8rem,6.5vw,5.5rem)]">Contribution</span>
-                <span className="block text-[clamp(2.8rem,6.5vw,5.5rem)] text-[#e55b3c]">Guidelines</span>
+                <span className="block text-[clamp(2.2rem,5vw,3.8rem)]">Contribution</span>
+                <span className="block text-[clamp(2.2rem,5vw,3.8rem)] text-[#e55b3c]">Guidelines</span>
               </h1>
 
               {/* description */}
-              <p className="font-sans text-[14px] sm:text-[15px] text-zinc-600 leading-[1.7] mb-8" style={{ maxWidth: "42ch" }}>
+              <p className="font-sans text-[14px] sm:text-[15px] lg:text-base text-zinc-600 leading-[1.7] mb-8" style={{ maxWidth: "42ch" }}>
                 TweenLabs is a community-driven, open-source GSAP component library.
                 Whether you&apos;re adding a new animation, fixing a bug, or improving docs —
                 every contribution makes this library better for everyone.
@@ -266,51 +266,13 @@ export default function ContributePageClient() {
                   { label: "License", val: "MIT" },
                 ].map(({ label, val }) => (
                   <div key={label} className="flex flex-col px-4 first:pl-0 last:pr-0">
-                    <span className="font-mono font-black text-[17px] sm:text-[20px] text-[#2a2a2a] leading-none mb-1">{val}</span>
+                    <span className="font-mono font-black text-[17px] sm:text-[20px] lg:text-[22px] text-[#2a2a2a] leading-none mb-1">{val}</span>
                     <span className="font-sans text-[10px] text-zinc-400 uppercase tracking-wide">{label}</span>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* ── RIGHT: decorative code card ── */}
-            <div className="hidden lg:flex flex-col w-[360px] xl:w-[400px] shrink-0 gap-3">
-              <div className="border-2 border-[#2a2a2a] rounded-2xl overflow-hidden shadow-[5px_5px_0px_#2a2a2a] bg-[#111111]">
-                {/* title bar */}
-                <div className="flex items-center justify-between bg-[#1a1a1a] border-b border-white/10 px-4 py-2.5">
-                  <div className="flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]" />
-                    <span className="w-2.5 h-2.5 rounded-full bg-[#febc2e]" />
-                    <span className="w-2.5 h-2.5 rounded-full bg-[#28c840]" />
-                  </div>
-                  <span className="font-mono text-[9px] font-bold tracking-widest text-zinc-500">src/data/components.ts</span>
-                </div>
-                {/* syntax-highlighted code */}
-                <pre className="px-5 py-4 font-mono text-[11.5px] leading-[1.7] overflow-x-auto">
-                  <code>{highlight(`{
-  id: "23",
-  name: "Your Animation",
-  componentName: "YourAnimation",
-  route: "/components/YourAnimation",
-  bgColor: "bg-wtf-green",
-  textColor: "text-white",
-  description: "Describe it here.",
-  tiltClass: "tilt-left",
-}`)}</code>
-                </pre>
-                {/* status footer */}
-                <div className="border-t border-white/10 bg-[#161616] px-4 py-2 flex items-center justify-between">
-                  <span className="font-mono text-[9px] text-zinc-600">components.ts · line 23</span>
-                  <span className="inline-flex items-center gap-1.5 text-[9px] font-mono font-black text-[#0c9367]">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#0c9367]" />
-                    Ready to merge
-                  </span>
-                </div>
-              </div>
-              <p className="font-sans text-[11px] text-zinc-400 text-center leading-relaxed">
-                Add one entry → your animation appears in the gallery, sidebar, and code page.
-              </p>
-            </div>
 
           </div>
         </div>
@@ -455,7 +417,7 @@ export default function ContributePageClient() {
           </Card>
 
           {/* 4. Good first contributions + code guidelines side-by-side on md+ */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 lg:gap-8">
 
             <Card emoji="✅" title="Good First Contributions" accent="#0c9367">
               <ul className="space-y-0">
@@ -501,10 +463,10 @@ export default function ContributePageClient() {
             <div className="relative p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
               <div>
                 <p className="font-mono font-black text-[10px] uppercase tracking-widest text-[#f1b333] mb-1.5">Ready to ship?</p>
-                <p className="font-serif font-black text-xl sm:text-2xl text-white leading-tight mb-1">
+                <p className="font-serif font-black text-xl sm:text-2xl lg:text-3xl text-white leading-tight mb-1">
                   Built in public.
                 </p>
-                <p className="font-serif font-black text-xl sm:text-2xl text-[#e55b3c] leading-tight">
+                <p className="font-serif font-black text-xl sm:text-2xl lg:text-3xl text-[#e55b3c] leading-tight">
                   Animated with love. Open to all.
                 </p>
               </div>

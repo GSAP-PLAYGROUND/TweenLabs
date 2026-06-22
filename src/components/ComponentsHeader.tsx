@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession } from "@/provider/SessionProvider";
+import { useAuthModal } from "@/provider/AuthModalProvider";
+import { authClient } from "@/lib/auth-client";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { animations } from "@/data/components";
 import { cn } from "@/lib/utils";
@@ -17,6 +19,7 @@ const BREADCRUMB_LABELS: Record<string, { label: string; parent?: { label: strin
 
 export default function ComponentsHeader() {
   const { session, isPending } = useSession();
+  const { openModal } = useAuthModal();
   const user = session?.user;
   const pathname = usePathname();
 
@@ -29,7 +32,7 @@ export default function ComponentsHeader() {
   const isStaticPage = !!staticPage && !isComponentDetail;
 
   return (
-    <header className="sticky top-0 z-30 flex items-center justify-between h-[72px] px-4 md:px-6 border-b-3 border-[#2a2a2a] bg-white shrink-0">
+    <header className="sticky top-0 z-30 flex items-center justify-between h-[72px] px-4 md:px-6 lg:px-8 border-b-3 border-[#2a2a2a] bg-white shrink-0">
       {/* Left: Sidebar Trigger + Breadcrumbs */}
       <div className="flex items-center gap-3">
         <SidebarTrigger className="cursor-pointer" />
@@ -37,7 +40,7 @@ export default function ComponentsHeader() {
         <div className="h-6 w-[2px] bg-[#2a2a2a]/20 mx-1" />
 
         {/* Dynamic Uppercase Breadcrumbs */}
-        <nav className="flex items-center gap-2 font-mono text-[10px] md:text-[11px] font-black uppercase tracking-widest">
+        <nav className="flex items-center gap-2 font-mono text-[10px] md:text-[11px] lg:text-xs font-black uppercase tracking-widest">
           {isStaticPage ? (
             // Static pages: just show their own label, active
             <span className="text-[#2a2a2a]">{staticPage.label.toUpperCase()}</span>
@@ -65,7 +68,7 @@ export default function ComponentsHeader() {
       </div>
 
       {/* Right: Search + GitHub + User menu */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 lg:gap-4">
         {/* GitHub link button with count 7 */}
         <a
           href="https://github.com/TweenLabs/TweenLabs"
@@ -79,24 +82,38 @@ export default function ComponentsHeader() {
           <span className="hidden sm:inline">7</span>
         </a>
 
-        {user && (
-          <div className="flex items-center gap-2 bg-white border-2 border-[#2a2a2a] rounded-lg px-2.5 py-1.5 shadow-[2px_2px_0px_#2a2a2a] select-none">
-            {user.image ? (
-              <img
-                src={user.image}
-                alt={user.name || "User"}
-                className="w-5 h-5 rounded-full border border-[#2a2a2a]/15 object-cover"
-              />
-            ) : (
-              <div className="w-5 h-5 rounded-full bg-[#e55b3c] flex items-center justify-center text-[9px] font-bold text-white">
-                {(user.name || "U").charAt(0).toUpperCase()}
-              </div>
-            )}
-            <span className="font-mono text-[10px] font-bold text-[#2a2a2a] truncate max-w-[80px] hidden sm:inline">
-              {user.name || "User"}
-            </span>
-            <span className="text-[10px] text-[#2a2a2a] font-bold ml-0.5">↓</span>
+        {user ? (
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 bg-white border-2 border-[#2a2a2a] rounded-lg px-2.5 py-1.5 shadow-[2px_2px_0px_#2a2a2a] select-none">
+              {user.image ? (
+                <img
+                  src={user.image}
+                  alt={user.name || "User"}
+                  className="w-5 h-5 rounded-full border border-[#2a2a2a]/15 object-cover"
+                />
+              ) : (
+                <div className="w-5 h-5 rounded-full bg-[#e55b3c] flex items-center justify-center text-[9px] font-bold text-white">
+                  {(user.name || "U").charAt(0).toUpperCase()}
+                </div>
+              )}
+              <span className="font-mono text-[10px] font-bold text-[#2a2a2a] truncate max-w-[80px] hidden sm:inline">
+                {user.name || "User"}
+              </span>
+            </div>
+            <button
+              onClick={async () => { await authClient.signOut(); window.location.reload(); }}
+              className="font-mono text-[10px] font-black uppercase tracking-wider text-wtf-red hover:bg-wtf-red hover:text-white border-2 border-wtf-red bg-white rounded-lg px-2.5 py-1.5 shadow-[2px_2px_0px_#2a2a2a] cursor-pointer transition-all duration-150 active:translate-y-[1px] active:shadow-[1px_1px_0px_#2a2a2a]"
+            >
+              Sign Out
+            </button>
           </div>
+        ) : (
+          <button
+            onClick={() => openModal()}
+            className="font-mono text-[10px] font-black uppercase tracking-wider text-wtf-green hover:bg-wtf-green hover:text-white border-2 border-wtf-green bg-white rounded-lg px-2.5 py-1.5 shadow-[2px_2px_0px_#2a2a2a] cursor-pointer transition-all duration-150 active:translate-y-[1px] active:shadow-[1px_1px_0px_#2a2a2a]"
+          >
+            Sign In
+          </button>
         )}
       </div>
     </header>

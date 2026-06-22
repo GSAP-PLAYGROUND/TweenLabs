@@ -59,7 +59,7 @@ export default function AnimationGrid({ animations }: AnimationGridProps) {
 
   if (!hasMounted) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
         {animations.slice(0, 6).map((anim) => (
           <div key={anim.id} className="anim-card-item h-full">
             <AnimationCard anim={anim} />
@@ -74,7 +74,7 @@ export default function AnimationGrid({ animations }: AnimationGridProps) {
       {/* Card Grid */}
       <div
         ref={gridRef}
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10"
       >
         {visibleAnimations.map((anim) => (
           <div key={anim.id} className="anim-card-item h-full">

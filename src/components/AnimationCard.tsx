@@ -36,10 +36,10 @@ export default function AnimationCard({ anim }: AnimationCardProps) {
   };
 
   return (
-    <div className="brutalist-card brutalist-card-interactive p-6 bg-white flex flex-col justify-between gap-6 h-full">
-      <div className="flex flex-col gap-4">
+    <div className="brutalist-card brutalist-card-interactive p-6 lg:p-8 bg-white flex flex-col justify-between gap-6 h-full overflow-hidden">
+      <div className="flex flex-col gap-4 min-w-0">
         <div className="flex items-center justify-between">
-          <span className="font-mono font-bold text-sm text-zinc-500">
+          <span className="font-mono font-bold text-sm lg:text-base text-zinc-500">
             [{anim.id}]
           </span>
           <span
@@ -49,26 +49,26 @@ export default function AnimationCard({ anim }: AnimationCardProps) {
           </span>
         </div>
 
-        <h2 className="text-2xl font-sans font-black uppercase tracking-tight text-[#2a2a2a]">
+        <h2 className="text-2xl lg:text-[1.65rem] font-sans font-black uppercase tracking-tight text-[#2a2a2a] break-words">
           {anim.name}
         </h2>
 
-        <p className="text-sm font-sans font-medium text-zinc-650 leading-relaxed">
+        <p className="text-sm lg:text-[0.935rem] font-sans font-medium text-zinc-650 leading-relaxed">
           {anim.description}
         </p>
       </div>
 
-      <div className="w-full mt-2 flex gap-3">
+      <div className="w-full mt-2 flex gap-3 min-w-0">
         <Link href={anim.route} className="flex-1">
           <button
-            className={`w-full brutalist-btn bg-white ${hoverColorsMap[anim.bgColor] || ""} border-[#2a2a2a] text-[#2a2a2a] font-mono font-bold text-xs py-3 px-4 rounded-lg uppercase tracking-wider cursor-pointer transition-colors duration-150`}
+            className={`w-full brutalist-btn bg-white ${hoverColorsMap[anim.bgColor] || ""} border-[#2a2a2a] text-[#2a2a2a] font-mono font-bold text-xs py-3 px-4 rounded-lg uppercase tracking-wider cursor-pointer transition-colors duration-150 whitespace-nowrap`}
           >
             View →
           </button>
         </Link>
         <button
           onClick={handleGetCode}
-          className={`flex-1 brutalist-btn bg-white ${hoverColorsMap[anim.bgColor] || ""} border-[#2a2a2a] text-[#2a2a2a] font-mono font-bold text-xs py-3 px-4 rounded-lg uppercase tracking-wider cursor-pointer transition-colors duration-150`}
+          className={`flex-1 brutalist-btn bg-white ${hoverColorsMap[anim.bgColor] || ""} border-[#2a2a2a] text-[#2a2a2a] font-mono font-bold text-xs py-3 px-4 rounded-lg uppercase tracking-wider cursor-pointer transition-colors duration-150 whitespace-nowrap`}
         >
           Get Code
         </button>
