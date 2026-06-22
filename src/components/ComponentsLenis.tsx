@@ -1,11 +1,16 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
+import { usePathname } from "next/navigation";
 import Lenis from "lenis";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 export default function ComponentsLenis() {
+  const lenisRef = useRef<Lenis | null>(null);
+  const pathname = usePathname();
+
+  // Persistent Lenis instance — lives for the entire components layout lifetime
   useEffect(() => {
     if (typeof window === "undefined") return;
 
@@ -30,7 +35,10 @@ export default function ComponentsLenis() {
       orientation: "vertical",
       gestureOrientation: "vertical",
       smoothWheel: true,
+      wheelMultiplier: 1.3,
     });
+
+    lenisRef.current = lenis;
 
     // Synchronize scroll events with GSAP ScrollTrigger
     const handleScroll = () => {
@@ -45,10 +53,22 @@ export default function ComponentsLenis() {
     gsap.ticker.lagSmoothing(0);
 
     return () => {
+      lenisRef.current = null;
       lenis.destroy();
       gsap.ticker.remove(gsapTick);
     };
   }, []);
+
+  // On route change: tell Lenis to recalculate scroll limits.
+  // This fixes "scroll gets stuck" when navigating between components
+  // with different content heights (e.g., pinned PageTransition → short ParallaxHero).
+  // Does NOT touch ScrollTrigger — each component manages its own triggers via useGSAP.
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      lenisRef.current?.resize();
+    }, 50);
+    return () => clearTimeout(timer);
+  }, [pathname]);
 
   return null;
 }

@@ -62,7 +62,13 @@ export default function PageWrapper({
         duration: 1.2,
         easing: (t) => Math.min(1, 1.001 - 2 ** (-10 * t)),
         smoothWheel: true,
+        wheelMultiplier: 1.3,
       });
+
+      const handleScroll = () => {
+        ScrollTrigger.update();
+      };
+      lenis.on("scroll", handleScroll);
 
       const gsapTick = (time: number) => {
         lenis.raf(time * 1000);
@@ -70,7 +76,11 @@ export default function PageWrapper({
       gsap.ticker.add(gsapTick);
       gsap.ticker.lagSmoothing(0);
 
+      // Recalculate scroll limits after content renders
+      const resizeTimer = setTimeout(() => lenis.resize(), 100);
+
       return () => {
+        clearTimeout(resizeTimer);
         lenis.destroy();
         gsap.ticker.remove(gsapTick);
       };
@@ -98,6 +108,7 @@ export default function PageWrapper({
       orientation: "vertical",
       gestureOrientation: "vertical",
       smoothWheel: true,
+      wheelMultiplier: 1.3,
     });
 
     // Synchronize Lenis scroll position with GSAP ScrollTrigger
@@ -113,7 +124,12 @@ export default function PageWrapper({
     gsap.ticker.add(gsapTick);
     gsap.ticker.lagSmoothing(0);
 
+    // Recalculate scroll limits after content renders
+    const resizeTimer = setTimeout(() => lenis.resize(), 100);
+
     return () => {
+      clearTimeout(resizeTimer);
+
       // Restore root window scrolling
       document.documentElement.style.overflow = "";
       document.documentElement.style.height = "";

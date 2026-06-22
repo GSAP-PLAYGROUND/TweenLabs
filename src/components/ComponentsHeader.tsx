@@ -27,6 +27,11 @@ export default function ComponentsHeader() {
   const currentAnim = animations.find((a) => a.route === normalizedPath);
   const staticPage = BREADCRUMB_LABELS[normalizedPath];
 
+  // Check if on a code page like /code/FlipCards
+  const isCodePage = normalizedPath.startsWith("/code/");
+  const codeSlug = isCodePage ? normalizedPath.split("/")[2] : null;
+  const codeAnim = codeSlug ? animations.find((a) => a.componentName === codeSlug) : null;
+
   // Determine what to show in the breadcrumb
   const isComponentDetail = !!currentAnim;
   const isStaticPage = !!staticPage && !isComponentDetail;
@@ -41,7 +46,18 @@ export default function ComponentsHeader() {
 
         {/* Dynamic Uppercase Breadcrumbs */}
         <nav className="flex items-center gap-2 font-mono text-[10px] md:text-[11px] lg:text-xs font-black uppercase tracking-widest">
-          {isStaticPage ? (
+          {isCodePage && codeAnim ? (
+            <>
+              <Link
+                href={`/components/${codeAnim.componentName}`}
+                className="text-zinc-500 hover:text-wtf-orange transition-colors"
+              >
+                CODE
+              </Link>
+              <span className="text-zinc-400">&gt;</span>
+              <span className="text-[#2a2a2a]">{codeAnim.name.toUpperCase()}</span>
+            </>
+          ) : isStaticPage ? (
             // Static pages: just show their own label, active
             <span className="text-[#2a2a2a]">{staticPage.label.toUpperCase()}</span>
           ) : (
