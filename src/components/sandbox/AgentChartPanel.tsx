@@ -314,16 +314,24 @@ export default function AgentChartPanel({
 
   const SUGGESTION_CHIPS = [
     { icon: <Zap className="w-3 h-3" />, text: "Animate a card flip on hover" },
-    { icon: <Layers className="w-3 h-3" />, text: "Create a staggered grid reveal" },
-    { icon: <MousePointerClick className="w-3 h-3" />, text: "Build a magnetic cursor effect" },
-    { icon: <Sparkles className="w-3 h-3" />, text: "Make a parallax scroll hero" },
+    {
+      icon: <Layers className="w-3 h-3" />,
+      text: "Create a staggered grid reveal",
+    },
+    {
+      icon: <MousePointerClick className="w-3 h-3" />,
+      text: "Build a magnetic cursor effect",
+    },
+    {
+      icon: <Sparkles className="w-3 h-3" />,
+      text: "Make a parallax scroll hero",
+    },
   ];
 
   const hasMessages = messages.length > 0;
 
   return (
     <div className="w-full h-full flex flex-col bg-[#f0eadf] text-[#2a2a2a] overflow-hidden select-none">
-
       {/* Live active node banner */}
       {status === "running" && activeNode && !activeNode.startsWith("__") && (
         <div className="shrink-0 px-4 py-2 bg-[#6758a5] border-b-2 border-black flex items-center gap-2 font-mono text-[10px] text-white font-bold uppercase">
@@ -353,7 +361,8 @@ export default function AgentChartPanel({
                 What would you like to animate?
               </h2>
               <p className="font-mono text-[11px] text-zinc-500 max-w-[280px] leading-relaxed">
-                Describe any GSAP animation and TweenBot will generate React code for you.
+                Describe any GSAP animation and TweenBot will generate React
+                code for you.
               </p>
             </div>
 
@@ -624,12 +633,12 @@ export default function AgentChartPanel({
         </div>
         <div className="mt-2 flex items-center justify-between text-[9px] font-mono text-zinc-400 select-none px-1">
           <span>
-            {status === "running"
-              ? "Processing..."
-              : "Press Enter to send"}
+            {status === "running" ? "Processing..." : "Press Enter to send"}
           </span>
           <span className="flex items-center gap-1">
-            <kbd className="px-1 py-0.5 bg-zinc-100 border border-zinc-200 rounded text-[8px] font-bold">Shift+Enter</kbd>
+            <kbd className="px-1 py-0.5 bg-zinc-100 border border-zinc-200 rounded text-[8px] font-bold">
+              Shift+Enter
+            </kbd>
             <span>new line</span>
           </span>
         </div>

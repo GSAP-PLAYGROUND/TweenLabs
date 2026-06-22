@@ -15,7 +15,7 @@ function getDynamicComponent(slug: string) {
       slug,
       dynamic(() => import(`@/app/(main)/components/${slug}/page`), {
         ssr: false,
-      })
+      }),
     );
   }
   return dynamicComponentCache.get(slug)!;

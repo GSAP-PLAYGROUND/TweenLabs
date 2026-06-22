@@ -451,12 +451,12 @@ const highlightCode = (code: string, fileName: string) => {
   });
 
   return html;
-};// Custom Markdown renderer
+}; // Custom Markdown renderer
 function renderMarkdown(
   md: string,
   slug?: string,
   pkgManager: "npm" | "pnpm" | "yarn" | "bun" = "npm",
-  setPkgManager?: (pm: "npm" | "pnpm" | "yarn" | "bun") => void
+  setPkgManager?: (pm: "npm" | "pnpm" | "yarn" | "bun") => void,
 ) {
   if (!md) return null;
 
@@ -609,15 +609,14 @@ function renderMarkdown(
       }
 
       const codeContent = codeLines.join("\n");
-      const isBash = lang === "bash" || lang === "sh" || lang === "cmd" || lang === "shell";
+      const isBash =
+        lang === "bash" || lang === "sh" || lang === "cmd" || lang === "shell";
 
       // Match CLI installation commands
       if (codeContent.includes("tweenlabs@latest add") && slug) {
         elements.push(
           <div key={`code-block-cli-${i}`} className="my-3.5 max-w-xl">
-            <div
-              className="border-2 border-[#2a2a2a] rounded-lg overflow-hidden bg-[#121212] shadow-[2.5px_2.5px_0px_#2a2a2a] md:shadow-[3.5px_3.5px_0px_#2a2a2a] w-full max-w-md"
-            >
+            <div className="border-2 border-[#2a2a2a] rounded-lg overflow-hidden bg-[#121212] shadow-[2.5px_2.5px_0px_#2a2a2a] md:shadow-[3.5px_3.5px_0px_#2a2a2a] w-full max-w-md">
               <div className="bg-[#181818] border-b-2 border-[#2a2a2a] px-3 md:px-4 py-2 flex items-center justify-between text-[10px] md:text-xs font-mono text-zinc-400 select-none">
                 <div className="flex gap-2">
                   {(["npm", "pnpm", "yarn", "bun"] as const).map((pm) => (
@@ -649,11 +648,18 @@ function renderMarkdown(
                   CLI Notice & Disclaimer
                 </div>
                 <p className="font-sans font-medium text-[11px] md:text-xs leading-relaxed">
-                  Make sure to run the installation command in your project&apos;s root directory. It automatically creates the file under <code className="bg-amber-100/50 px-1 py-0.5 border border-amber-300 rounded font-mono text-[10px] font-bold text-wtf-orange">src/components/tweenlabs/</code> and resolves dependencies automatically. Back up your work if you have conflicting filenames.
+                  Make sure to run the installation command in your
+                  project&apos;s root directory. It automatically creates the
+                  file under{" "}
+                  <code className="bg-amber-100/50 px-1 py-0.5 border border-amber-300 rounded font-mono text-[10px] font-bold text-wtf-orange">
+                    src/components/tweenlabs/
+                  </code>{" "}
+                  and resolves dependencies automatically. Back up your work if
+                  you have conflicting filenames.
                 </p>
               </div>
             </div>
-          </div>
+          </div>,
         );
         continue;
       }
@@ -686,7 +692,7 @@ function renderMarkdown(
             <div className="p-3 md:p-4 font-mono text-[10px] md:text-xs text-emerald-400 select-all overflow-x-auto leading-relaxed whitespace-pre">
               {getInstallCommand(pkgManager)}
             </div>
-          </div>
+          </div>,
         );
         continue;
       }
@@ -698,7 +704,12 @@ function renderMarkdown(
           .replace(/</g, "&lt;")
           .replace(/>/g, "&gt;");
       } else {
-        const fileExt = lang === "tsx" || lang === "jsx" ? "code.tsx" : lang === "css" ? "styles.css" : "code.js";
+        const fileExt =
+          lang === "tsx" || lang === "jsx"
+            ? "code.tsx"
+            : lang === "css"
+              ? "styles.css"
+              : "code.js";
         highlightedHtml = highlightCode(codeContent, fileExt);
       }
 
@@ -720,7 +731,7 @@ function renderMarkdown(
               <code dangerouslySetInnerHTML={{ __html: highlightedHtml }} />
             )}
           </pre>
-        </div>
+        </div>,
       );
       continue;
     }
@@ -745,19 +756,25 @@ function renderMarkdown(
         if (separatorRow.includes("-")) {
           const parseRowCells = (rowStr: string) => {
             const cells = rowStr.replace(/^\||\|$/g, "").split("|");
-            return cells.map(c => c.trim());
+            return cells.map((c) => c.trim());
           };
 
           const headers = parseRowCells(headerRow);
-          const rowsData = bodyRows.map(row => parseRowCells(row));
+          const rowsData = bodyRows.map((row) => parseRowCells(row));
 
           elements.push(
-            <div key={`table-wrapper-${i}`} className="overflow-x-auto my-4 border-2 border-[#2a2a2a] rounded-lg shadow-[2.5px_2.5px_0px_#2a2a2a] bg-white">
+            <div
+              key={`table-wrapper-${i}`}
+              className="overflow-x-auto my-4 border-2 border-[#2a2a2a] rounded-lg shadow-[2.5px_2.5px_0px_#2a2a2a] bg-white"
+            >
               <table className="w-full text-left border-collapse font-sans text-xs md:text-sm">
                 <thead>
                   <tr className="bg-zinc-50 border-b-2 border-[#2a2a2a]">
                     {headers.map((h, idx) => (
-                      <th key={idx} className="p-3 font-black text-[#2a2a2a] uppercase font-mono text-[10px] md:text-xs border-r border-[#2a2a2a] last:border-r-0">
+                      <th
+                        key={idx}
+                        className="p-3 font-black text-[#2a2a2a] uppercase font-mono text-[10px] md:text-xs border-r border-[#2a2a2a] last:border-r-0"
+                      >
                         {parseInlineMarkdown(h)}
                       </th>
                     ))}
@@ -765,9 +782,15 @@ function renderMarkdown(
                 </thead>
                 <tbody>
                   {rowsData.map((rowData, rIdx) => (
-                    <tr key={rIdx} className="border-b border-zinc-200 last:border-b-0 hover:bg-zinc-50/50 transition-colors">
+                    <tr
+                      key={rIdx}
+                      className="border-b border-zinc-200 last:border-b-0 hover:bg-zinc-50/50 transition-colors"
+                    >
                       {rowData.map((cell, cIdx) => (
-                        <td key={cIdx} className="p-3 text-zinc-700 font-medium border-r border-zinc-200 last:border-r-0">
+                        <td
+                          key={cIdx}
+                          className="p-3 text-zinc-700 font-medium border-r border-zinc-200 last:border-r-0"
+                        >
                           {parseInlineMarkdown(cell)}
                         </td>
                       ))}
@@ -775,7 +798,7 @@ function renderMarkdown(
                   ))}
                 </tbody>
               </table>
-            </div>
+            </div>,
           );
           continue;
         }
@@ -808,7 +831,10 @@ function renderMarkdown(
     if (line.startsWith("---")) {
       flushList(String(i));
       elements.push(
-        <hr key={`hr-${i}`} className="my-6 border-t-2 border-dashed border-zinc-200" />
+        <hr
+          key={`hr-${i}`}
+          className="my-6 border-t-2 border-dashed border-zinc-200"
+        />,
       );
     } else if (line.startsWith("## ")) {
       flushList(String(i));
@@ -1261,9 +1287,15 @@ export default function CodePageClient({
                   Option A: Install via CLI (Recommended)
                 </h3>
                 <p className="text-xs md:text-sm text-zinc-650">
-                  The fastest and easiest way to add this component. Running the CLI command automatically installs dependencies, creates the component file under <code className="bg-zinc-100 px-1 py-0.5 border border-zinc-200 rounded font-mono text-xs font-bold text-wtf-purple">src/components/tweenlabs/{slug}.tsx</code>, and configures everything for you automatically.
+                  The fastest and easiest way to add this component. Running the
+                  CLI command automatically installs dependencies, creates the
+                  component file under{" "}
+                  <code className="bg-zinc-100 px-1 py-0.5 border border-zinc-200 rounded font-mono text-xs font-bold text-wtf-purple">
+                    src/components/tweenlabs/{slug}.tsx
+                  </code>
+                  , and configures everything for you automatically.
                 </p>
-                
+
                 {/* Interactive CLI Widget */}
                 <div className="border-2 border-[#2a2a2a] rounded-lg overflow-hidden bg-[#121212] shadow-[2.5px_2.5px_0px_#2a2a2a] md:shadow-[3.5px_3.5px_0px_#2a2a2a] w-full max-w-md mt-2">
                   <div className="bg-[#181818] border-b-2 border-[#2a2a2a] px-3 md:px-4 py-2 flex items-center justify-between text-[10px] md:text-xs font-mono text-zinc-400 select-none">
@@ -1297,7 +1329,10 @@ export default function CodePageClient({
                       Disclaimer & Notice
                     </div>
                     <p className="font-sans font-medium text-xs md:text-sm leading-relaxed">
-                      Make sure to run the installation command in your project&apos;s root directory. It automatically updates files and resolves dependencies. Back up your work if you have custom conflicts.
+                      Make sure to run the installation command in your
+                      project&apos;s root directory. It automatically updates
+                      files and resolves dependencies. Back up your work if you
+                      have custom conflicts.
                     </p>
                   </div>
                 </div>
@@ -1314,7 +1349,8 @@ export default function CodePageClient({
                   Option B: Manual Installation
                 </h3>
                 <p className="text-xs md:text-sm text-zinc-650">
-                  Follow these step-by-step instructions to manually download, copy, and set up the code inside your project.
+                  Follow these step-by-step instructions to manually download,
+                  copy, and set up the code inside your project.
                 </p>
               </div>
             </div>
@@ -1325,7 +1361,9 @@ export default function CodePageClient({
                 {renderMarkdown(setupGuide, slug, pkgManager, setPkgManager)}
               </div>
             ) : (
-              <p className="text-zinc-550 font-mono text-xs italic pl-0 md:pl-12">No manual setup guide available for this component.</p>
+              <p className="text-zinc-550 font-mono text-xs italic pl-0 md:pl-12">
+                No manual setup guide available for this component.
+              </p>
             )}
           </div>
 
@@ -1340,7 +1378,12 @@ export default function CodePageClient({
                   Customization & Properties
                 </h3>
                 <div className="prose prose-zinc max-w-none text-zinc-750 font-sans font-medium text-xs md:text-sm">
-                  {renderMarkdown(customization, slug, pkgManager, setPkgManager)}
+                  {renderMarkdown(
+                    customization,
+                    slug,
+                    pkgManager,
+                    setPkgManager,
+                  )}
                 </div>
               </div>
             </div>

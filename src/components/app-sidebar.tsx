@@ -37,43 +37,66 @@ const categories: CategoryGroup[] = [
     items: [
       { name: "Installation & Setup", href: "/installation" },
       { name: "Contribution", href: "/contribution" },
-      { name: "Playground", href: "/playground", badge: "BETA", badgeColor: "bg-[#0c9367] text-white" },
+      {
+        name: "Playground",
+        href: "/playground",
+        badge: "BETA",
+        badgeColor: "bg-[#0c9367] text-white",
+      },
     ],
   },
   {
     label: "All Components",
-    items: [
-      { name: "Browse All", href: "/components" },
-    ],
+    items: [{ name: "Browse All", href: "/components" }],
   },
   {
     label: "Text Animations",
     components: animations.filter((a) =>
-      ["KineticText", "ParallaxHero", "RevealText", "MorphingText"].includes(a.componentName)
+      ["KineticText", "ParallaxHero", "RevealText", "MorphingText"].includes(
+        a.componentName,
+      ),
     ),
   },
   {
     label: "Scroll Effects",
     components: animations.filter((a) =>
-      ["ScrollCards", "ScrollTags", "HorizontalCards", "PageTransition", "BorderReveal"].includes(a.componentName)
+      [
+        "ScrollCards",
+        "ScrollTags",
+        "HorizontalCards",
+        "PageTransition",
+        "BorderReveal",
+      ].includes(a.componentName),
     ),
   },
   {
     label: "Cards & Grids",
     components: animations.filter((a) =>
-      ["FlipCards", "BentoGrid", "Carousel3D", "CircularScatter", "OrbitGallery"].includes(a.componentName)
+      [
+        "FlipCards",
+        "BentoGrid",
+        "Carousel3D",
+        "CircularScatter",
+        "OrbitGallery",
+      ].includes(a.componentName),
     ),
   },
   {
     label: "Interactive",
     components: animations.filter((a) =>
-      ["FluidCursor", "MagneticDock", "GravityDrop", "StringLine", "TabsMotion"].includes(a.componentName)
+      [
+        "FluidCursor",
+        "MagneticDock",
+        "GravityDrop",
+        "StringLine",
+        "TabsMotion",
+      ].includes(a.componentName),
     ),
   },
   {
     label: "Layout & UI",
     components: animations.filter((a) =>
-      ["Blueprint", "SkillFit", "Accordion"].includes(a.componentName)
+      ["Blueprint", "SkillFit", "Accordion"].includes(a.componentName),
     ),
   },
 ];
@@ -127,10 +150,10 @@ export function AppSidebar() {
             <SidebarGroupLabel className="font-mono text-[10px] font-bold text-zinc-500 uppercase tracking-widest px-4 mb-1 group-data-[collapsible=icon]:hidden">
               {cat.label}
             </SidebarGroupLabel>
-            
+
             {/* Dashed line separator */}
             <div className="border-b border-dashed border-[#2a2a2a]/15 mx-4 mb-2 group-data-[collapsible=icon]:hidden" />
-            
+
             <SidebarGroupContent>
               <SidebarMenu className="px-2">
                 {/* Static items (Quick Setup) */}
@@ -143,7 +166,8 @@ export function AppSidebar() {
                         isActive={isActive}
                         className={cn(
                           "hover:bg-[#2a2a2a]/5 active:bg-[#2a2a2a]/10",
-                          isActive && "bg-[#f5f3ef] border border-[#d4d0c8] rounded-lg"
+                          isActive &&
+                            "bg-[#f5f3ef] border border-[#d4d0c8] rounded-lg",
                         )}
                       >
                         {item.external ? (
@@ -153,9 +177,16 @@ export function AppSidebar() {
                             rel="noopener noreferrer"
                             className="flex items-center gap-2.5 font-serif text-[13px] font-black text-[#2a2a2a] hover:text-[#e55b3c] transition-colors w-full"
                           >
-                            <span className="group-data-[collapsible=icon]:hidden truncate">{item.name}</span>
+                            <span className="group-data-[collapsible=icon]:hidden truncate">
+                              {item.name}
+                            </span>
                             {item.badge && (
-                              <span className={cn(item.badgeColor, "text-[8px] font-bold px-1.5 py-0.5 rounded uppercase ml-auto shrink-0 group-data-[collapsible=icon]:hidden")}>
+                              <span
+                                className={cn(
+                                  item.badgeColor,
+                                  "text-[8px] font-bold px-1.5 py-0.5 rounded uppercase ml-auto shrink-0 group-data-[collapsible=icon]:hidden",
+                                )}
+                              >
                                 {item.badge}
                               </span>
                             )}
@@ -165,9 +196,16 @@ export function AppSidebar() {
                             href={item.href}
                             className="flex items-center gap-2.5 font-serif text-[13px] font-black text-[#2a2a2a] hover:text-[#e55b3c] transition-colors w-full"
                           >
-                            <span className="group-data-[collapsible=icon]:hidden truncate">{item.name}</span>
+                            <span className="group-data-[collapsible=icon]:hidden truncate">
+                              {item.name}
+                            </span>
                             {item.badge && (
-                              <span className={cn(item.badgeColor, "text-[8px] font-bold px-1.5 py-0.5 rounded uppercase ml-auto shrink-0 group-data-[collapsible=icon]:hidden")}>
+                              <span
+                                className={cn(
+                                  item.badgeColor,
+                                  "text-[8px] font-bold px-1.5 py-0.5 rounded uppercase ml-auto shrink-0 group-data-[collapsible=icon]:hidden",
+                                )}
+                              >
                                 {item.badge}
                               </span>
                             )}
@@ -190,23 +228,29 @@ export function AppSidebar() {
                         isActive={isActive}
                         className={cn(
                           "hover:bg-[#2a2a2a]/5 active:bg-[#2a2a2a]/10",
-                          isActive && "bg-[#f5f3ef] border border-[#d4d0c8] rounded-lg"
+                          isActive &&
+                            "bg-[#f5f3ef] border border-[#d4d0c8] rounded-lg",
                         )}
                       >
                         <Link
                           href={anim.route}
                           className={cn(
                             "flex items-center gap-2.5 font-serif text-[13px] font-black text-[#2a2a2a] hover:text-[#e55b3c] transition-colors w-full",
-                            isActive && "text-[#e55b3c]"
+                            isActive && "text-[#e55b3c]",
                           )}
                         >
-                          <span className="group-data-[collapsible=icon]:hidden truncate">{anim.name}</span>
+                          <span className="group-data-[collapsible=icon]:hidden truncate">
+                            {anim.name}
+                          </span>
                           {tags && (
                             <span className="flex items-center gap-1 ml-auto shrink-0 group-data-[collapsible=icon]:hidden">
                               {tags.map((tag) => (
                                 <span
                                   key={tag.label}
-                                  className={cn(tag.color, "text-[7px] font-bold px-1 py-0.5 rounded uppercase")}
+                                  className={cn(
+                                    tag.color,
+                                    "text-[7px] font-bold px-1 py-0.5 rounded uppercase",
+                                  )}
                                 >
                                   {tag.label}
                                 </span>
@@ -228,8 +272,12 @@ export function AppSidebar() {
       <SidebarFooter className="border-t-3 border-[#2a2a2a] bg-white p-3 justify-center shrink-0 group-data-[collapsible=icon]:border-0 group-data-[collapsible=icon]:p-0">
         <div className="bg-white border-2 border-[#2a2a2a] rounded-xl p-3 shadow-[4px_4px_0px_#2a2a2a] mx-1 my-1 group-data-[collapsible=icon]:hidden">
           <div className="flex items-center gap-1.5 mb-1.5">
-            <span className="font-serif font-black text-[11px] text-[#2a2a2a] tracking-tight">PLAYGROUND</span>
-            <span className="bg-[#0c9367] text-white text-[8px] font-bold px-1.5 py-0.5 rounded uppercase">AI AGENT</span>
+            <span className="font-serif font-black text-[11px] text-[#2a2a2a] tracking-tight">
+              PLAYGROUND
+            </span>
+            <span className="bg-[#0c9367] text-white text-[8px] font-bold px-1.5 py-0.5 rounded uppercase">
+              AI AGENT
+            </span>
           </div>
           <p className="font-sans text-[10px] text-zinc-500 leading-relaxed mb-3">
             Let agent make customized animation for you under 1 min.

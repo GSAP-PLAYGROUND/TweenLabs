@@ -50,8 +50,7 @@ export default function Hero() {
       }
 
       // ─── "GSAP Components" subtitle entrance ──────────
-      const subtitleEl =
-        sectionRef.current.querySelector(".hero-subtitle");
+      const subtitleEl = sectionRef.current.querySelector(".hero-subtitle");
       if (subtitleEl) {
         SplitText.create(subtitleEl, {
           type: "chars",
@@ -153,8 +152,8 @@ export default function Hero() {
 
           <p className="hero-desc max-w-xl lg:max-w-2xl text-zinc-700 text-xs sm:text-sm md:text-base lg:text-lg leading-relaxed font-sans font-medium px-2 mt-4 md:mt-6 lg:mt-8 mx-auto">
             A high-fidelity collection of the best GSAP components, interactive
-            React templates, and ScrollTrigger animations. Free, production-ready,
-            and copy-paste friendly.
+            React templates, and ScrollTrigger animations. Free,
+            production-ready, and copy-paste friendly.
           </p>
         </div>
       </div>
@@ -162,7 +161,9 @@ export default function Hero() {
       {/* Scroll Down Indicator HUD */}
       <div className="hero-scroll-indicator absolute bottom-4 md:bottom-8 lg:bottom-12 inset-x-0 mx-auto w-fit flex flex-col items-center gap-1 animate-bounce pointer-events-none text-zinc-500 font-mono text-[8px] md:text-[9px] lg:text-[10px] tracking-widest uppercase">
         <span>Scroll to Explore</span>
-        <span className="text-wtf-orange font-bold text-xs md:text-sm lg:text-base">↓</span>
+        <span className="text-wtf-orange font-bold text-xs md:text-sm lg:text-base">
+          ↓
+        </span>
       </div>
     </section>
   );

@@ -14,12 +14,42 @@ gsap.registerPlugin(useGSAP);
 // Color categories derived from component bgColor
 const CATEGORIES = [
   { label: "All", filter: null, color: "bg-[#2a2a2a]", text: "text-white" },
-  { label: "Green", filter: "bg-wtf-green", color: "bg-wtf-green", text: "text-white" },
-  { label: "Orange", filter: "bg-wtf-orange", color: "bg-wtf-orange", text: "text-white" },
-  { label: "Purple", filter: "bg-wtf-purple", color: "bg-wtf-purple", text: "text-white" },
-  { label: "Blue", filter: "bg-wtf-blue", color: "bg-wtf-blue", text: "text-white" },
-  { label: "Yellow", filter: "bg-wtf-yellow", color: "bg-wtf-yellow", text: "text-black" },
-  { label: "Red", filter: "bg-wtf-red", color: "bg-wtf-red", text: "text-white" },
+  {
+    label: "Green",
+    filter: "bg-wtf-green",
+    color: "bg-wtf-green",
+    text: "text-white",
+  },
+  {
+    label: "Orange",
+    filter: "bg-wtf-orange",
+    color: "bg-wtf-orange",
+    text: "text-white",
+  },
+  {
+    label: "Purple",
+    filter: "bg-wtf-purple",
+    color: "bg-wtf-purple",
+    text: "text-white",
+  },
+  {
+    label: "Blue",
+    filter: "bg-wtf-blue",
+    color: "bg-wtf-blue",
+    text: "text-white",
+  },
+  {
+    label: "Yellow",
+    filter: "bg-wtf-yellow",
+    color: "bg-wtf-yellow",
+    text: "text-black",
+  },
+  {
+    label: "Red",
+    filter: "bg-wtf-red",
+    color: "bg-wtf-red",
+    text: "text-white",
+  },
 ] as const;
 
 interface Props {
@@ -142,7 +172,7 @@ export default function ComponentsPageClient({ animations }: Props) {
                 {filtered.length} of {animations.length} Components
               </p>
             </div>
-            
+
             {/* Search bar and back link — always right */}
             <div className="flex items-center gap-2 shrink-0">
               <input

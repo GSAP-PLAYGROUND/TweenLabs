@@ -4,17 +4,25 @@ import { useState } from "react";
 
 /* ── palette ── */
 const PALETTE = [
-  { name: "green",  hex: "#0c9367", text: "white" },
+  { name: "green", hex: "#0c9367", text: "white" },
   { name: "orange", hex: "#e55b3c", text: "white" },
   { name: "purple", hex: "#6758a5", text: "white" },
-  { name: "blue",   hex: "#3b82f6", text: "white" },
+  { name: "blue", hex: "#3b82f6", text: "white" },
   { name: "yellow", hex: "#f1b333", text: "black" },
-  { name: "red",    hex: "#c23b3a", text: "white" },
+  { name: "red", hex: "#c23b3a", text: "white" },
 ];
 
 /* ── primitives ── */
 
-function Tag({ children, color = "#2a2a2a", bg = "#f0eadf" }: { children: string; color?: string; bg?: string }) {
+function Tag({
+  children,
+  color = "#2a2a2a",
+  bg = "#f0eadf",
+}: {
+  children: string;
+  color?: string;
+  bg?: string;
+}) {
   return (
     <span
       className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[9px] font-mono font-black uppercase tracking-widest border-2 shrink-0"
@@ -35,7 +43,7 @@ function Code({ children }: { children: string }) {
 
 /* ── VS Code One Dark Pro syntax highlighter ── */
 function highlight(raw: string): React.ReactNode[] {
-  const lines = raw.split('\n');
+  const lines = raw.split("\n");
   return lines.map((line, li) => {
     // tokenise each line into segments
     const segments: React.ReactNode[] = [];
@@ -43,62 +51,103 @@ function highlight(raw: string): React.ReactNode[] {
     let key = 0;
 
     // comment at end of line or full-line comment
-    const commentIdx = rest.indexOf('//');
+    const commentIdx = rest.indexOf("//");
     const beforeComment = commentIdx !== -1 ? rest.slice(0, commentIdx) : rest;
-    const commentPart  = commentIdx !== -1 ? rest.slice(commentIdx)   : null;
+    const commentPart = commentIdx !== -1 ? rest.slice(commentIdx) : null;
 
     // tokenise beforeComment into: strings, numbers, keywords, properties, punctuation, plain
-    const tokenRe = /("[^"]*"|'[^']*'|\b(id|name|route|bgColor|textColor|description|tiltClass|componentName)\b(?=\s*:)|\b(git|pnpm|npm|npx|yarn|bun|cd|feat|fix|docs|chore|origin|checkout|push|commit|install|dev|lint|build|master|bash)\b|\b\d+\b|[{}()\[\],:;])/g;
+    const tokenRe =
+      /("[^"]*"|'[^']*'|\b(id|name|route|bgColor|textColor|description|tiltClass|componentName)\b(?=\s*:)|\b(git|pnpm|npm|npx|yarn|bun|cd|feat|fix|docs|chore|origin|checkout|push|commit|install|dev|lint|build|master|bash)\b|\b\d+\b|[{}()\[\],:;])/g;
     let lastIndex = 0;
     let m: RegExpExecArray | null;
     // eslint-disable-next-line no-cond-assign
     while ((m = tokenRe.exec(beforeComment)) !== null) {
       // plain text before match
       if (m.index > lastIndex) {
-        segments.push(<span key={key++} className="text-[#abb2bf]">{beforeComment.slice(lastIndex, m.index)}</span>);
+        segments.push(
+          <span key={key++} className="text-[#abb2bf]">
+            {beforeComment.slice(lastIndex, m.index)}
+          </span>,
+        );
       }
       const tok = m[0];
       if (tok.startsWith('"') || tok.startsWith("'")) {
         // string — green
-        segments.push(<span key={key++} className="text-[#98c379]">{tok}</span>);
+        segments.push(
+          <span key={key++} className="text-[#98c379]">
+            {tok}
+          </span>,
+        );
       } else if (m[2]) {
         // object property name — blue
-        segments.push(<span key={key++} className="text-[#9cdcfe]">{tok}</span>);
+        segments.push(
+          <span key={key++} className="text-[#9cdcfe]">
+            {tok}
+          </span>,
+        );
       } else if (m[3]) {
         // shell / git keyword — purple
-        segments.push(<span key={key++} className="text-[#c678dd] font-semibold">{tok}</span>);
+        segments.push(
+          <span key={key++} className="text-[#c678dd] font-semibold">
+            {tok}
+          </span>,
+        );
       } else if (/^\d+$/.test(tok)) {
         // number — orange
-        segments.push(<span key={key++} className="text-[#d19a66]">{tok}</span>);
+        segments.push(
+          <span key={key++} className="text-[#d19a66]">
+            {tok}
+          </span>,
+        );
       } else {
         // punctuation — light gray
-        segments.push(<span key={key++} className="text-[#abb2bf]">{tok}</span>);
+        segments.push(
+          <span key={key++} className="text-[#abb2bf]">
+            {tok}
+          </span>,
+        );
       }
       lastIndex = m.index + tok.length;
     }
     // remaining plain text
     if (lastIndex < beforeComment.length) {
-      segments.push(<span key={key++} className="text-[#abb2bf]">{beforeComment.slice(lastIndex)}</span>);
+      segments.push(
+        <span key={key++} className="text-[#abb2bf]">
+          {beforeComment.slice(lastIndex)}
+        </span>,
+      );
     }
     // comment — white
     if (commentPart) {
-      segments.push(<span key={key++} className="text-white/70 italic">{commentPart}</span>);
+      segments.push(
+        <span key={key++} className="text-white/70 italic">
+          {commentPart}
+        </span>,
+      );
     }
 
     return (
       <span key={li}>
         {segments}
-        {li < lines.length - 1 ? '\n' : null}
+        {li < lines.length - 1 ? "\n" : null}
       </span>
     );
   });
 }
 
-function Callout({ icon, children }: { icon: string; children: React.ReactNode }) {
+function Callout({
+  icon,
+  children,
+}: {
+  icon: string;
+  children: React.ReactNode;
+}) {
   return (
     <div className="flex items-start gap-2.5 bg-[#fff8e6] border-l-4 border-[#f1b333] rounded-r-lg pl-3 pr-4 py-3 my-3">
       <span className="text-base shrink-0 mt-0.5">{icon}</span>
-      <p className="text-[11px] sm:text-[12px] font-sans text-[#2a2a2a] leading-relaxed">{children}</p>
+      <p className="text-[11px] sm:text-[12px] font-sans text-[#2a2a2a] leading-relaxed">
+        {children}
+      </p>
     </div>
   );
 }
@@ -116,7 +165,11 @@ function Terminal({ children }: { children: string }) {
         </div>
         <button
           type="button"
-          onClick={() => { navigator.clipboard.writeText(children.trim()); setCopied(true); setTimeout(() => setCopied(false), 2000); }}
+          onClick={() => {
+            navigator.clipboard.writeText(children.trim());
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+          }}
           className={`font-mono font-bold text-[9px] uppercase tracking-widest px-2 py-0.5 rounded border transition-all cursor-pointer ${
             copied
               ? "bg-[#0c9367] text-white border-[#0c9367]"
@@ -133,23 +186,42 @@ function Terminal({ children }: { children: string }) {
   );
 }
 
-
 function CheckItem({ children }: { children: React.ReactNode }) {
   return (
     <li className="flex items-start gap-2.5 py-2.5 border-b border-dashed border-[#2a2a2a]/12 last:border-0">
       <span className="mt-0.5 w-5 h-5 shrink-0 rounded-full bg-[#0c9367] flex items-center justify-center">
-        <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+        <svg
+          className="w-3 h-3 text-white"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={3}
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M5 13l4 4L19 7"
+          />
         </svg>
       </span>
-      <span className="text-[12px] sm:text-[13px] font-sans text-zinc-700 leading-relaxed">{children}</span>
+      <span className="text-[12px] sm:text-[13px] font-sans text-zinc-700 leading-relaxed">
+        {children}
+      </span>
     </li>
   );
 }
 
 function Step({
-  num, accent, title, children,
-}: { num: string; accent: string; title: string; children: React.ReactNode }) {
+  num,
+  accent,
+  title,
+  children,
+}: {
+  num: string;
+  accent: string;
+  title: string;
+  children: React.ReactNode;
+}) {
   return (
     <div className="relative flex gap-4 sm:gap-5 pb-8 last:pb-0">
       {/* vertical line */}
@@ -164,17 +236,34 @@ function Step({
       </div>
       {/* content */}
       <div className="flex-1 min-w-0 pt-1.5 pb-4">
-        <h3 className="font-serif font-black text-[14px] sm:text-[15px] text-[#2a2a2a] mb-2">{title}</h3>
-        <div className="text-[12px] sm:text-[13px] text-zinc-600 font-sans leading-relaxed">{children}</div>
+        <h3 className="font-serif font-black text-[14px] sm:text-[15px] text-[#2a2a2a] mb-2">
+          {title}
+        </h3>
+        <div className="text-[12px] sm:text-[13px] text-zinc-600 font-sans leading-relaxed">
+          {children}
+        </div>
       </div>
     </div>
   );
 }
 
-function Card({ title, emoji, accent = "#2a2a2a", children }: { title: string; emoji: string; accent?: string; children: React.ReactNode }) {
+function Card({
+  title,
+  emoji,
+  accent = "#2a2a2a",
+  children,
+}: {
+  title: string;
+  emoji: string;
+  accent?: string;
+  children: React.ReactNode;
+}) {
   return (
     <section className="rounded-2xl border-2 border-[#2a2a2a] bg-white overflow-hidden shadow-[4px_4px_0px_#2a2a2a]">
-      <div className="flex items-center gap-3 px-5 py-3.5 border-b-2 border-[#2a2a2a]" style={{ backgroundColor: accent + "18" }}>
+      <div
+        className="flex items-center gap-3 px-5 py-3.5 border-b-2 border-[#2a2a2a]"
+        style={{ backgroundColor: accent + "18" }}
+      >
         <span className="text-xl leading-none">{emoji}</span>
         <h2 className="font-mono font-black text-[11px] sm:text-[12px] uppercase tracking-widest text-[#2a2a2a]">
           {title}
@@ -193,34 +282,44 @@ export default function ContributePageClient() {
       <div className="absolute inset-0 dot-grid pointer-events-none z-0" />
 
       <div className="relative z-10 w-full max-w-5xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 pt-14 sm:pt-18 md:pt-20 lg:pt-24 pb-24">
-
         {/* ── HERO ── */}
         <div className="mb-12 sm:mb-16">
-
           {/* two-col: text left, code card right — vertically centered */}
           <div className="flex flex-col lg:flex-row lg:items-center gap-10 lg:gap-16">
-
             {/* ── LEFT: text ── */}
             <div className="flex-1 min-w-0">
-
               {/* badge row */}
               <div className="flex flex-wrap items-center gap-2 mb-6">
-                <Tag color="white" bg="#e55b3c">Open Source</Tag>
-                <Tag color="white" bg="#0c9367">Community Driven</Tag>
-                <Tag color="white" bg="#6758a5">MIT License</Tag>
+                <Tag color="white" bg="#e55b3c">
+                  Open Source
+                </Tag>
+                <Tag color="white" bg="#0c9367">
+                  Community Driven
+                </Tag>
+                <Tag color="white" bg="#6758a5">
+                  MIT License
+                </Tag>
               </div>
 
               {/* headline */}
               <h1 className="font-serif font-black uppercase leading-[0.88] tracking-tight text-[#2a2a2a] mb-6">
-                <span className="block text-[clamp(2.2rem,5vw,3.8rem)]">Contribution</span>
-                <span className="block text-[clamp(2.2rem,5vw,3.8rem)] text-[#e55b3c]">Guidelines</span>
+                <span className="block text-[clamp(2.2rem,5vw,3.8rem)]">
+                  Contribution
+                </span>
+                <span className="block text-[clamp(2.2rem,5vw,3.8rem)] text-[#e55b3c]">
+                  Guidelines
+                </span>
               </h1>
 
               {/* description */}
-              <p className="font-sans text-[14px] sm:text-[15px] lg:text-base text-zinc-600 leading-[1.7] mb-8" style={{ maxWidth: "42ch" }}>
-                TweenLabs is a community-driven, open-source GSAP component library.
-                Whether you&apos;re adding a new animation, fixing a bug, or improving docs —
-                every contribution makes this library better for everyone.
+              <p
+                className="font-sans text-[14px] sm:text-[15px] lg:text-base text-zinc-600 leading-[1.7] mb-8"
+                style={{ maxWidth: "42ch" }}
+              >
+                TweenLabs is a community-driven, open-source GSAP component
+                library. Whether you&apos;re adding a new animation, fixing a
+                bug, or improving docs — every contribution makes this library
+                better for everyone.
               </p>
 
               {/* CTA row */}
@@ -231,7 +330,11 @@ export default function ContributePageClient() {
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 font-mono text-[11px] font-black bg-[#2a2a2a] text-white border-2 border-[#2a2a2a] rounded-xl px-5 py-3 shadow-[3px_3px_0px_#4f46e5] hover:-translate-y-px hover:shadow-[5px_5px_0px_#4f46e5] transition-all duration-150 active:translate-y-px active:shadow-[1px_1px_0px_#4f46e5]"
                 >
-                  <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                  <svg
+                    className="w-4 h-4 shrink-0"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
                     <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
                   </svg>
                   Fork on GitHub
@@ -250,7 +353,11 @@ export default function ContributePageClient() {
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1.5 font-mono text-[11px] font-black text-zinc-500 hover:text-[#f1b333] transition-colors duration-150"
                 >
-                  <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
+                  <svg
+                    className="w-3.5 h-3.5"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
                     <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
                   </svg>
                   ⭐ Star on GitHub
@@ -265,35 +372,45 @@ export default function ContributePageClient() {
                   { label: "Time", val: "< 5 min" },
                   { label: "License", val: "MIT" },
                 ].map(({ label, val }) => (
-                  <div key={label} className="flex flex-col px-4 first:pl-0 last:pr-0">
-                    <span className="font-mono font-black text-[17px] sm:text-[20px] lg:text-[22px] text-[#2a2a2a] leading-none mb-1">{val}</span>
-                    <span className="font-sans text-[10px] text-zinc-400 uppercase tracking-wide">{label}</span>
+                  <div
+                    key={label}
+                    className="flex flex-col px-4 first:pl-0 last:pr-0"
+                  >
+                    <span className="font-mono font-black text-[17px] sm:text-[20px] lg:text-[22px] text-[#2a2a2a] leading-none mb-1">
+                      {val}
+                    </span>
+                    <span className="font-sans text-[10px] text-zinc-400 uppercase tracking-wide">
+                      {label}
+                    </span>
                   </div>
                 ))}
               </div>
             </div>
-
-
           </div>
         </div>
 
         {/* ── DIVIDER ── */}
         <div className="flex items-center gap-4 mb-10">
           <div className="flex-1 h-px bg-[#2a2a2a]/12" />
-          <span className="font-mono text-[9px] font-black uppercase tracking-[0.2em] text-zinc-400">Getting Started</span>
+          <span className="font-mono text-[9px] font-black uppercase tracking-[0.2em] text-zinc-400">
+            Getting Started
+          </span>
           <div className="flex-1 h-px bg-[#2a2a2a]/12" />
         </div>
 
-
         {/* ── SECTIONS ── */}
         <div className="flex flex-col gap-6">
-
           {/* 1. Local Setup */}
           <Card emoji="🛠️" title="Local Development Setup" accent="#0c9367">
             <div className="space-y-0">
               <Step num="1" accent="#0c9367" title="Fork the Repository">
                 Click the <strong>Fork</strong> button on the top-right of the{" "}
-                <a href="https://github.com/TweenLabs/TweenLabs" target="_blank" rel="noopener noreferrer" className="text-[#e55b3c] font-bold underline underline-offset-2">
+                <a
+                  href="https://github.com/TweenLabs/TweenLabs"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[#e55b3c] font-bold underline underline-offset-2"
+                >
                   GitHub page
                 </a>{" "}
                 to create your own copy.
@@ -306,14 +423,21 @@ export default function ContributePageClient() {
               <Step num="3" accent="#0c9367" title="Install with pnpm">
                 <Terminal>{`pnpm install`}</Terminal>
                 <Callout icon="⚠️">
-                  This repo uses a <Code>pnpm</Code> lockfile. Do <strong>not</strong> use npm or yarn — it will break the lock file and conflict with CI.
+                  This repo uses a <Code>pnpm</Code> lockfile. Do{" "}
+                  <strong>not</strong> use npm or yarn — it will break the lock
+                  file and conflict with CI.
                 </Callout>
               </Step>
 
               <Step num="4" accent="#0c9367" title="Start the Dev Server">
                 <Terminal>{`pnpm dev`}</Terminal>
                 Open{" "}
-                <a href="http://localhost:3000" className="text-[#e55b3c] font-bold underline underline-offset-2">localhost:3000</a>{" "}
+                <a
+                  href="http://localhost:3000"
+                  className="text-[#e55b3c] font-bold underline underline-offset-2"
+                >
+                  localhost:3000
+                </a>{" "}
                 and go to <Code>/components</Code> to browse all animations.
               </Step>
             </div>
@@ -322,7 +446,9 @@ export default function ContributePageClient() {
           {/* 2. Add a new component */}
           <Card emoji="➕" title="Adding a New Component" accent="#e55b3c">
             <p className="text-[12px] sm:text-[13px] text-zinc-600 mb-5 leading-relaxed">
-              Every animation must be <strong>100% self-contained</strong> inside its own folder. No shared imports. No cross-component dependencies.
+              Every animation must be <strong>100% self-contained</strong>{" "}
+              inside its own folder. No shared imports. No cross-component
+              dependencies.
             </p>
 
             <div className="space-y-0">
@@ -331,11 +457,24 @@ export default function ContributePageClient() {
                 <ul className="mt-2 space-y-0">
                   {[
                     <>No imports from other route directories</>,
-                    <>No custom classes from <Code>globals.css</Code> — use inline Tailwind</>,
-                    <>No custom theme values — use exact hex: <Code>bg-[#e55b3c]</Code> not <Code>bg-wtf-orange</Code></>,
-                    <>Sub-components go inside the same <Code>page.tsx</Code></>,
-                    <>Assets go in <Code>/public/</Code> as absolute paths, or use inline SVGs</>,
-                  ].map((item, i) => <CheckItem key={i}>{item}</CheckItem>)}
+                    <>
+                      No custom classes from <Code>globals.css</Code> — use
+                      inline Tailwind
+                    </>,
+                    <>
+                      No custom theme values — use exact hex:{" "}
+                      <Code>bg-[#e55b3c]</Code> not <Code>bg-wtf-orange</Code>
+                    </>,
+                    <>
+                      Sub-components go inside the same <Code>page.tsx</Code>
+                    </>,
+                    <>
+                      Assets go in <Code>/public/</Code> as absolute paths, or
+                      use inline SVGs
+                    </>,
+                  ].map((item, i) => (
+                    <CheckItem key={i}>{item}</CheckItem>
+                  ))}
                 </ul>
               </Step>
 
@@ -352,21 +491,34 @@ export default function ContributePageClient() {
   tiltClass: "tilt-left",
 }`}</Terminal>
                 <Callout icon="⚡">
-                  <Code>componentName</Code> must match your folder name exactly (case-sensitive). A mismatch causes a 404 and breaks the sidebar link.
+                  <Code>componentName</Code> must match your folder name exactly
+                  (case-sensitive). A mismatch causes a 404 and breaks the
+                  sidebar link.
                 </Callout>
-
                 {/* palette swatches */}
-                <p className="font-mono text-[9px] font-black uppercase tracking-widest text-zinc-500 mb-2 mt-4">bgColor options:</p>
+                <p className="font-mono text-[9px] font-black uppercase tracking-widest text-zinc-500 mb-2 mt-4">
+                  bgColor options:
+                </p>
                 <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
                   {PALETTE.map(({ name, hex, text }) => (
-                    <div key={name} className="flex flex-col items-center gap-1.5">
+                    <div
+                      key={name}
+                      className="flex flex-col items-center gap-1.5"
+                    >
                       <div
                         className="w-full h-8 rounded-lg border-2 border-[#2a2a2a] shadow-[2px_2px_0px_#2a2a2a] flex items-center justify-center"
                         style={{ backgroundColor: hex }}
                       >
-                        <span className="font-mono text-[8px] font-black" style={{ color: text }}>{name}</span>
+                        <span
+                          className="font-mono text-[8px] font-black"
+                          style={{ color: text }}
+                        >
+                          {name}
+                        </span>
                       </div>
-                      <span className="font-mono text-[7px] text-zinc-500 text-center leading-none">bg-wtf-{name}</span>
+                      <span className="font-mono text-[7px] text-zinc-500 text-center leading-none">
+                        bg-wtf-{name}
+                      </span>
                     </div>
                   ))}
                 </div>
@@ -375,12 +527,23 @@ export default function ContributePageClient() {
               <Step num="3" accent="#e55b3c" title="GSAP Standards">
                 <ul className="space-y-0">
                   {[
-                    <><Code>useGSAP()</Code> from <Code>@gsap/react</Code> — never raw <Code>useEffect</Code></>,
-                    <>Always pass a scope ref: <Code>{`{ scope: containerRef }`}</Code></>,
+                    <>
+                      <Code>useGSAP()</Code> from <Code>@gsap/react</Code> —
+                      never raw <Code>useEffect</Code>
+                    </>,
+                    <>
+                      Always pass a scope ref:{" "}
+                      <Code>{`{ scope: containerRef }`}</Code>
+                    </>,
                     <>Register plugins at file top, not inside hooks</>,
-                    <>Use <Code>contextSafe()</Code> for callbacks that touch state/refs</>,
+                    <>
+                      Use <Code>contextSafe()</Code> for callbacks that touch
+                      state/refs
+                    </>,
                     <>Clean up timelines and listeners on unmount</>,
-                  ].map((item, i) => <CheckItem key={i}>{item}</CheckItem>)}
+                  ].map((item, i) => (
+                    <CheckItem key={i}>{item}</CheckItem>
+                  ))}
                 </ul>
               </Step>
             </div>
@@ -394,31 +557,38 @@ export default function ContributePageClient() {
               </Step>
 
               <Step num="2" accent="#6758a5" title="Build & Verify in Browser">
-                Make sure the route renders correctly at <Code>/components/YourAnimation</Code> and appears in the sidebar and gallery at <Code>/components</Code>.
+                Make sure the route renders correctly at{" "}
+                <Code>/components/YourAnimation</Code> and appears in the
+                sidebar and gallery at <Code>/components</Code>.
               </Step>
 
               <Step num="3" accent="#6758a5" title="Validate — Required">
                 <Terminal>{`pnpm lint\npnpm build`}</Terminal>
                 <Callout icon="🚫">
-                  PRs that fail CI, have TypeScript errors, or contain ESLint warnings <strong>will not be merged</strong>. Fix all warnings before opening a PR.
+                  PRs that fail CI, have TypeScript errors, or contain ESLint
+                  warnings <strong>will not be merged</strong>. Fix all warnings
+                  before opening a PR.
                 </Callout>
               </Step>
 
               <Step num="4" accent="#6758a5" title="Commit">
                 <Terminal>{`git commit -m "feat: add [your animation name]"`}</Terminal>
-                Use conventional commits: <Code>feat:</Code> for new components · <Code>fix:</Code> for bugs · <Code>docs:</Code> for documentation.
+                Use conventional commits: <Code>feat:</Code> for new components
+                · <Code>fix:</Code> for bugs · <Code>docs:</Code> for
+                documentation.
               </Step>
 
               <Step num="5" accent="#6758a5" title="Push & Open PR">
                 <Terminal>{`git push origin feat/your-animation-name`}</Terminal>
-                Open a PR targeting <Code>master</Code>. Include a <strong>short GIF or screenshot</strong> of your animation in the PR description.
+                Open a PR targeting <Code>master</Code>. Include a{" "}
+                <strong>short GIF or screenshot</strong> of your animation in
+                the PR description.
               </Step>
             </div>
           </Card>
 
           {/* 4. Good first contributions + code guidelines side-by-side on md+ */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 lg:gap-8">
-
             <Card emoji="✅" title="Good First Contributions" accent="#0c9367">
               <ul className="space-y-0">
                 {[
@@ -428,41 +598,61 @@ export default function ContributePageClient() {
                   "Add prefers-reduced-motion support",
                   "Fix typos or improve docs",
                   "Report broken routes or console errors",
-                ].map((r) => <CheckItem key={r}>{r}</CheckItem>)}
+                ].map((r) => (
+                  <CheckItem key={r}>{r}</CheckItem>
+                ))}
               </ul>
             </Card>
 
             <Card emoji="📐" title="Code Guidelines" accent="#3b82f6">
               <ul className="space-y-0">
                 {[
-                  <>Use transforms (<Code>x</Code>, <Code>y</Code>, <Code>scale</Code>) — not layout props</>,
-                  <>Respect <Code>prefers-reduced-motion</Code></>,
-                  <>TypeScript only — no <Code>any</Code> types</>,
+                  <>
+                    Use transforms (<Code>x</Code>, <Code>y</Code>,{" "}
+                    <Code>scale</Code>) — not layout props
+                  </>,
+                  <>
+                    Respect <Code>prefers-reduced-motion</Code>
+                  </>,
+                  <>
+                    TypeScript only — no <Code>any</Code> types
+                  </>,
                   "Descriptive conventional commit messages",
                   "One animation concept per component",
                   "Comment complex timelines & ScrollTriggers",
-                ].map((r, i) => <CheckItem key={i}>{r}</CheckItem>)}
+                ].map((r, i) => (
+                  <CheckItem key={i}>{r}</CheckItem>
+                ))}
               </ul>
             </Card>
-
           </div>
 
           {/* 5. Code of Conduct */}
           <Card emoji="🤝" title="Code of Conduct" accent="#f1b333">
             <p className="text-[12px] sm:text-[13px] text-zinc-600 leading-relaxed">
-              Be kind and constructive. We&apos;re here to learn and build something great together.
-              Discriminatory, harassing, or disrespectful behavior will not be tolerated in issues,
-              PRs, or any community interaction.
+              Be kind and constructive. We&apos;re here to learn and build
+              something great together. Discriminatory, harassing, or
+              disrespectful behavior will not be tolerated in issues, PRs, or
+              any community interaction.
             </p>
           </Card>
 
           {/* ── FOOTER CTA ── */}
           <div className="relative rounded-2xl border-2 border-[#2a2a2a] bg-[#2a2a2a] overflow-hidden shadow-[5px_5px_0px_#e55b3c]">
             {/* subtle grid */}
-            <div className="absolute inset-0 opacity-5" style={{ backgroundImage: "radial-gradient(circle, white 1px, transparent 1px)", backgroundSize: "24px 24px" }} />
+            <div
+              className="absolute inset-0 opacity-5"
+              style={{
+                backgroundImage:
+                  "radial-gradient(circle, white 1px, transparent 1px)",
+                backgroundSize: "24px 24px",
+              }}
+            />
             <div className="relative p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
               <div>
-                <p className="font-mono font-black text-[10px] uppercase tracking-widest text-[#f1b333] mb-1.5">Ready to ship?</p>
+                <p className="font-mono font-black text-[10px] uppercase tracking-widest text-[#f1b333] mb-1.5">
+                  Ready to ship?
+                </p>
                 <p className="font-serif font-black text-xl sm:text-2xl lg:text-3xl text-white leading-tight mb-1">
                   Built in public.
                 </p>
@@ -490,7 +680,6 @@ export default function ContributePageClient() {
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </div>

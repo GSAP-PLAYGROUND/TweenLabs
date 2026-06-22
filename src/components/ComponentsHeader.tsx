@@ -10,11 +10,14 @@ import { animations } from "@/data/components";
 import { cn } from "@/lib/utils";
 
 // Map pathnames to breadcrumb labels
-const BREADCRUMB_LABELS: Record<string, { label: string; parent?: { label: string; href: string } }> = {
+const BREADCRUMB_LABELS: Record<
+  string,
+  { label: string; parent?: { label: string; href: string } }
+> = {
   "/installation": { label: "Installation & Setup" },
   "/contribution": { label: "Contribution" },
-  "/playground":   { label: "Playground" },
-  "/components":   { label: "Components" },
+  "/playground": { label: "Playground" },
+  "/components": { label: "Components" },
 };
 
 export default function ComponentsHeader() {
@@ -30,7 +33,9 @@ export default function ComponentsHeader() {
   // Check if on a code page like /code/FlipCards
   const isCodePage = normalizedPath.startsWith("/code/");
   const codeSlug = isCodePage ? normalizedPath.split("/")[2] : null;
-  const codeAnim = codeSlug ? animations.find((a) => a.componentName === codeSlug) : null;
+  const codeAnim = codeSlug
+    ? animations.find((a) => a.componentName === codeSlug)
+    : null;
 
   // Determine what to show in the breadcrumb
   const isComponentDetail = !!currentAnim;
@@ -55,11 +60,15 @@ export default function ComponentsHeader() {
                 CODE
               </Link>
               <span className="text-zinc-400">&gt;</span>
-              <span className="text-[#2a2a2a]">{codeAnim.name.toUpperCase()}</span>
+              <span className="text-[#2a2a2a]">
+                {codeAnim.name.toUpperCase()}
+              </span>
             </>
           ) : isStaticPage ? (
             // Static pages: just show their own label, active
-            <span className="text-[#2a2a2a]">{staticPage.label.toUpperCase()}</span>
+            <span className="text-[#2a2a2a]">
+              {staticPage.label.toUpperCase()}
+            </span>
           ) : (
             // Components pages: show "Components" as parent link
             <Link
@@ -68,7 +77,7 @@ export default function ComponentsHeader() {
                 "transition-colors",
                 isComponentDetail
                   ? "text-zinc-500 hover:text-wtf-orange"
-                  : "text-[#2a2a2a]"
+                  : "text-[#2a2a2a]",
               )}
             >
               COMPONENTS
@@ -77,7 +86,9 @@ export default function ComponentsHeader() {
           {isComponentDetail && (
             <>
               <span className="text-zinc-400">&gt;</span>
-              <span className="text-[#2a2a2a]">{currentAnim.name.toUpperCase()}</span>
+              <span className="text-[#2a2a2a]">
+                {currentAnim.name.toUpperCase()}
+              </span>
             </>
           )}
         </nav>
@@ -117,7 +128,10 @@ export default function ComponentsHeader() {
               </span>
             </div>
             <button
-              onClick={async () => { await authClient.signOut(); window.location.reload(); }}
+              onClick={async () => {
+                await authClient.signOut();
+                window.location.reload();
+              }}
               className="font-mono text-[10px] font-black uppercase tracking-wider text-wtf-red hover:bg-wtf-red hover:text-white border-2 border-wtf-red bg-white rounded-lg px-2.5 py-1.5 shadow-[2px_2px_0px_#2a2a2a] cursor-pointer transition-all duration-150 active:translate-y-[1px] active:shadow-[1px_1px_0px_#2a2a2a]"
             >
               Sign Out
