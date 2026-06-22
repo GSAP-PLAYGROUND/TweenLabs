@@ -1,11 +1,15 @@
 "use client";
 
 import { useEffect } from "react";
+import { usePathname } from "next/navigation";
 import Lenis from "lenis";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 export default function ComponentsLenis() {
+  const pathname = usePathname();
+
+  // Persistent Lenis instance — lives for the entire components layout lifetime
   useEffect(() => {
     if (typeof window === "undefined") return;
 
@@ -14,13 +18,6 @@ export default function ComponentsLenis() {
     const scroller = document.getElementById("main-scroller");
     if (!scroller) return;
 
-    // Reset scroll position to top
-    scroller.scrollTop = 0;
-
-    // Initialize Lenis smooth scroll on the sidebar main content scroller container.
-    // CRITICAL: eventsTarget must be scoped to the scroller element (not the default window).
-    // Without this, Lenis calls preventDefault() on ALL wheel events globally, which
-    // kills native overflow-y-auto scroll on every other element — including the sidebar.
     const lenis = new Lenis({
       wrapper: scroller,
       content: scroller,
@@ -32,7 +29,6 @@ export default function ComponentsLenis() {
       smoothWheel: true,
     });
 
-    // Synchronize scroll events with GSAP ScrollTrigger
     const handleScroll = () => {
       ScrollTrigger.update();
     };
@@ -50,5 +46,24 @@ export default function ComponentsLenis() {
     };
   }, []);
 
+  // On route change: reset scroll position and refresh ScrollTrigger
+  useEffect(() => {
+    const scroller = document.getElementById("main-scroller");
+    if (!scroller) return;
+
+    // Reset scroll to top
+    scroller.scrollTop = 0;
+
+    // Give the new component time to mount and create its ScrollTriggers,
+    // then refresh so they recalculate positions correctly
+    const timer = setTimeout(() => {
+      ScrollTrigger.refresh(true);
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, [pathname]);
+
   return null;
 }
+
+

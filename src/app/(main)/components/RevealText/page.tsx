@@ -170,7 +170,7 @@ export default function RevealTextPage() {
 
         {/* Title */}
         <h1
-          className="hero-title text-3xl sm:text-5xl md:text-7xl font-serif font-black uppercase tracking-tight text-[#2a2a2a] leading-[0.95] text-center max-w-5xl"
+          className="hero-title text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-serif font-black uppercase tracking-tight text-[#2a2a2a] leading-[0.95] text-center max-w-5xl"
           style={{ perspective: "600px" }}
         >
           Reveal Text
