@@ -40,8 +40,8 @@ export default function App() {
 export default function SandboxWorkspace() {
   const [mounted, setMounted] = useState(false);
   const [code, setCode] = useState<string>(defaultCodeString);
-  const [compileLogs, setCompileLogs] = useState<string[]>([]);
-  const [isCompiling, setIsCompiling] = useState(false);
+  const [, setCompileLogs] = useState<string[]>([]);
+  const [, setIsCompiling] = useState(false);
 
   // Sync mount state to avoid SSR hydration mismatch
   useEffect(() => {
@@ -69,7 +69,7 @@ export default function SandboxWorkspace() {
     setCompileLogs(logs);
   };
 
-  const handleCompileError = (err: Error) => {
+  const handleCompileError = (_err: Error) => {
     setIsCompiling(false);
   };
 

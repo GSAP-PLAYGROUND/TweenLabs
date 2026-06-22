@@ -3,7 +3,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import {
   Send, Bot, User, CornerDownLeft, Loader2, CheckCircle2,
-  AlertTriangle, XCircle, Code, ShieldCheck, Cpu, RefreshCw
+  AlertTriangle, XCircle, Code, ShieldCheck, RefreshCw
 } from "lucide-react";
 import { SSEMessage } from "@/hooks/useAgentSSE";
 
@@ -106,7 +106,7 @@ export default function AgentChartPanel({
 
   const linterMsgs = nodeMsgs.filter((m) => m.node === "linter");
   const failedLinterRuns = linterMsgs.filter((m) => m.details?.lint_passed === false);
-  const lintRetryCount = linterMsgs.length;
+
 
   const isPipelineComplete = status === "completed" || messages.some(m => m.finalCode !== undefined);
 

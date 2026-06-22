@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect } from "react";
 
 export interface SSEMessage {
   id: string;
@@ -173,8 +173,9 @@ export function useAgentSSE(onCodeGenerated?: (code: string) => void) {
           }
         }
       }
-    } catch (err: any) {
-      if (err.name === "AbortError") {
+    } catch (err: unknown) {
+      const error = err as { name?: string; message?: string };
+      if (error.name === "AbortError") {
         console.log("Stream reading aborted by user request.");
       } else {
         console.error("SSE stream error:", err);
@@ -184,7 +185,7 @@ export function useAgentSSE(onCodeGenerated?: (code: string) => void) {
           {
             id: `error-${Date.now()}`,
             sender: "system",
-            text: `Connection error: ${err.message || err}`,
+            text: `Connection error: ${error.message || String(err)}`,
             timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
           },
         ]);
@@ -192,6 +193,7 @@ export function useAgentSSE(onCodeGenerated?: (code: string) => void) {
     }
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleSSEEvent = (event: string, data: any) => {
     const timestamp = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 
@@ -220,6 +222,7 @@ export function useAgentSSE(onCodeGenerated?: (code: string) => void) {
         setStatus("paused");
         if (Array.isArray(data)) {
           const planApproval = data.find(
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             (item: any) => item?.value?.type === "plan_approval"
           );
           if (planApproval) {

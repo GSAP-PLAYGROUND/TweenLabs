@@ -19,7 +19,7 @@ export default function LiveRunner({
   const [isBabelLoaded, setIsBabelLoaded] = useState(false);
   const [babelError, setBabelError] = useState<string | null>(null);
   const [transpiledCode, setTranspiledCode] = useState<string | null>(null);
-  const [compileLogs, setCompileLogs] = useState<string[]>([]);
+  const [, setCompileLogs] = useState<string[]>([]);
   const compileTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Load Babel Standalone from CDN
@@ -27,7 +27,7 @@ export default function LiveRunner({
     if (typeof window === "undefined") return;
 
     // Check if Babel is already loaded
-    if ((window as any).Babel) {
+    if ((window as unknown as Record<string, unknown>).Babel) {
       setIsBabelLoaded(true);
       return;
     }
@@ -45,26 +45,6 @@ export default function LiveRunner({
     document.head.appendChild(script);
   }, []);
 
-  // Compile TSX to JS when code changes and Babel is loaded
-  useEffect(() => {
-    if (!isBabelLoaded) return;
-
-    if (compileTimeoutRef.current) {
-      clearTimeout(compileTimeoutRef.current);
-    }
-
-    // Debounce compilation to avoid thrashing CPU on keypresses
-    compileTimeoutRef.current = setTimeout(() => {
-      compileCode();
-    }, 400);
-
-    return () => {
-      if (compileTimeoutRef.current) {
-        clearTimeout(compileTimeoutRef.current);
-      }
-    };
-  }, [code, isBabelLoaded]);
-
   const compileCode = () => {
     onCompileStart?.();
     const startTime = performance.now();
@@ -72,7 +52,9 @@ export default function LiveRunner({
 
     try {
       logs.push(`[Compiler] Initializing transpilation...`);
-      const Babel = (window as any).Babel;
+      const Babel = (window as unknown as Record<string, unknown>).Babel as {
+        transform: (code: string, options: Record<string, unknown>) => { code: string };
+      } | undefined;
       if (!Babel) {
         throw new Error("Babel standalone compiler is not ready.");
       }
@@ -94,14 +76,36 @@ export default function LiveRunner({
       setTranspiledCode(transformed);
       setCompileLogs(logs);
       onCompileSuccess?.(logs);
-    } catch (err: any) {
-      logs.push(`[Compiler Error] ${err.message}`);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : String(err);
+      logs.push(`[Compiler Error] ${message}`);
       setCompileLogs(logs);
-      onCompileError?.(err);
+      onCompileError?.(err instanceof Error ? err : new Error(message));
       // Inject standard error throw in iframe
-      setTranspiledCode(`throw new Error(${JSON.stringify(err.message)});`);
+      setTranspiledCode(`throw new Error(${JSON.stringify(message)});`);
     }
   };
+
+  // Compile TSX to JS when code changes and Babel is loaded
+  useEffect(() => {
+    if (!isBabelLoaded) return;
+
+    if (compileTimeoutRef.current) {
+      clearTimeout(compileTimeoutRef.current);
+    }
+
+    // Debounce compilation to avoid thrashing CPU on keypresses
+    compileTimeoutRef.current = setTimeout(() => {
+      compileCode();
+    }, 400);
+
+    return () => {
+      if (compileTimeoutRef.current) {
+        clearTimeout(compileTimeoutRef.current);
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [code, isBabelLoaded]);
 
   if (babelError) {
     return (
