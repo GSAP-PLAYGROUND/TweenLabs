@@ -1,6 +1,80 @@
-# How to Use: Bento Grid Tilt
+# Bento Grid
 
-This guide explains how to integrate the 3D Perspective Tilt bento items into your standalone React projects using GSAP.
+A responsive bento-style card grid where each card tilts toward your mouse cursor in 3D space. Cards spring back to flat when you move away. Includes crosshair tracking lines.
+
+
+---
+
+## Quick Start (Recommended)
+
+The fastest way to add this component to your project:
+
+```bash
+npx tweenlabs@latest add BentoGrid
+```
+
+This automatically installs the component and all its dependencies. You're done!
+
+---
+
+## Manual Installation (Step-by-Step)
+
+If you prefer to install manually, follow these steps:
+
+### Step 1: Install GSAP
+
+Open your terminal in your project folder and run:
+
+```bash
+npm install gsap @gsap/react
+```
+
+> [!TIP]
+> Using pnpm? Run `pnpm add gsap @gsap/react` instead.
+> Using yarn? Run `yarn add gsap @gsap/react` instead.
+
+### Step 2: Copy the Component Code
+
+1. Click the **"Full Component Code"** tab in the code viewer above
+2. Click the **"Copy"** button in the top-right corner
+3. In your project, create a new file: `src/components/BentoGrid.tsx`
+4. Paste the copied code into that file
+5. Save the file
+
+### Step 3: Import and Use It
+
+Open the page where you want to use this component and add:
+
+```tsx
+"use client";
+
+import BentoGrid from "@/components/BentoGrid";
+
+export default function MyPage() {
+  return (
+    <main>
+      <BentoGrid />
+    </main>
+  );
+}
+```
+
+### Step 4: Register GSAP Plugins
+
+Make sure the top of your component file has these imports:
+
+```tsx
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+
+gsap.registerPlugin(useGSAP);
+```
+
+---
+
+## How the Animation Works
+
+This section shows the core GSAP animation logic. You don't need to copy this separately — it's already included in the Full Component Code above. This is here to help you understand how it works.
 
 ### Core GSAP Animation Code
 ```javascript
@@ -70,176 +144,42 @@ const handleMouseLeave = (e) => {
 };
 ```
 
-### Standalone Component Code
-```tsx
-"use client";
 
-import React, { useRef } from "react";
-import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
-
-gsap.registerPlugin(useGSAP);
-
-interface BentoTiltCardProps {
-  children: React.ReactNode;
-  accentHex?: string; // rgb value string: e.g. "229, 91, 60"
-  className?: string;
-}
-
-export default function BentoTiltCard({
-  children,
-  accentHex = "229, 91, 60",
-  className = "",
-}: BentoTiltCardProps) {
-  const cardRef = useRef<HTMLDivElement>(null);
-  const { contextSafe } = useGSAP({ scope: cardRef });
-
-  const handleMouseMove = contextSafe((e: React.MouseEvent<HTMLDivElement>) => {
-    const card = cardRef.current;
-    if (!card) return;
-
-    const rect = card.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
-    card.style.setProperty("--mouse-x", `${x}px`);
-    card.style.setProperty("--mouse-y", `${y}px`);
-
-    const rotateY = ((x - rect.width / 2) / (rect.width / 2)) * 5;
-    const rotateX = -((y - rect.height / 2) / (rect.height / 2)) * 5;
-
-    gsap.to(card, {
-      rotateX: rotateX,
-      rotateY: rotateY,
-      transformPerspective: 1000,
-      ease: "power1.out",
-      duration: 0.3,
-      overwrite: "auto",
-    });
-
-    const img = card.querySelector(".inner-img");
-    if (img) {
-      const moveX = ((x - rect.width / 2) / rect.width) * 10;
-      const moveY = ((y - rect.height / 2) / rect.height) * 10;
-      gsap.to(img, {
-        x: moveX,
-        y: moveY,
-        scale: 1.05,
-        duration: 0.4,
-        ease: "power1.out",
-        overwrite: "auto",
-      });
-    }
-  });
-
-  const handleMouseLeave = contextSafe(() => {
-    const card = cardRef.current;
-    if (!card) return;
-
-    gsap.to(card, {
-      rotateX: 0,
-      rotateY: 0,
-      ease: "elastic.out(1.1, 0.4)",
-      duration: 0.75,
-      overwrite: "auto",
-    });
-
-    const img = card.querySelector(".inner-img");
-    if (img) {
-      gsap.to(img, {
-        x: 0,
-        y: 0,
-        scale: 1.0,
-        duration: 0.6,
-        ease: "power2.out",
-        overwrite: "auto",
-      });
-    }
-  });
-
-  return (
-    <div
-      ref={cardRef}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      className={`group relative overflow-hidden rounded-2xl border-3 border-[#2a2a2a] bg-white p-6 shadow-[5px_5px_0px_#2a2a2a] hover:shadow-[10px_10px_0px_#2a2a2a] transition-shadow duration-200 cursor-pointer select-none ${className}`}
-      style={{
-        transformStyle: "preserve-3d",
-        transform: "perspective(1000px) rotateX(0deg) rotateY(0deg)",
-      }}
-    >
-      {/* Interactive Spotlight Radial Overlay */}
-      <div
-        className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl z-0"
-        style={{
-          background: `radial-gradient(280px circle at var(--mouse-x, 0px) var(--mouse-y, 0px), rgba(${accentHex}, 0.08), transparent 85%)`,
-        }}
-      />
-      
-      {/* Inner Slot Content */}
-      <div className="relative z-10 w-full h-full flex flex-col justify-between">
-        {children}
-      </div>
-    </div>
-  );
-}
-```
-
-## Setup & Integration Guide
-
-### 💻 Option A: Install via CLI (Recommended)
-You can install this component directly into your project via the TweenLabs CLI:
-```bash
-npx tweenlabs@latest add bento-grid-flip
-```
 
 ---
 
-### 🛠️ Option B: Manual Installation
+## Customization
 
-Follow these beginner-friendly, step-by-step instructions to integrate the component into your project.
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `cards` | `Array` | Required | Array of card data (title, description, icon, color). |
 
-### ⚡ Step 1: Install Dependencies
-Open your project terminal and install the required GreenSock libraries:
-```bash
-npm install gsap @gsap/react
-```
+### Theme Tokens
 
-### 📁 Step 2: Save the Component File
-1. Create a new component file inside your React/Next.js folder structure, for example:
-   `file:///your-project/src/components/BentoTiltCard.tsx`
-2. Copy the **Standalone Component Code** shown in the code tabs above.
-3. Paste it directly into the new file.
+This component uses TweenLabs' Neo-Brutalist design tokens:
 
-### 🚀 Step 3: Import and Render
-Import the component and render it inside any page layout:
-```tsx
-import BentoTiltCard from "@/components/BentoTiltCard.tsx";
+| Token | Value | What It Does |
+|-------|-------|-------------|
+| Background | `bg-[#f0eadf]` | Warm sand-colored canvas |
+| Borders | `border-3 border-[#2a2a2a]` | Bold charcoal outlines |
+| Shadows | `shadow-[6px_6px_0px_#2a2a2a]` | Tactile offset drop shadows |
 
-export default function Page() {
-  return (
-    <main className="min-h-screen flex items-center justify-center bg-[#f0eadf] p-8">
-      <BentoTiltCard />
-    </main>
-  );
-}
-```
+> [!TIP]
+> You can change these values throughout the component to match your own design system. Just search and replace the hex colors.
 
 ---
 
-## 🛠️ Customization & Component Properties (Props)
+## Troubleshooting
 
-> [!NOTE]
-> This component is fully customizable and ready to use.
+**Animation not playing?**
+- Make sure you have `"use client"` at the very top of your component file
+- Check that GSAP is installed: `npm list gsap`
 
-You can pass the following settings to configure the layout and animation details:
+**Component not rendering?**
+- Verify the import path matches your file location
+- Make sure you're using React 18+ or 19
 
-- `children` (ReactNode): The card contents.
-- `accentHex` (string): RGB values (e.g. `'229, 91, 60'`) for the glowing pointer spotlight.
-- `className` (string): Tailwind styling overrides.
 
-### 🎨 Neo-Brutalist Theme Tokens
-To match TweenLabs' signature premium editorial styling:
-- **Canvas Backdrop**: `bg-[#f0eadf]` (warm sand color)
-- **High-contrast Borders**: `border-3 border-[#2a2a2a]` (solid charcoal outline)
-- **Drop Shadow Blocks**: `shadow-[6px_6px_0px_#2a2a2a]` (tactile offsets)
+**Styling looks wrong?**
+- This component uses Tailwind CSS utility classes
+- Make sure Tailwind is installed and configured in your project

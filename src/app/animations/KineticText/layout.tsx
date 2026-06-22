@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "GSAP Kinetic Typography Effect | TweenLabs",
   description:
-    "Interactive kinetic text sandbox showcasing liquid wave, character scramble, and magnetic motion. Explore this high-fidelity, interactive GSAP animation component on TweenLabs.",
+    "Interactive kinetic text demo showcasing liquid wave, character scramble, and magnetic motion. Explore this high-fidelity, interactive GSAP animation component on TweenLabs.",
   keywords: [
     "GSAP",
     "GSAP Kinetic Typography",
@@ -22,7 +22,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     "@type": "SoftwareApplication",
     name: "TweenLabs Kinetic Typography Component",
     description:
-      "Interactive kinetic text sandbox showcasing liquid wave, character scramble, and magnetic motion.",
+      "Interactive kinetic text demo showcasing liquid wave, character scramble, and magnetic motion.",
     applicationCategory: "DeveloperApplication",
     operatingSystem: "Browser",
     offers: {

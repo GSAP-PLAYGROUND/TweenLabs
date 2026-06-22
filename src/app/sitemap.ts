@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { animations } from "@/data/animations";
+import { seoCategories } from "@/data/seo-categories";
 
 export default function sitemap(): MetadataRoute.Sitemap {
 	const baseUrl = "https://tweenlabs.xyz";
@@ -37,7 +38,39 @@ export default function sitemap(): MetadataRoute.Sitemap {
 		},
 	];
 
-	// Dynamic component demo routes — highest priority after homepage
+	// SEO landing pages — high priority content pages
+	const seoRoutes = [
+		{
+			url: `${baseUrl}/best-gsap-components`,
+			lastModified: today,
+			changeFrequency: "weekly" as const,
+			priority: 0.9,
+		},
+		...seoCategories.map((cat) => ({
+			url: `${baseUrl}/best-gsap-components/${cat.slug}`,
+			lastModified: today,
+			changeFrequency: "weekly" as const,
+			priority: 0.85,
+		})),
+	];
+
+	// Blog routes
+	const blogRoutes = [
+		{
+			url: `${baseUrl}/blog`,
+			lastModified: today,
+			changeFrequency: "weekly" as const,
+			priority: 0.7,
+		},
+		{
+			url: `${baseUrl}/blog/gsap-vs-framer-motion`,
+			lastModified: today,
+			changeFrequency: "monthly" as const,
+			priority: 0.8,
+		},
+	];
+
+	// Dynamic component demo routes
 	const demoRoutes = animations.map((anim) => ({
 		url: `${baseUrl}${anim.route}`,
 		lastModified: today,
@@ -53,5 +86,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
 		priority: 0.6,
 	}));
 
-	return [...staticRoutes, ...aiRoutes, ...demoRoutes, ...codeRoutes];
+	return [
+		...staticRoutes,
+		...aiRoutes,
+		...seoRoutes,
+		...blogRoutes,
+		...demoRoutes,
+		...codeRoutes,
+	];
 }

@@ -1,6 +1,83 @@
-# How to Use: Reveal Text
+# Reveal Text
 
-This guide shows you how to copy and use the **Reveal Text** animation as a standalone React component.
+Text reveals line-by-line as it scrolls into view. Each line is masked and slides up into place with a staggered timing, creating a premium reading experience.
+
+> [!IMPORTANT]
+> This component uses **GSAP ScrollTrigger**. You must import and register it at the top of your component file (see Step 3 below).
+
+---
+
+## Quick Start (Recommended)
+
+The fastest way to add this component to your project:
+
+```bash
+npx tweenlabs@latest add RevealText
+```
+
+This automatically installs the component and all its dependencies. You're done!
+
+---
+
+## Manual Installation (Step-by-Step)
+
+If you prefer to install manually, follow these steps:
+
+### Step 1: Install GSAP
+
+Open your terminal in your project folder and run:
+
+```bash
+npm install gsap @gsap/react
+```
+
+> [!TIP]
+> Using pnpm? Run `pnpm add gsap @gsap/react` instead.
+> Using yarn? Run `yarn add gsap @gsap/react` instead.
+
+### Step 2: Copy the Component Code
+
+1. Click the **"Full Component Code"** tab in the code viewer above
+2. Click the **"Copy"** button in the top-right corner
+3. In your project, create a new file: `src/components/RevealText.tsx`
+4. Paste the copied code into that file
+5. Save the file
+
+### Step 3: Import and Use It
+
+Open the page where you want to use this component and add:
+
+```tsx
+"use client";
+
+import RevealText from "@/components/RevealText";
+
+export default function MyPage() {
+  return (
+    <main>
+      <RevealText />
+    </main>
+  );
+}
+```
+
+### Step 4: Register GSAP Plugins
+
+Make sure the top of your component file has these imports:
+
+```tsx
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(useGSAP, ScrollTrigger);
+```
+
+---
+
+## How the Animation Works
+
+This section shows the core GSAP animation logic. You don't need to copy this separately — it's already included in the Full Component Code above. This is here to help you understand how it works.
 
 ### Core GSAP Animation Code
 ```javascript
@@ -29,129 +106,47 @@ blocks.forEach((block) => {
 });
 ```
 
-### Standalone Component Code
-```tsx
-"use client";
 
-import React, { useRef } from "react";
-import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { SplitText } from "gsap/SplitText";
-
-gsap.registerPlugin(useGSAP, ScrollTrigger, SplitText);
-
-interface RevealTextProps {
-  paragraphs?: string[];
-}
-
-const defaultParagraphs = [
-  "We craft digital experiences that push the boundaries of what's possible on the web.",
-  "Every pixel is intentional. Every animation is purposeful. Every interaction tells a story.",
-];
-
-export default function RevealText({ paragraphs = defaultParagraphs }: RevealTextProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  useGSAP(() => {
-    const blocks = gsap.utils.toArray<HTMLElement>(".reveal-block");
-
-    blocks.forEach((block) => {
-      const split = SplitText.create(block, {
-        type: "lines",
-        linesClass: "reveal-line",
-        mask: "lines",
-      });
-
-      gsap.from(split.lines, {
-        y: "100%",
-        opacity: 0,
-        duration: 0.8,
-        ease: "power3.out",
-        stagger: 0.12,
-        scrollTrigger: {
-          trigger: block,
-          start: "top 80%",
-          end: "bottom 60%",
-          toggleActions: "play none none reverse",
-        },
-      });
-    });
-  }, { scope: containerRef });
-
-  return (
-    <div ref={containerRef} className="max-w-4xl mx-auto px-6 py-20 space-y-[20vh]">
-      {paragraphs.map((text, i) => (
-        <p key={i} className="reveal-block font-serif font-bold text-3xl leading-snug tracking-tight">
-          {text}
-        </p>
-      ))}
-    </div>
-  );
-}
-```
-
-## Setup & Integration Guide
-
-### 💻 Option A: Install via CLI (Recommended)
-You can install this component directly into your project via the TweenLabs CLI:
-```bash
-npx tweenlabs@latest add reveal-text
-```
 
 ---
 
-### 🛠️ Option B: Manual Installation
+## Customization
 
-Follow these beginner-friendly, step-by-step instructions to integrate the component into your project.
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `text` | `string` | Required | The paragraph text to reveal. |
+| `stagger` | `number` | 0.1 | Delay between each line reveal in seconds. |
 
-### ⚡ Step 1: Install Dependencies
-Open your project terminal and install the required GreenSock libraries:
-```bash
-npm install gsap @gsap/react
-```
+### Theme Tokens
 
-### 📁 Step 2: Save the Component File
-1. Create a new component file inside your React/Next.js folder structure, for example:
-   `file:///your-project/src/components/RevealText.tsx`
-2. Copy the **Standalone Component Code** shown in the code tabs above.
-3. Paste it directly into the new file.
+This component uses TweenLabs' Neo-Brutalist design tokens:
 
-### 🚀 Step 3: Import and Render
-Import the component and render it inside any page layout:
-```tsx
-import RevealText from "@/components/RevealText.tsx";
+| Token | Value | What It Does |
+|-------|-------|-------------|
+| Background | `bg-[#f0eadf]` | Warm sand-colored canvas |
+| Borders | `border-3 border-[#2a2a2a]` | Bold charcoal outlines |
+| Shadows | `shadow-[6px_6px_0px_#2a2a2a]` | Tactile offset drop shadows |
 
-export default function Page() {
-  return (
-    <main className="min-h-screen bg-[#f0eadf] p-8">
-      <RevealText />
-    </main>
-  );
-}
-```
-
-### ⚠️ Plugin Registration Notice
-Since this component uses GSAP plugins (ScrollTrigger, SplitText), they must be imported and registered at the top of your component file:
-```tsx
-import { ScrollTrigger } from "gsap/all";
-import { SplitText } from "gsap/SplitText";
-gsap.registerPlugin(useGSAP, ScrollTrigger, SplitText);
-```
+> [!TIP]
+> You can change these values throughout the component to match your own design system. Just search and replace the hex colors.
 
 ---
 
-## 🛠️ Customization & Component Properties (Props)
+## Troubleshooting
 
-> [!NOTE]
-> This component is fully customizable and ready to use.
+**Animation not playing?**
+- Make sure you have `"use client"` at the very top of your component file
+- Check that GSAP is installed: `npm list gsap`
 
-You can pass the following settings to configure the layout and animation details:
+**Component not rendering?**
+- Verify the import path matches your file location
+- Make sure you're using React 18+ or 19
 
-- `paragraphs` (Array): An array of text strings. Each string is rendered as a separate reveal-animated block.
+**ScrollTrigger not working?**
+- Make sure you imported and registered ScrollTrigger (see Step 4)
+- Check that your component has enough scroll height (the page must be scrollable)
+- Try adding `ScrollTrigger.refresh()` after dynamic content loads
 
-### 🎨 Neo-Brutalist Theme Tokens
-To match TweenLabs' signature premium editorial styling:
-- **Canvas Backdrop**: `bg-[#f0eadf]` (warm sand color)
-- **High-contrast Borders**: `border-3 border-[#2a2a2a]` (solid charcoal outline)
-- **Drop Shadow Blocks**: `shadow-[6px_6px_0px_#2a2a2a]` (tactile offsets)
+**Styling looks wrong?**
+- This component uses Tailwind CSS utility classes
+- Make sure Tailwind is installed and configured in your project

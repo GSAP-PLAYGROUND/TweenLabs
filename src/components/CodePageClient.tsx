@@ -742,18 +742,10 @@ export default function CodePageClient({
   const tabs = [];
   tabs.push({
     id: "page",
-    label: "Full Sandbox Page",
+    label: "Full Component Code",
     code: pageCode,
     file: "page.tsx",
   });
-  if (standaloneCode) {
-    tabs.push({
-      id: "standalone",
-      label: "Standalone React Component",
-      code: standaloneCode,
-      file: `${slug}.tsx`,
-    });
-  }
   if (coreGsapCode) {
     tabs.push({
       id: "core",

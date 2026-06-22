@@ -40,6 +40,9 @@ function parseHowToUse(markdown: string): ParsedMarkdown {
   // Split by headers (e.g. ## or ###) to separate sections
   const sections = markdown.split(/\n(?=(?:##|###)\s+)/);
 
+  // Collect setup-related sections to combine
+  const setupParts: string[] = [];
+
   for (const sec of sections) {
     const headerMatch = sec.match(/^(##|###)\s+(.+)$/m);
     if (!headerMatch) {
@@ -70,14 +73,33 @@ function parseHowToUse(markdown: string): ParsedMarkdown {
       headerText.startsWith("setup & integration") ||
       headerText.startsWith("setup and integration")
     ) {
-      result.setupGuide = sec.trim();
+      // Legacy format — single setup section
+      setupParts.push(sec.trim());
+    } else if (
+      headerText.startsWith("quick start") ||
+      headerText.startsWith("manual installation") ||
+      headerText.startsWith("step ")
+    ) {
+      // New beginner-friendly format — collect all setup parts
+      setupParts.push(sec.trim());
     } else if (
       headerText.includes("customization") ||
       headerText.includes("properties") ||
-      headerText.includes("props")
+      headerText.includes("props") ||
+      headerText.includes("theme token")
     ) {
       result.customization = sec.trim();
+    } else if (headerText.startsWith("troubleshooting")) {
+      // Append troubleshooting to setup guide
+      setupParts.push(sec.trim());
+    } else if (headerText.startsWith("how the animation")) {
+      // Skip this wrapper — core gsap code is extracted separately
     }
+  }
+
+  // Combine all setup parts into a single guide
+  if (setupParts.length > 0) {
+    result.setupGuide = setupParts.join("\n\n---\n\n");
   }
 
   return result;

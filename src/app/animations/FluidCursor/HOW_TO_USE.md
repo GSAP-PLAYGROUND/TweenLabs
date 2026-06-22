@@ -1,6 +1,80 @@
-# How to Use: Fluid Custom Cursor
+# Fluid Cursor
 
-This guide shows you how to copy and use the **Fluid Custom Cursor** as a standalone React component.
+A custom cursor that follows your mouse with a smooth elastic lag. When you hover over buttons or interactive elements, the cursor snaps to their shape and morphs to fit.
+
+
+---
+
+## Quick Start (Recommended)
+
+The fastest way to add this component to your project:
+
+```bash
+npx tweenlabs@latest add FluidCursor
+```
+
+This automatically installs the component and all its dependencies. You're done!
+
+---
+
+## Manual Installation (Step-by-Step)
+
+If you prefer to install manually, follow these steps:
+
+### Step 1: Install GSAP
+
+Open your terminal in your project folder and run:
+
+```bash
+npm install gsap @gsap/react
+```
+
+> [!TIP]
+> Using pnpm? Run `pnpm add gsap @gsap/react` instead.
+> Using yarn? Run `yarn add gsap @gsap/react` instead.
+
+### Step 2: Copy the Component Code
+
+1. Click the **"Full Component Code"** tab in the code viewer above
+2. Click the **"Copy"** button in the top-right corner
+3. In your project, create a new file: `src/components/FluidCursor.tsx`
+4. Paste the copied code into that file
+5. Save the file
+
+### Step 3: Import and Use It
+
+Open the page where you want to use this component and add:
+
+```tsx
+"use client";
+
+import FluidCursor from "@/components/FluidCursor";
+
+export default function MyPage() {
+  return (
+    <main>
+      <FluidCursor />
+    </main>
+  );
+}
+```
+
+### Step 4: Register GSAP Plugins
+
+Make sure the top of your component file has these imports:
+
+```tsx
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+
+gsap.registerPlugin(useGSAP);
+```
+
+---
+
+## How the Animation Works
+
+This section shows the core GSAP animation logic. You don't need to copy this separately — it's already included in the Full Component Code above. This is here to help you understand how it works.
 
 ### Core GSAP Animation Code
 ```javascript
@@ -48,271 +122,44 @@ const updateCursor = (e) => {
 };
 ```
 
-### Standalone Component Code
-```tsx
-"use client";
 
-import React, { useRef, useEffect } from "react";
-import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
-
-gsap.registerPlugin(useGSAP);
-
-interface FluidCursorProps {
-  children?: React.ReactNode;
-}
-
-export default function FluidCursor({ children }: FluidCursorProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const dotRef = useRef<HTMLDivElement>(null);
-  const ringRef = useRef<HTMLDivElement>(null);
-
-  const isHovered = useRef(false);
-  const activeTargetRef = useRef<HTMLElement | null>(null);
-
-  const { contextSafe } = useGSAP(
-    () => {
-      if (typeof window === "undefined" || !dotRef.current || !ringRef.current)
-        return;
-
-      // Initialize quickTo setters
-      const xToDot = gsap.quickTo(dotRef.current, "x", {
-        duration: 0.08,
-        ease: "power2.out",
-      });
-      const yToDot = gsap.quickTo(dotRef.current, "y", {
-        duration: 0.08,
-        ease: "power2.out",
-      });
-
-      const updateCursor = (e: MouseEvent) => {
-        if (!isHovered.current) {
-          xToDot(e.clientX);
-          yToDot(e.clientY);
-          gsap.to(ringRef.current, {
-            x: e.clientX - 16,
-            y: e.clientY - 16,
-            duration: 0.35,
-            ease: "power3.out",
-            overwrite: "auto",
-          });
-        } else if (activeTargetRef.current) {
-          const rect = activeTargetRef.current.getBoundingClientRect();
-          const elementCenterX = rect.left + rect.width / 2;
-          const elementCenterY = rect.top + rect.height / 2;
-
-          const deltaX = (e.clientX - elementCenterX) * 0.15;
-          const deltaY = (e.clientY - elementCenterY) * 0.15;
-
-          gsap.to(ringRef.current, {
-            x: rect.left + deltaX,
-            y: rect.top + deltaY,
-            duration: 0.2,
-            overwrite: "auto",
-          });
-
-          xToDot(e.clientX);
-          yToDot(e.clientY);
-        }
-      };
-
-      window.addEventListener("mousemove", updateCursor);
-      return () => window.removeEventListener("mousemove", updateCursor);
-    },
-    { scope: containerRef }
-  );
-
-  const handleTargetEnter = contextSafe((e: React.MouseEvent<HTMLElement>) => {
-    isHovered.current = true;
-    const target = e.currentTarget;
-    activeTargetRef.current = target;
-
-    const rect = target.getBoundingClientRect();
-    const cursorText = target.getAttribute("data-cursor-text") || "";
-
-    // Morph ring to outline card
-    gsap.to(ringRef.current, {
-      width: rect.width,
-      height: rect.height,
-      borderRadius: "12px",
-      borderWidth: "3px",
-      borderColor: "#2a2a2a",
-      backgroundColor: "rgba(241, 179, 51, 0.2)",
-      boxShadow: "4px 4px 0px #2a2a2a",
-      x: rect.left,
-      y: rect.top,
-      duration: 0.3,
-      ease: "power2.out",
-      overwrite: "auto",
-    });
-
-    // Shrink dot
-    gsap.to(dotRef.current, {
-      scale: 0.5,
-      backgroundColor: "#e55b3c",
-      duration: 0.2,
-      overwrite: "auto",
-    });
-
-    const labelEl = ringRef.current?.querySelector(".cursor-label");
-    if (labelEl) {
-      labelEl.innerHTML = cursorText;
-      gsap.to(labelEl, {
-        opacity: 1,
-        scale: 1,
-        y: -24,
-        duration: 0.2,
-        overwrite: "auto",
-      });
-    }
-  });
-
-  const handleTargetLeave = contextSafe(() => {
-    isHovered.current = false;
-    activeTargetRef.current = null;
-
-    // Reset ring
-    gsap.to(ringRef.current, {
-      width: 32,
-      height: 32,
-      borderRadius: "9999px",
-      borderWidth: "3px",
-      borderColor: "#2a2a2a",
-      backgroundColor: "transparent",
-      boxShadow: "0px 0px 0px transparent",
-      duration: 0.35,
-      ease: "back.out(1.5)",
-      overwrite: "auto",
-    });
-
-    // Reset dot
-    gsap.to(dotRef.current, {
-      scale: 1,
-      backgroundColor: "#2a2a2a",
-      duration: 0.2,
-      overwrite: "auto",
-    });
-
-    const labelEl = ringRef.current?.querySelector(".cursor-label");
-    if (labelEl) {
-      gsap.to(labelEl, {
-        opacity: 0,
-        scale: 0.6,
-        y: 0,
-        duration: 0.2,
-        overwrite: "auto",
-      });
-    }
-  });
-
-  // Attach hover helpers recursively to children with custom datasets
-  const renderChildren = (node: React.ReactNode): React.ReactNode => {
-    return React.Children.map(node, (child) => {
-      if (!React.isValidElement(child)) return child;
-
-      // If the child is marked as a magnetic target
-      if (child.props["data-cursor-target"] || child.props["data-cursor-text"]) {
-        return React.cloneElement(child as React.ReactElement<any>, {
-          onMouseEnter: (e: React.MouseEvent<HTMLElement>) => {
-            if (child.props.onMouseEnter) child.props.onMouseEnter(e);
-            handleTargetEnter(e);
-          },
-          onMouseLeave: (e: React.MouseEvent<HTMLElement>) => {
-            if (child.props.onMouseLeave) child.props.onMouseLeave(e);
-            handleTargetLeave();
-          },
-          // Force hide standard cursor on hover
-          style: { ...child.props.style, cursor: "none" },
-        });
-      }
-
-      if (child.props.children) {
-        return React.cloneElement(child as React.ReactElement<any>, {
-          children: renderChildren(child.props.children),
-        });
-      }
-
-      return child;
-    });
-  };
-
-  return (
-    <div ref={containerRef} className="w-full min-h-screen relative overflow-hidden cursor-none">
-      {/* Custom Cursor elements */}
-      <div
-        ref={dotRef}
-        className="fixed top-0 left-0 w-3 h-3 bg-[#2a2a2a] rounded-full pointer-events-none z-[9999] -translate-x-1/2 -translate-y-1/2"
-      />
-      <div
-        ref={ringRef}
-        className="fixed top-0 left-0 w-8 h-8 border-3 border-[#2a2a2a] rounded-full pointer-events-none z-[9998] flex items-center justify-center bg-transparent"
-        style={{ transformOrigin: "top left" }}
-      >
-        <span className="cursor-label absolute pointer-events-none font-mono text-[9px] font-black bg-[#f1b333] text-black border-2 border-[#2a2a2a] px-2 py-0.5 rounded shadow-[1.5px_1.5px_0px_#2a2a2a] uppercase opacity-0 scale-70 tracking-widest whitespace-nowrap z-50 select-none" />
-      </div>
-
-      <div className="w-full h-full cursor-none">
-        {renderChildren(children)}
-      </div>
-    </div>
-  );
-}
-```
-
-## Setup & Integration Guide
-
-### 💻 Option A: Install via CLI (Recommended)
-You can install this component directly into your project via the TweenLabs CLI:
-```bash
-npx tweenlabs@latest add fluid-cursor
-```
 
 ---
 
-### 🛠️ Option B: Manual Installation
+## Customization
 
-Follow these beginner-friendly, step-by-step instructions to integrate the component into your project.
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `size` | `number` | 20 | Default cursor size in pixels. |
+| `color` | `string` | '#e55b3c' | Cursor color. |
+| `elasticity` | `number` | 0.15 | How stretchy the cursor following feels (0-1). |
 
-### ⚡ Step 1: Install Dependencies
-Open your project terminal and install the required GreenSock libraries:
-```bash
-npm install gsap @gsap/react
-```
+### Theme Tokens
 
-### 📁 Step 2: Save the Component File
-1. Create a new component file inside your React/Next.js folder structure, for example:
-   `file:///your-project/src/components/FluidCursor.tsx`
-2. Copy the **Standalone Component Code** shown in the code tabs above.
-3. Paste it directly into the new file.
+This component uses TweenLabs' Neo-Brutalist design tokens:
 
-### 🚀 Step 3: Import and Render
-Import the component and render it inside any page layout:
-```tsx
-import FluidCursor from "@/components/FluidCursor.tsx";
+| Token | Value | What It Does |
+|-------|-------|-------------|
+| Background | `bg-[#f0eadf]` | Warm sand-colored canvas |
+| Borders | `border-3 border-[#2a2a2a]` | Bold charcoal outlines |
+| Shadows | `shadow-[6px_6px_0px_#2a2a2a]` | Tactile offset drop shadows |
 
-export default function Page() {
-  return (
-    <main className="min-h-screen flex items-center justify-center bg-[#f0eadf] p-8">
-      <FluidCursor />
-    </main>
-  );
-}
-```
+> [!TIP]
+> You can change these values throughout the component to match your own design system. Just search and replace the hex colors.
 
 ---
 
-## 🛠️ Customization & Component Properties (Props)
+## Troubleshooting
 
-> [!NOTE]
-> This component is fully customizable and ready to use.
+**Animation not playing?**
+- Make sure you have `"use client"` at the very top of your component file
+- Check that GSAP is installed: `npm list gsap`
 
-You can pass the following settings to configure the layout and animation details:
+**Component not rendering?**
+- Verify the import path matches your file location
+- Make sure you're using React 18+ or 19
 
-- `children` (ReactNode): The layout children inside which the custom cursor tracks.
-- Note: Simply add `data-cursor-text="YOUR LABEL"` on any interactive child to make the cursor morph and snap onto it!
 
-### 🎨 Neo-Brutalist Theme Tokens
-To match TweenLabs' signature premium editorial styling:
-- **Canvas Backdrop**: `bg-[#f0eadf]` (warm sand color)
-- **High-contrast Borders**: `border-3 border-[#2a2a2a]` (solid charcoal outline)
-- **Drop Shadow Blocks**: `shadow-[6px_6px_0px_#2a2a2a]` (tactile offsets)
+**Styling looks wrong?**
+- This component uses Tailwind CSS utility classes
+- Make sure Tailwind is installed and configured in your project

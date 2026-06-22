@@ -1,6 +1,80 @@
-# How to Use: Gravity Drop Animation
+# Gravity Drop
 
-This guide shows you how to copy and use the **Gravity Drop** animation as a standalone React component.
+Letters of a word fall from the top of the screen one-by-one and land on a shelf/baseline with a realistic physics bounce effect. Simple and eye-catching hero text animation.
+
+
+---
+
+## Quick Start (Recommended)
+
+The fastest way to add this component to your project:
+
+```bash
+npx tweenlabs@latest add GravityDrop
+```
+
+This automatically installs the component and all its dependencies. You're done!
+
+---
+
+## Manual Installation (Step-by-Step)
+
+If you prefer to install manually, follow these steps:
+
+### Step 1: Install GSAP
+
+Open your terminal in your project folder and run:
+
+```bash
+npm install gsap @gsap/react
+```
+
+> [!TIP]
+> Using pnpm? Run `pnpm add gsap @gsap/react` instead.
+> Using yarn? Run `yarn add gsap @gsap/react` instead.
+
+### Step 2: Copy the Component Code
+
+1. Click the **"Full Component Code"** tab in the code viewer above
+2. Click the **"Copy"** button in the top-right corner
+3. In your project, create a new file: `src/components/GravityDrop.tsx`
+4. Paste the copied code into that file
+5. Save the file
+
+### Step 3: Import and Use It
+
+Open the page where you want to use this component and add:
+
+```tsx
+"use client";
+
+import GravityDrop from "@/components/GravityDrop";
+
+export default function MyPage() {
+  return (
+    <main>
+      <GravityDrop />
+    </main>
+  );
+}
+```
+
+### Step 4: Register GSAP Plugins
+
+Make sure the top of your component file has these imports:
+
+```tsx
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+
+gsap.registerPlugin(useGSAP);
+```
+
+---
+
+## How the Animation Works
+
+This section shows the core GSAP animation logic. You don't need to copy this separately — it's already included in the Full Component Code above. This is here to help you understand how it works.
 
 ### Core GSAP Animation Code
 ```javascript
@@ -27,149 +101,44 @@ gsap.fromTo(
 );
 ```
 
-### Standalone Component Code
-```tsx
-"use client";
 
-import React, { useRef, useState } from "react";
-import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
-
-gsap.registerPlugin(useGSAP);
-
-interface GravityDropProps {
-  initialText?: string;
-}
-
-export default function GravityDrop({ initialText = "GRAVITY DROP" }: GravityDropProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [textInput, setTextInput] = useState(initialText);
-  const [triggerKey, setTriggerKey] = useState(0);
-
-  useGSAP(() => {
-    // Animate the letters falling down
-    gsap.fromTo(
-      ".falling-letter",
-      {
-        y: -400,
-        rotation: () => gsap.utils.random(-90, 90),
-        opacity: 0,
-        scale: 2,
-      },
-      {
-        y: 0,
-        rotation: 0,
-        opacity: 1,
-        scale: 1,
-        duration: 1.2,
-        stagger: {
-          each: 0.08,
-          from: "random",
-        },
-        ease: "bounce.out",
-      }
-    );
-  }, { scope: containerRef, dependencies: [textInput, triggerKey] });
-
-  return (
-    <div 
-      ref={containerRef}
-      className="relative w-full max-w-2xl border-4 border-[#2a2a2a] p-8 bg-white rounded-2xl shadow-[6px_6px_0px_#2a2a2a] overflow-hidden"
-    >
-      {/* Shelf container where text lands */}
-      <div className="relative min-h-[160px] flex items-center justify-center border-b-4 border-[#2a2a2a] pb-4 bg-zinc-50 rounded-lg">
-        <h1 className="text-5xl font-serif font-black tracking-tight flex flex-wrap justify-center gap-x-[0.35em]">
-          {textInput.split(" ").map((word, wordIdx) => (
-            <span key={wordIdx} className="inline-block whitespace-nowrap">
-              {word.split("").map((char, charIdx) => (
-                <span
-                  key={charIdx}
-                  className="falling-letter inline-block transform origin-bottom font-black text-[#e55b3c] will-change-transform"
-                  style={{ textShadow: "2px 2px 0px #2a2a2a" }}
-                >
-                  {char}
-                </span>
-              ))}
-            </span>
-          ))}
-        </h1>
-      </div>
-
-      {/* Controls */}
-      <div className="flex gap-4 justify-center items-center mt-6">
-        <input
-          type="text"
-          maxLength={20}
-          value={textInput}
-          onChange={(e) => setTextInput(e.target.value.toUpperCase())}
-          placeholder="TYPE TEXT HERE"
-          className="border-3 border-[#2a2a2a] px-4 py-2 font-mono font-bold rounded-lg focus:outline-none"
-        />
-        <button
-          onClick={() => setTriggerKey(p => p + 1)}
-          className="border-3 border-[#2a2a2a] bg-[#e55b3c] text-white font-mono font-bold px-6 py-2 rounded-lg cursor-pointer shadow-[3px_3px_0px_#2a2a2a] hover:translate-y-[-2px] active:translate-y-[2px] transition-all"
-        >
-          Trigger Drop
-        </button>
-      </div>
-    </div>
-  );
-}
-```
-
-## Setup & Integration Guide
-
-### 💻 Option A: Install via CLI (Recommended)
-You can install this component directly into your project via the TweenLabs CLI:
-```bash
-npx tweenlabs@latest add gravity-drop
-```
 
 ---
 
-### 🛠️ Option B: Manual Installation
+## Customization
 
-Follow these beginner-friendly, step-by-step instructions to integrate the component into your project.
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `text` | `string` | Required | The word or phrase to drop. |
+| `delay` | `number` | 0.1 | Stagger delay between each letter in seconds. |
+| `bounce` | `number` | 0.4 | Bounce intensity (0 = no bounce, 1 = max bounce). |
 
-### ⚡ Step 1: Install Dependencies
-Open your project terminal and install the required GreenSock libraries:
-```bash
-npm install gsap @gsap/react
-```
+### Theme Tokens
 
-### 📁 Step 2: Save the Component File
-1. Create a new component file inside your React/Next.js folder structure, for example:
-   `file:///your-project/src/components/GravityDrop.tsx`
-2. Copy the **Standalone Component Code** shown in the code tabs above.
-3. Paste it directly into the new file.
+This component uses TweenLabs' Neo-Brutalist design tokens:
 
-### 🚀 Step 3: Import and Render
-Import the component and render it inside any page layout:
-```tsx
-import GravityDrop from "@/components/GravityDrop.tsx";
+| Token | Value | What It Does |
+|-------|-------|-------------|
+| Background | `bg-[#f0eadf]` | Warm sand-colored canvas |
+| Borders | `border-3 border-[#2a2a2a]` | Bold charcoal outlines |
+| Shadows | `shadow-[6px_6px_0px_#2a2a2a]` | Tactile offset drop shadows |
 
-export default function Page() {
-  return (
-    <main className="min-h-screen flex items-center justify-center bg-[#f0eadf] p-8">
-      <GravityDrop />
-    </main>
-  );
-}
-```
+> [!TIP]
+> You can change these values throughout the component to match your own design system. Just search and replace the hex colors.
 
 ---
 
-## 🛠️ Customization & Component Properties (Props)
+## Troubleshooting
 
-> [!NOTE]
-> This component is fully customizable and ready to use.
+**Animation not playing?**
+- Make sure you have `"use client"` at the very top of your component file
+- Check that GSAP is installed: `npm list gsap`
 
-You can pass the following settings to configure the layout and animation details:
+**Component not rendering?**
+- Verify the import path matches your file location
+- Make sure you're using React 18+ or 19
 
-- `initialText` (string): The text characters to drop and bounce. Defaults to `'GRAVITY DROP'`.
 
-### 🎨 Neo-Brutalist Theme Tokens
-To match TweenLabs' signature premium editorial styling:
-- **Canvas Backdrop**: `bg-[#f0eadf]` (warm sand color)
-- **High-contrast Borders**: `border-3 border-[#2a2a2a]` (solid charcoal outline)
-- **Drop Shadow Blocks**: `shadow-[6px_6px_0px_#2a2a2a]` (tactile offsets)
+**Styling looks wrong?**
+- This component uses Tailwind CSS utility classes
+- Make sure Tailwind is installed and configured in your project

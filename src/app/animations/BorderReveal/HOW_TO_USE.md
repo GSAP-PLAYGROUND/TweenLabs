@@ -1,6 +1,83 @@
-# How to Use: Inward-Outward Border Reveal
+# Border Reveal Text
 
-This guide shows you how to copy and use the **Inward-Outward Border Reveal** text animation as a standalone React component.
+Large text scrolls horizontally across the screen. As you scroll down, individual letters fly in from the top and bottom edges of the screen, assembling into words.
+
+> [!IMPORTANT]
+> This component uses **GSAP ScrollTrigger**. You must import and register it at the top of your component file (see Step 3 below).
+
+---
+
+## Quick Start (Recommended)
+
+The fastest way to add this component to your project:
+
+```bash
+npx tweenlabs@latest add BorderReveal
+```
+
+This automatically installs the component and all its dependencies. You're done!
+
+---
+
+## Manual Installation (Step-by-Step)
+
+If you prefer to install manually, follow these steps:
+
+### Step 1: Install GSAP
+
+Open your terminal in your project folder and run:
+
+```bash
+npm install gsap @gsap/react
+```
+
+> [!TIP]
+> Using pnpm? Run `pnpm add gsap @gsap/react` instead.
+> Using yarn? Run `yarn add gsap @gsap/react` instead.
+
+### Step 2: Copy the Component Code
+
+1. Click the **"Full Component Code"** tab in the code viewer above
+2. Click the **"Copy"** button in the top-right corner
+3. In your project, create a new file: `src/components/BorderReveal.tsx`
+4. Paste the copied code into that file
+5. Save the file
+
+### Step 3: Import and Use It
+
+Open the page where you want to use this component and add:
+
+```tsx
+"use client";
+
+import BorderReveal from "@/components/BorderReveal";
+
+export default function MyPage() {
+  return (
+    <main>
+      <BorderReveal />
+    </main>
+  );
+}
+```
+
+### Step 4: Register GSAP Plugins
+
+Make sure the top of your component file has these imports:
+
+```tsx
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(useGSAP, ScrollTrigger);
+```
+
+---
+
+## How the Animation Works
+
+This section shows the core GSAP animation logic. You don't need to copy this separately — it's already included in the Full Component Code above. This is here to help you understand how it works.
 
 ### Core GSAP Animation Code
 ```javascript
@@ -35,211 +112,47 @@ chars.forEach((char) => {
 });
 ```
 
-### Standalone Component Code
-```tsx
-"use client";
 
-import React, { useRef } from "react";
-import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(useGSAP, ScrollTrigger);
-
-interface BorderRevealProps {
-  phrase: string; // The text string to animate
-}
-
-export default function BorderRevealText({ phrase = "HELLO WORLD THIS IS GSAP" }: BorderRevealProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const scrollSectionRef = useRef<HTMLDivElement>(null);
-  const textTrackRef = useRef<HTMLDivElement>(null);
-
-  useGSAP(() => {
-    const chars = gsap.utils.toArray<HTMLElement>(".reveal-char");
-
-    // 1. Create the main horizontal translation timeline
-    const horizontalTween = gsap.to(textTrackRef.current, {
-      x: () => -(textTrackRef.current?.scrollWidth! - window.innerWidth),
-      ease: "none",
-      scrollTrigger: {
-        trigger: scrollSectionRef.current,
-        pin: true,
-        scrub: 1,
-        start: "top top",
-        end: "+=2500", // Scroll length control
-        invalidateOnRefresh: true,
-      },
-    });
-
-    // 2. Animate characters relative to horizontal viewport positions
-    chars.forEach((char) => {
-      const startY = -window.innerHeight * 0.9;
-      const startRot = -35;
-
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: char,
-          containerAnimation: horizontalTween, // Link to horizontal scroll
-          start: "left right", // Enter right edge of viewport
-          end: "right left",   // Exit left edge of viewport
-          scrub: true,
-        },
-      });
-
-      tl.fromTo(
-        char,
-        {
-          y: startY,
-          rotation: startRot,
-          opacity: 0,
-          scale: 0.6,
-        },
-        {
-          y: 0,
-          rotation: 0,
-          opacity: 1,
-          scale: 1,
-          duration: 0.35,
-          ease: "power3.out",
-        }
-      )
-      // Drift wave phase
-      .to(char, {
-        y: -15,
-        rotation: 4,
-        scale: 1.03,
-        duration: 0.15,
-        ease: "sine.inOut",
-      })
-      .to(char, {
-        y: 15,
-        rotation: -4,
-        scale: 0.97,
-        duration: 0.15,
-        ease: "sine.inOut",
-      })
-      // Exit drop out
-      .to(char, {
-        y: -startY,
-        rotation: -startRot,
-        opacity: 0,
-        scale: 0.6,
-        duration: 0.35,
-        ease: "power3.in",
-      });
-    });
-
-    return () => {
-      // Reverts automatically via useGSAP hook
-    };
-  }, { scope: containerRef, dependencies: [phrase] });
-
-  let globalCharIndex = 0;
-
-  return (
-    <div 
-      ref={containerRef} 
-      className="relative min-h-screen bg-[#1e1e1e] text-white overflow-hidden"
-    >
-      {/* Scroll area */}
-      <div 
-        ref={scrollSectionRef} 
-        className="h-screen w-full flex items-center relative overflow-hidden"
-      >
-        {/* Track holding the text */}
-        <div 
-          ref={textTrackRef} 
-          className="relative flex items-center pl-[100vw] pr-[100vw] whitespace-nowrap h-full select-none w-max flex-shrink-0"
-        >
-          <div className="flex gap-[6vw] flex-shrink-0 w-max">
-            {phrase.split(" ").map((word, wordIdx) => (
-              <span key={wordIdx} className="inline-block whitespace-nowrap">
-                {word.split("").map((char) => {
-                  const idx = globalCharIndex++;
-                  return (
-                    <span
-                      key={idx}
-                      className="reveal-char inline-block transform origin-center font-serif font-black uppercase text-[8vw] md:text-[10vw]"
-                      style={{
-                        textShadow: "4px 4px 0px #121212",
-                        color: wordIdx % 2 === 1 ? "#e55b3c" : "white"
-                      }}
-                    >
-                      {char}
-                    </span>
-                  );
-                })}
-              </span>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-```
-
-## Setup & Integration Guide
-
-### 💻 Option A: Install via CLI (Recommended)
-You can install this component directly into your project via the TweenLabs CLI:
-```bash
-npx tweenlabs@latest add inward-outward-border-reveal
-```
 
 ---
 
-### 🛠️ Option B: Manual Installation
+## Customization
 
-Follow these beginner-friendly, step-by-step instructions to integrate the component into your project.
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `text` | `string` | Required | The text to display and animate. |
+| `speed` | `number` | 1 | Animation speed multiplier. |
 
-### ⚡ Step 1: Install Dependencies
-Open your project terminal and install the required GreenSock libraries:
-```bash
-npm install gsap @gsap/react
-```
+### Theme Tokens
 
-### 📁 Step 2: Save the Component File
-1. Create a new component file inside your React/Next.js folder structure, for example:
-   `file:///your-project/src/components/BorderRevealText.tsx`
-2. Copy the **Standalone Component Code** shown in the code tabs above.
-3. Paste it directly into the new file.
+This component uses TweenLabs' Neo-Brutalist design tokens:
 
-### 🚀 Step 3: Import and Render
-Import the component and render it inside any page layout:
-```tsx
-import BorderRevealText from "@/components/BorderRevealText.tsx";
+| Token | Value | What It Does |
+|-------|-------|-------------|
+| Background | `bg-[#f0eadf]` | Warm sand-colored canvas |
+| Borders | `border-3 border-[#2a2a2a]` | Bold charcoal outlines |
+| Shadows | `shadow-[6px_6px_0px_#2a2a2a]` | Tactile offset drop shadows |
 
-export default function Page() {
-  return (
-    <main className="min-h-screen flex items-center justify-center bg-[#f0eadf] p-8">
-      <BorderRevealText />
-    </main>
-  );
-}
-```
-
-### ⚠️ Plugin Registration Notice
-Since this component uses GSAP plugins (ScrollTrigger), they must be imported and registered at the top of your component file:
-```tsx
-import { ScrollTrigger } from "gsap/all";
-gsap.registerPlugin(useGSAP, ScrollTrigger);
-```
+> [!TIP]
+> You can change these values throughout the component to match your own design system. Just search and replace the hex colors.
 
 ---
 
-## 🛠️ Customization & Component Properties (Props)
+## Troubleshooting
 
-> [!NOTE]
-> This component is fully customizable and ready to use.
+**Animation not playing?**
+- Make sure you have `"use client"` at the very top of your component file
+- Check that GSAP is installed: `npm list gsap`
 
-You can pass the following settings to configure the layout and animation details:
+**Component not rendering?**
+- Verify the import path matches your file location
+- Make sure you're using React 18+ or 19
 
-- `phrase` (string): The message string that scrolls horizontally and drops characters. Defaults to `'HELLO THIS IS GSAP'`.
+**ScrollTrigger not working?**
+- Make sure you imported and registered ScrollTrigger (see Step 4)
+- Check that your component has enough scroll height (the page must be scrollable)
+- Try adding `ScrollTrigger.refresh()` after dynamic content loads
 
-### 🎨 Neo-Brutalist Theme Tokens
-To match TweenLabs' signature premium editorial styling:
-- **Canvas Backdrop**: `bg-[#f0eadf]` (warm sand color)
-- **High-contrast Borders**: `border-3 border-[#2a2a2a]` (solid charcoal outline)
-- **Drop Shadow Blocks**: `shadow-[6px_6px_0px_#2a2a2a]` (tactile offsets)
+**Styling looks wrong?**
+- This component uses Tailwind CSS utility classes
+- Make sure Tailwind is installed and configured in your project
