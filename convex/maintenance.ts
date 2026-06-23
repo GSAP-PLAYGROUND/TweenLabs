@@ -9,36 +9,12 @@ import { internalMutation } from "./_generated/server";
  * - Batched deletes (500) to stay within Convex transaction limits
  * - Uses indexed scans — no full-table scans
  * - Idempotent — safe to retry without side effects
+ *
+ * NOTE: Session cleanup is handled by the Better Auth component
+ * internally. We only clean app-owned tables here (pageViews).
  */
 
 const BATCH_SIZE = 500;
-
-// ── Clean expired sessions ──────────────────────────────────────
-export const cleanExpiredSessions = internalMutation({
-  args: {},
-  returns: v.object({ deleted: v.number() }),
-  handler: async (ctx) => {
-    const now = Date.now();
-
-    const expired = await ctx.db
-      .query("session")
-      .withIndex("expiresAt")
-      .order("asc")
-      .take(BATCH_SIZE);
-
-    let deleted = 0;
-    for (const session of expired) {
-      if (session.expiresAt < now) {
-        await ctx.db.delete(session._id);
-        deleted++;
-      } else {
-        break; // Index is ordered — no more expired records after this
-      }
-    }
-
-    return { deleted };
-  },
-});
 
 // ── Clean old page views (older than 90 days) ───────────────────
 export const cleanOldPageViews = internalMutation({
