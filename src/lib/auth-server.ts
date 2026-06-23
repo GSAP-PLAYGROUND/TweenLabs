@@ -13,8 +13,8 @@ const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL;
 const convexSiteUrl = process.env.NEXT_PUBLIC_CONVEX_SITE_URL;
 
 if (!convexUrl && process.env.NODE_ENV === "production") {
-  throw new Error(
-    "NEXT_PUBLIC_CONVEX_URL is required in production. Set it in your environment variables.",
+  console.warn(
+    "⚠ NEXT_PUBLIC_CONVEX_URL is not set. Auth features will not work until it is configured.",
   );
 }
 
