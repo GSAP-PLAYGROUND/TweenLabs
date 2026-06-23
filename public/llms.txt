@@ -49,10 +49,10 @@ Here is the full index of 22 high-fidelity animation components available to cop
   - **Code Guide**: [/code/PageTransition](https://tweenlabs.xyz/code/PageTransition)
   - **Description**: Premium stacked page-peel scroll animation where color-themed sections slide up and overlap with dynamic skewing.
 
-- **Horizontal Cards**
-  - **Route**: [/components/HorizontalCards](https://tweenlabs.xyz/components/HorizontalCards)
-  - **Code Guide**: [/code/HorizontalCards](https://tweenlabs.xyz/code/HorizontalCards)
-  - **Description**: Premium horizontal scroll layout where colorful Neo-Brutalist cards slide, float, enter from the bottom, and exit off the top of the viewport.
+- **String Line**
+  - **Route**: [/components/StringLine](https://tweenlabs.xyz/components/StringLine)
+  - **Code Guide**: [/code/StringLine](https://tweenlabs.xyz/code/StringLine)
+  - **Description**: ScrollTriggered SVG network line drawing tracking node proximity scale offsets.
 
 - **Circular Scatter**
   - **Route**: [/components/CircularScatter](https://tweenlabs.xyz/components/CircularScatter)
@@ -89,10 +89,10 @@ Here is the full index of 22 high-fidelity animation components available to cop
   - **Code Guide**: [/code/GravityDrop](https://tweenlabs.xyz/code/GravityDrop)
   - **Description**: Staggered letters falling down onto a shelf collider with realistic physics bounce.
 
-- **String Line**
-  - **Route**: [/components/StringLine](https://tweenlabs.xyz/components/StringLine)
-  - **Code Guide**: [/code/StringLine](https://tweenlabs.xyz/code/StringLine)
-  - **Description**: ScrollTriggered SVG network line drawing tracking node proximity scale offsets.
+- **Horizontal Cards**
+  - **Route**: [/components/HorizontalCards](https://tweenlabs.xyz/components/HorizontalCards)
+  - **Code Guide**: [/code/HorizontalCards](https://tweenlabs.xyz/code/HorizontalCards)
+  - **Description**: Premium horizontal scroll layout where colorful Neo-Brutalist cards slide, float, enter from the bottom, and exit off the top of the viewport.
 
 - **Border Reveal**
   - **Route**: [/components/BorderReveal](https://tweenlabs.xyz/components/BorderReveal)

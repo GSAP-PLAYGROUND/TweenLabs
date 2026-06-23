@@ -347,26 +347,21 @@ function EmbedBridge() {
         case "auto-scroll-start":
           stopAll();
           el.scrollTop = 0;
-          // Remount component for fresh animation state
-          (window as unknown as Record<string, () => void>).__resetPreview?.();
-          // Start auto-scroll after remount settles (1 frame)
-          requestAnimationFrame(() => startAutoScroll(el));
+          ScrollTrigger.refresh();
+          startAutoScroll(el);
           break;
         case "auto-cursor-start":
           stopAll();
           el.scrollTop = 0;
-          (window as unknown as Record<string, () => void>).__resetPreview?.();
-          requestAnimationFrame(() => startAutoCursor());
+          startAutoCursor();
           break;
         case "auto-tabs-start":
           stopAll();
-          (window as unknown as Record<string, () => void>).__resetPreview?.();
-          requestAnimationFrame(() => startAutoTabs());
+          startAutoTabs();
           break;
         case "auto-click-start":
           stopAll();
-          (window as unknown as Record<string, () => void>).__resetPreview?.();
-          requestAnimationFrame(() => startAutoClick());
+          startAutoClick();
           break;
         case "stop-all":
           stopAll();
