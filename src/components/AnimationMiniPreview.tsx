@@ -166,7 +166,7 @@ export default function AnimationMiniPreview({
       )}
 
       {/* ── Loading indicator ── */}
-      {iframeSrc && !iframeReady && previewImage && (
+      {iframeSrc && !iframeReady && previewImage && !imgError && (
         <div className="absolute bottom-2 right-2 z-30">
           <div className="w-4 h-4 border-2 border-white/80 border-t-transparent rounded-full animate-spin" />
         </div>
